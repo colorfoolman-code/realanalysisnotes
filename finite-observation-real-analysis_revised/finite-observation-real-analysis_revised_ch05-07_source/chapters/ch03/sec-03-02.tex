@@ -1,0 +1,1190 @@
+\section{积空间、换元与参数积分}\label{sec:03-02}
+
+\subsection{Tonelli 与 Fubini：从矩形到迭代积分}\label{subsec:3-2-1}
+\index{Tonelli 定理}\index{Fubini 定理}\index{截面}
+
+设 $(X,\mathcal A,\mu)$ 与 $(Y,\mathcal B,\nu)$ 是两个测度空间。若 $E\subset X\times Y$，固定
+$x\in X$ 或 $y\in Y$ 后得到的集合
+\[
+ E_x=\{y:(x,y)\in E\},\qquad E^y=\{x:(x,y)\in E\}
+\]
+称为 $E$ 的竖直截面与水平截面。对矩形 $E=A\times B$，截面计算没有任何悬念：
+\[
+ \nu(E_x)=\1_A(x)\nu(B),\qquad
+ \int_X\nu(E_x)\,\dd\mu(x)=\mu(A)\nu(B).
+ \tag{3.2.1}\label{eq:3-2-rectangle-slice}
+\]
+问题在于，乘积 $\sigma$-代数中的集合经过可数次补集与并运算后不再是矩形；即使每个截面都有
+测度，也还要证明截面测度随参数可测，外层积分才有意义。
+
+\begin{example}[矩形示性函数]\label{ex:3-2-1-1}
+令 $f=\1_{A\times B}$。由 \eqref{eq:3-2-rectangle-slice}，
+\[
+ \int_X\left(\int_Y f(x,y)\,\dd\nu(y)\right)\dd\mu(x)
+ =\mu(A)\nu(B)
+ =\int_Y\left(\int_X f(x,y)\,\dd\mu(x)\right)\dd\nu(y).
+\]
+这项逐矩形计算是迭代积分公式的起点，但尚不能替代从矩形到任意乘积可测函数的扩张；其中各项
+可以取 $+\infty$。
+\end{example}
+
+\begin{example}[对角线的两种答案]\label{ex:3-2-1-2}
+在 $\R^2$ 中令 $D=\{(x,y):x=y\}$。对每个 $x$，$D_x=\{x\}$，故
+$m_1(D_x)=0$。第~\ref{subsec:2-3-2} 小节已用盒覆盖独立证明 $m_2(D)=0$；本小节建立
+Tonelli 定理后，截面计算会再次给出同一答案。盒覆盖论证与截面论证分别从外测度和乘积积分
+解释同一个零测现象。
+\end{example}
+
+首先处理可测性。注意以下引理不给 $X$ 配测度；这一点以后构造密度核时很重要。
+
+\begin{lemma}[非负参数积分的可测性]\label{proposition:3-2-1-3}
+设 $(X,\mathcal A)$ 为可测空间，$(Y,\mathcal B,\nu)$ 为 $\sigma$-有限测度空间。若
+$f:X\times Y\to[0,\infty]$ 对 $\mathcal A\otimes\mathcal B$ 可测，则每个截面
+$f(x,\cdot)$ 可测，并且
+\[
+ x\longmapsto \int_Y f(x,y)\,\dd\nu(y)
+\]
+是 $\mathcal A$-可测函数。
+\end{lemma}
+
+\begin{proof}
+固定 $x$。所有满足 $E_x\in\mathcal B$ 的集合 $E\subset X\times Y$ 构成一个
+$\sigma$-代数，并包含每个可测矩形，因而包含 $\mathcal A\otimes\mathcal B$。应用于
+$E=\{f>t\}$ 可知 $f(x,\cdot)$ 可测。
+
+先设 $\nu(Y)<\infty$。令 $\mathcal D$ 为所有满足
+$x\mapsto\nu(E_x)$ 可测的 $E\in\mathcal A\otimes\mathcal B$。若 $E=A\times B$，则
+$\nu(E_x)=\1_A(x)\nu(B)$，所以可测矩形属于 $\mathcal D$。此外，
+\[
+ \nu((E^c)_x)=\nu(Y)-\nu(E_x),
+\]
+故 $\mathcal D$ 对相对于 $X\times Y$ 的补集封闭。若 $E_j\in\mathcal D$ 两两不交，则
+\[
+ \nu\!\left(\left(\bigcup_{j=1}^{\infty}E_j\right)_x\right)
+ =\sum_{j=1}^{\infty}\nu((E_j)_x),
+\]
+右侧是可测非负函数部分和的点态极限。因此 $\mathcal D$ 是一个 $\lambda$-系。可测矩形构成
+生成 $\mathcal A\otimes\mathcal B$ 的 $\pi$-系，$\pi$--$\lambda$ 定理给出
+$\mathcal D=\mathcal A\otimes\mathcal B$。
+
+一般地，取 $Y_k\uparrow Y$，其中 $Y_k\in\mathcal B$ 且 $\nu(Y_k)<\infty$。对任意
+$E\in\mathcal A\otimes\mathcal B$，有限测度情形说明
+$x\mapsto\nu(E_x\cap Y_k)$ 可测，而从下连续性给出
+\[
+ \nu(E_x)=\lim_{k\to\infty}\nu(E_x\cap Y_k).
+\]
+故集合示性函数的结论成立。非负简单函数的结论由有限线性组合得到。最后，若
+$0\le s_n\uparrow f$ 是非负简单函数列，则对每个 $x$，单调收敛定理给出
+\[
+ \int_Ys_n(x,y)\,\dd\nu(y)\uparrow
+ \int_Yf(x,y)\,\dd\nu(y).
+\]
+可测函数的递增极限可测，证明完毕。
+\end{proof}
+
+现在可以给外层积分赋予含义。对非负函数允许答案为 $+\infty$；这正是 Tonelli 定理与
+Fubini 定理的分界。
+
+\begin{definition}[乘积空间上的绝对可积]\label{def:3-2-1-2}
+设 $f:X\times Y\to\R$ 或 $\C$ 可测。若
+\[
+ \int_{X\times Y}|f|\,\dd(\mu\otimes\nu)<\infty,
+\]
+则称 $f$ 在乘积空间上\emph{绝对可积}；等价地，$f\in L^1(\mu\otimes\nu)$。
+\end{definition}
+
+\begin{theorem}[Tonelli 定理]\label{theorem:3-2-1-1}
+设 $\mu$ 与 $\nu$ 均为 $\sigma$-有限测度，$\mu\otimes\nu$ 是
+$\mathcal A\otimes\mathcal B$ 上的乘积测度。若
+$f:X\times Y\to[0,\infty]$ 可测，则两个截面积函数均可测，并且
+\[
+ \int_{X\times Y}f\,\dd(\mu\otimes\nu)
+ =\int_X\!\left(\int_Yf(x,y)\,\dd\nu(y)\right)\dd\mu(x)
+ =\int_Y\!\left(\int_Xf(x,y)\,\dd\mu(x)\right)\dd\nu(y).
+ \tag{3.2.2}\label{eq:tonelli}
+\]
+三个量允许同时等于 $+\infty$。
+\end{theorem}
+
+\begin{proof}
+引理~\ref{proposition:3-2-1-3} 已给出截面积函数的可测性。对
+$E\in\mathcal A\otimes\mathcal B$ 定义
+\[
+ \lambda(E)=\int_X\nu(E_x)\,\dd\mu(x).
+\]
+若 $(E_j)$ 两两不交，则对每个 $x$，截面 $(E_j)_x$ 两两不交，因而
+\[
+ \nu\!\left(\left(\bigcup_jE_j\right)_x\right)
+ =\lim_{N\to\infty}\sum_{j=1}^N\nu((E_j)_x).
+\]
+对右侧的递增部分和应用单调收敛定理，得到
+$\lambda(\bigcup_jE_j)=\sum_j\lambda(E_j)$；又有 $\lambda(\varnothing)=0$，所以
+$\lambda$ 是测度。对可测矩形，
+\[
+ \lambda(A\times B)=\int_X\1_A(x)\nu(B)\,\dd\mu(x)=\mu(A)\nu(B).
+\]
+取有限测度集的可数覆盖 $X=\bigcup_iX_i$、$Y=\bigcup_jY_j$。矩形
+$X_i\times Y_j$ 可数地覆盖 $X\times Y$，且
+$\lambda(X_i\times Y_j)=\mu(X_i)\nu(Y_j)<\infty$，所以 $\lambda$ 也是 $\sigma$-有限的。
+乘积测度唯一性定理
+\ref{theorem:2-3-2-2} 说明 $\lambda=\mu\otimes\nu$。因此
+\[
+ (\mu\otimes\nu)(E)=\int_X\nu(E_x)\,\dd\mu(x).
+ \tag{3.2.3}\label{eq:cavalieri-set-pre}
+\]
+
+令 $f$ 为非负简单函数，把 \eqref{eq:cavalieri-set-pre} 对其有限个示性函数逐项相加，便得到
+\eqref{eq:tonelli} 的第一个等号。一般 $f\ge0$ 可取非负简单函数
+$s_n\uparrow f$。固定 $x$ 后，单调收敛定理给出
+\[
+ \int_Ys_n(x,y)\,\dd\nu(y)\uparrow \int_Yf(x,y)\,\dd\nu(y);
+\]
+再对 $x$ 应用单调收敛定理，并同时对积空间应用一次，得到
+\[
+ \int_X\int_Y f\,\dd\nu\,\dd\mu
+ =\lim_n\int_X\int_Ys_n\,\dd\nu\,\dd\mu
+ =\lim_n\int_{X\times Y}s_n\,\dd(\mu\otimes\nu)
+ =\int_{X\times Y}f\,\dd(\mu\otimes\nu).
+\]
+交换 $X,Y$ 重复同一论证，得到另一个次序的等式。
+\end{proof}
+
+\begin{corollary}[Cavalieri 原理]\label{corollary:3-2-1-4}
+对每个 $E\in\mathcal A\otimes\mathcal B$，
+\[
+ (\mu\otimes\nu)(E)=\int_X\nu(E_x)\,\dd\mu(x)
+ =\int_Y\mu(E^y)\,\dd\nu(y).
+\]
+\end{corollary}
+
+\begin{proof}
+在 Tonelli 定理中取 $f=\1_E$。
+\end{proof}
+
+\begin{theorem}[Fubini 定理]\label{theorem:3-2-1-2}
+在 Tonelli 定理的假设下，设 $f:X\times Y\to\R$ 或 $\C$ 在乘积空间上绝对可积。则
+\[
+ \int_Y|f(x,y)|\,\dd\nu(y)<\infty
+\]
+对 $\mu$-几乎处处的 $x$ 成立；交换 $X,Y$ 后的陈述也成立。把异常参数处的截面积分置为零，
+所得函数可积，并且
+\[
+ \int_{X\times Y}f\,\dd(\mu\otimes\nu)
+ =\int_X\!\left(\int_Y f(x,y)\,\dd\nu(y)\right)\dd\mu(x)
+ =\int_Y\!\left(\int_X f(x,y)\,\dd\mu(x)\right)\dd\nu(y).
+ \tag{3.2.4}\label{eq:fubini}
+\]
+\end{theorem}
+
+\begin{proof}
+对 $|f|$ 应用 Tonelli 定理。函数
+\[
+ h(x)=\int_Y|f(x,y)|\,\dd\nu(y)
+\]
+非负可测，并满足
+\[
+ \int_Xh\,\dd\mu=\int_{X\times Y}|f|\,\dd(\mu\otimes\nu)<\infty.
+\]
+若 $A=\{h=\infty\}$ 有正测度，则对每个 $M>0$ 有
+$\int h\,\dd\mu\ge M\mu(A)$；当 $\mu(A)>0$ 时令 $M\to\infty$ 会与积分有限矛盾。
+故 $h<\infty$ 几乎处处。交换变量得到另一个方向的截面绝对可积性。
+
+若 $f$ 为实值，对 $f^+$ 与 $f^-$ 分别应用 Tonelli。由于
+$0\le f^\pm\le|f|$，相应迭代积分都是有限数，于是可以相减，得到
+\eqref{eq:fubini}。若 $f$ 为复值，则对 $\Re f$ 与 $\Im f$ 重复实值论证；二者的绝对值都不超过
+$|f|$，所以全部相减均在有限数之间进行。异常集上的置零只改变零集上的函数，不改变外层积分。
+\end{proof}
+
+\begin{corollary}[可积参数积分的可测性]\label{corollary:3-2-1-integrable-parameter}
+在 Fubini 定理的假设下，把不可积截面处的值置零后，
+\[
+ x\longmapsto\int_Yf(x,y)\,\dd\nu(y)
+\]
+可测且属于 $L^1(\mu)$。
+\end{corollary}
+
+\begin{proof}
+对实值函数，把引理~\ref{proposition:3-2-1-3} 应用于 $(\Re f)^\pm$；对复值函数再处理
+$(\Im f)^\pm$。这些非负参数积分均可测，在几乎处处截面可积的集合上作差即得所需函数。
+置零集合由上一证明中的可测函数 $h$ 的无穷值集给出，故仍可测。此外
+\[
+ \left|\int_Yf(x,y)\,\dd\nu(y)\right|
+ \le \int_Y|f(x,y)|\,\dd\nu(y)=h(x)
+\]
+几乎处处成立，而 $h\in L^1(\mu)$。
+\end{proof}
+
+\begin{remark}[完成化上的代表]
+若 $f$ 只对乘积测度的完成化可测，应先选取一个
+$\mathcal A\otimes\mathcal B$-可测代表 $\widetilde f$。若两个这样的代表只在乘积零集 $N$ 上
+不同，取乘积可测零集 $Z\supset N$；Tonelli 应用于 $\1_Z$ 给出
+$\nu(Z_x)=0$ 对几乎处处 $x$ 成立。交换 $X,Y$ 后再次应用 Tonelli，又得到
+$\mu(Z^y)=0$ 对几乎处处 $y$ 成立。因此两代表给出相同的几乎处处截面积分。
+任意完成化可测代表的每一个截面却未必可测；Fubini 定理并不作这个更强的断言。
+\end{remark}
+
+现在回看几个计算。对非负可测 $u:X\to[0,\infty]$，令
+\[
+ G_u=\{(x,t)\in X\times(0,\infty):0<t<u(x)\}.
+\]
+集合恒等式
+\[
+ G_u=\bigcup_{q\in\Q,\ q>0}\{u>q\}\times(0,q)
+\]
+证明它乘积可测；其竖直截面长度为 $u(x)$。故 Cavalieri 原理给出
+\[
+ (\mu\otimes m_1)(G_u)=\int_Xu\,\dd\mu.
+ \tag{3.2.5}\label{eq:subgraph-area}
+\]
+简单函数时，右侧是有限个矩形面积之和；一般情形则是这些阶梯下图的单调极限。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.05cm,y=.75cm]
+  \draw[->,book line] (-.2,0)--(6.2,0) node[right]{$x$};
+  \draw[->,book line] (0,-.15)--(0,4.4) node[above]{$t$};
+  \fill[BookAccent!10] (0,0)--(0,1.2)--(1.15,1.2)--(1.15,2.4)--(2.3,2.4)--
+    (2.3,3.5)--(3.45,3.5)--(3.45,2.75)--(4.6,2.75)--(4.6,1.65)--(5.75,1.65)--(5.75,0)--cycle;
+  \draw[BookAccent,semithick] (0,1.2)--(1.15,1.2)--(1.15,2.4)--(2.3,2.4)--
+    (2.3,3.5)--(3.45,3.5)--(3.45,2.75)--(4.6,2.75)--(4.6,1.65)--(5.75,1.65);
+  \foreach \x in {1.15,2.3,3.45,4.6,5.75}{\draw[BookInk!35,dashed] (\x,0)--(\x,3.8);}
+  \draw[BookWarm,very thick] (2.85,0)--(2.85,3.5);
+  \node[book label,right] at (2.85,1.7) {截面长度 $u(x)$};
+  \draw[BookAccent!75,very thick,dashed] (0,2.1)--(4.6,2.1);
+  \node[book label,above] at (4.9,2.1) {交换次序后的水平截面};
+\end{tikzpicture}
+\caption{竖直截面给 $\int_X\int_Y$；把同一区域改用水平截面读取，就得到相反的积分次序。}
+\label{fig:3-2-1-slices}
+\end{figure}
+
+\begin{example}[换序为何会改变答案]\label{ex:3-2-1-3}
+在 $\N^2$ 上取计数测度，令
+\[
+ a_{mn}=\begin{cases}
+ 1,&n=m,\\
+ -1,&n=m+1,\\
+ 0,&\text{其他}.
+ \end{cases}
+\]
+固定 $m$ 时，一行只有 $1,-1$ 两项，故
+$\sum_n a_{mn}=0$，从而 $\sum_m(\sum_na_{mn})=0$。固定 $n$ 时，$n=1$ 的列和为 $1$；
+若 $n\ge2$，则 $m=n$ 给 $1$，$m=n-1$ 给 $-1$，列和为零。因此
+\[
+ \sum_n\left(\sum_ma_{mn}\right)=1.
+\]
+另一方面，每行的绝对值之和为 $2$，故
+$\sum_{m,n}|a_{mn}|=\infty$。这里没有违反 Fubini：失败的正是绝对可积假设。Tonelli 也不能
+用于 $a_{mn}$ 本身，因为它有正有负；分别用于正负部分只会得到 $+\infty$ 与 $+\infty$，二者
+不能相减。
+\end{example}
+
+\begin{example}[对角线的截面计算]\label{ex:3-2-1-diagonal-recheck}
+对 $D=\{(x,y):x=y\}$ 应用 Cavalieri 原理。每个 $D_x$ 是单点，故
+\[
+ m_2(D)=\int_\R m_1(\{x\})\,\dd x=0.
+\]
+这与第~\ref{subsec:2-3-2} 小节的覆盖计算一致，并从截面长度恒为零解释了二维零测性。
+\end{example}
+
+最后考虑尚未完成的高斯计算。记
+$I=\int_\R e^{-x^2}\,\dd x$。非负性与 Tonelli 给出
+\[
+ I^2=\int_{\R^2}e^{-(x^2+y^2)}\,\dd(x,y),
+ \tag{3.2.6}\label{eq:gaussian-tonelli-gap}
+\]
+但矩形切片并未利用被积函数的圆对称性，所以此处还不能求出 $I$。下一小节将把圆切开并拉直，
+从而补上这一步。
+
+同一机制还支撑卷积与 Fourier 积分的换序：只有当被积函数非负，或其绝对值在乘积空间可积时，
+换序才由本小节的定理保证。把联合推前测度恰好等于两个边缘推前测度之积时，乘积型积分也直接来自
+Tonelli；第~5~章会把这一条件纳入随机变量独立性的正式定义。事件示性函数的非负级数同样可在此
+逐项积分；这正是第一 Borel--Cantelli 估计的积分核心。向量值积分的换序还需要强可测性与
+范数可积，不能仅由标量 Fubini 推出。
+
+\begin{exercise}
+用 Tonelli 定理证明：若 $u,v\ge0$ 可测，则
+$\int_{X\times Y}u(x)v(y)\,\dd(\mu\otimes\nu)=\int_Xu\,\dd\mu\int_Yv\,\dd\nu$，
+其中乘积按非负扩展实数解释。
+\end{exercise}
+\begin{exercise}
+设 $(S,\Sigma,\lambda)$ 是总质量为一的测度空间，$\xi,\eta:S\to[0,\infty]$ 可测，并且联合映射
+$(\xi,\eta)$ 的推前测度满足
+\[
+  (\xi,\eta)_*\lambda=(\xi_*\lambda)\otimes(\eta_*\lambda).
+\]
+由推前积分公式与 Tonelli 定理推出
+\[
+  \int_S\xi\eta\,\dd\lambda
+  =\left(\int_S\xi\,\dd\lambda\right)
+   \left(\int_S\eta\,\dd\lambda\right).
+\]
+等式允许取值 $+\infty$。第~5~章才会把假设和结论改写为独立随机变量的语言。
+\end{exercise}
+\begin{exercise}
+逐项核算例~\ref{ex:3-2-1-3} 的两个迭代和，并说明任意有限矩形部分和为什么不产生矛盾。
+\end{exercise}
+\begin{exercise}
+对对角线 $D=\{(x,y):x=y\}$ 直接应用 Tonelli 定理，证明 $m_2(D)=0$；明确写出每个竖直截面，
+并说明为何不需要把“不可数个零测截面的并仍为零测”当作一般原则。
+\end{exercise}
+\begin{exercise}
+从 Tonelli 定理取 $f=\1_E$ 推导 Cavalieri 公式，再对非负简单函数的下图集逐层核对
+\eqref{eq:subgraph-area}。
+\end{exercise}
+\begin{exercise}
+设 $(\Omega,\mathcal F,\Prob)$ 是总质量为一的测度空间，$E_n\in\mathcal F$，且
+$\sum_n\Prob(E_n)<\infty$。对
+$\sum_n\1_{E_n}$ 使用 Tonelli，证明几乎每个点只属于有限多个 $E_n$；这就是第一
+Borel--Cantelli 引理的测度论形式。
+\end{exercise}
+
+式 \eqref{eq:gaussian-tonelli-gap} 已把一维问题提升成二维问题。提升维数只有在我们能够使用圆对称时
+才有收益；这要求一个严格的非线性换元公式。
+
+\subsection{\texorpdfstring{$\R^n$}{R n} 中的换元公式}\label{subsec:3-2-2}
+\index{换元公式}\index{Jacobian}
+
+初等微积分常把极坐标写成
+\[
+ x=r\cos\theta,\qquad y=r\sin\theta,
+\]
+然后在面积元旁添上一个 $r$。这个因子并不是记忆口诀：半径为 $r$、径向厚度为
+$\dd r$、角宽为 $\dd\theta$ 的小格近似一个边长为 $\dd r$ 与 $r\dd\theta$ 的矩形。
+在一般坐标中，同一局部线性化由行列式记录。
+
+局部线性化却不会自动消除全局重叠。映射
+$\Psi(x,t)=(e^x\cos t,e^x\sin t)$ 的 Jacobian 处处非零，但 $t$ 与 $t+2\pi$ 被送到同一点；
+若不先切开角变量，同一块面积会被反复计算。下面的主定理因此从真正的全局微分同胚开始，定理后
+再把这个周期例完整算一遍，并说明何时可以按单射分支求和。
+
+\begin{definition}[Jacobian]\label{def:3-2-2-1}
+设 $U\subset\R^n$ 开，$\Phi:U\to\R^n$ 为 $C^1$ 映射。定义
+\[
+ J_\Phi(x)=|\det D\Phi(x)|,
+\]
+称为 $\Phi$ 在 $x$ 处的 Jacobian。绝对值不可省略：测度记录无向体积；只有讨论有向体积时才保留
+$\det D\Phi$ 的符号。
+\end{definition}
+
+若 $\Phi:U\to V$ 是 $C^1$ 微分同胚，我们希望证明的测度关系可以先写成
+\[
+ \Phi_*\bigl(J_\Phi m_n|_U\bigr)=m_n|_V.
+ \tag{3.2.7}\label{eq:cov-pushforward-target}
+\]
+这不是新定义，而是下文集合公式的等价目标。
+
+\begin{remark}[目标推前关系]\label{def:3-2-2-2}
+式 \eqref{eq:cov-pushforward-target} 的集合版本是
+$m_n(\Phi(E))=\int_EJ_\Phi$。先证明集合版本，再按示性函数、简单函数和单调极限扩张，
+可以避免把形式上的“$\dd y=J_\Phi(x)\dd x$”当成证明。
+\end{remark}
+
+第~\ref{subsec:2-4-2} 小节已经证明线性映射 $A$ 满足
+$m_n(AE)=|\det A|m_n(E)$。下一引理说明，当 $D\Phi$ 在一个小立方体上接近 $A$ 时，
+$\Phi$ 对每个可测子集的体积作用也一致接近 $A$。这个“对每个子集”比只计算整个立方体强，
+它使后面的有限分割可以逐块相加。
+
+\begin{lemma}[局部体积估计]\label{lemma:3-2-2-1}
+给定可逆矩阵 $A$ 与 $0<\varepsilon<1$，存在 $\delta>0$，使得下述结论成立。设 $Q$ 是闭立方体，
+$\Phi$ 在 $Q$ 的一个邻域上为 $C^1$，在 $Q$ 上单射，且
+\[
+ \sup_{x\in Q}\|D\Phi(x)-A\|<\delta.
+\]
+则对每个 Lebesgue 可测集 $E\subset Q$，$\Phi(E)$ 可测，并且
+\[
+ (1-\varepsilon)|\det A|m_n(E)
+ \le m_n(\Phi(E))
+ \le(1+\varepsilon)|\det A|m_n(E).
+ \tag{3.2.8}\label{eq:local-volume-estimate}
+\]
+\end{lemma}
+
+\begin{proof}
+令 $\Psi=A^{-1}\Phi$。若
+$\eta:=\sup_Q\|D\Psi-I\|<1$，则立方体的凸性和线段积分给出
+\[
+ \begin{aligned}
+ |\Psi(x)-\Psi(y)-(x-y)|
+ &=\left|\int_0^1(D\Psi(y+t(x-y))-I)(x-y)\,\dd t\right|\\
+ &\le\eta|x-y|,
+ \end{aligned}
+\]
+所以
+\[
+ (1-\eta)|x-y|\le|\Psi(x)-\Psi(y)|\le(1+\eta)|x-y|.
+ \tag{3.2.9}\label{eq:near-id-bilip}
+\]
+特别地，$\Psi$ 在 $Q$ 上为双 Lipschitz 映射到其像。
+
+我们需要一个当 $\eta\downarrow0$ 时趋于 $1$ 的体积界，因而在此把盒覆盖估计写得更精细。
+写 $\Psi(z)=z+R(z)$，则 $R$ 是 $\eta$-Lipschitz。若 $C$ 是边长 $a$ 的坐标立方体，
+对 $C\cap Q$ 中任意两点 $x,y$，每个坐标满足
+\[
+ |\Psi_i(x)-\Psi_i(y)|
+ \le |x_i-y_i|+|R(x)-R(y)|
+ \le a+\eta\sqrt n\,a.
+\]
+故 $\Psi(C\cap Q)$ 包含在各边长均不超过 $(1+\sqrt n\eta)a$ 的闭坐标盒中；该闭盒
+Lebesgue 可测，且测度不超过 $(1+\sqrt n\eta)^na^n$。更精确地，给定
+$\varepsilon_0>0$；因 $E\subset Q$，有 $m_n(E)\le m_n(Q)<\infty$。按外测度定义取立方体覆盖
+$E\subset\bigcup_r C_r$，记 $C_r$ 边长为 $a_r$，使
+\[
+ \sum_r a_r^n<m_n(E)+\varepsilon_0.
+\]
+对每个 $r$，上述坐标振幅估计把 $\Psi(C_r\cap Q)$ 放入一个各边长不超过
+$(1+\sqrt n\eta)a_r$ 的闭坐标盒，因而由外测度的单调性与闭盒体积公式，
+\[
+ m_n^*(\Psi(E))
+ \le (1+\sqrt n\eta)^n\sum_r a_r^n
+ <(1+\sqrt n\eta)^n\bigl(m_n(E)+\varepsilon_0\bigr).
+\]
+令 $\varepsilon_0\downarrow0$ 得到
+\[
+ m_n^*(\Psi(E))\le(1+\sqrt n\eta)^n m_n(E).
+ \tag{3.2.10}\label{eq:near-id-upper}
+\]
+由 \eqref{eq:near-id-bilip}，对 $u=\Psi(x),v=\Psi(y)$，
+\[
+ \begin{aligned}
+ |\Psi^{-1}(u)-\Psi^{-1}(v)-(u-v)|
+ &=|R(x)-R(y)|\\
+ &\le \frac{\eta}{1-\eta}|u-v|.
+ \end{aligned}
+\]
+这一估计不要求 $\Psi(Q)$ 为凸集。确实，若坐标立方体 $C$ 的边长为 $a$，则对
+$u,v\in C\cap\Psi(Q)$，上式说明每个坐标都满足
+\[
+ \bigl|(\Psi^{-1}(u))_i-(\Psi^{-1}(v))_i\bigr|
+ \le a+\frac{\eta}{1-\eta}\sqrt n\,a.
+\]
+因此 $\Psi^{-1}(C\cap\Psi(Q))$ 包含于各边长均不超过
+$\bigl(1+\sqrt n\eta/(1-\eta)\bigr)a$ 的闭坐标盒中。用可数立方体覆盖
+$\Psi(E)$，若这些立方体边长为 $a_r$，则对对应坐标盒体积求和给出
+\[
+ m_n(E)
+ \le \left(1+\frac{\sqrt n\eta}{1-\eta}\right)^n\sum_r a_r^n.
+\]
+再对 $\Psi(E)$ 的所有立方体覆盖取下确界，得到外测度估计
+\[
+ m_n(E)\le
+ \left(1+\frac{\sqrt n\eta}{1-\eta}\right)^n m_n^*(\Psi(E)).
+ \tag{3.2.11}\label{eq:near-id-lower}
+\]
+这里的可测性也需说明。$Q$ 上连续单射到 Hausdorff 空间的映射是到其像的同胚。而且
+$\Psi(Q)$ 是紧集，因而在 $\R^n$ 中闭；所以相对 Borel 集同时也是 $\R^n$ 中的
+Borel 集，特别地 Borel 子集的像是 Borel 集。任意 Lebesgue 可测 $E\subset Q$ 与某个
+Borel 集 $B\subset Q$ 只差一个零集。由
+\eqref{eq:near-id-upper}，该零集的像外测度为零；又
+$\Psi(E)\mathbin\triangle\Psi(B)\subset\Psi(E\mathbin\triangle B)$，故 $\Psi(E)$ 可测。
+于是 \eqref{eq:near-id-lower} 右端的外测度就是 $m_n(\Psi(E))$。
+
+由线性体积公式，
+$m_n(\Phi(E))=|\det A|m_n(\Psi(E))$。取 $0<\eta<1$ 足够小，使
+\[
+ (1+\sqrt n\eta)^n\le1+\varepsilon,
+ \qquad
+ \left(1+\frac{\sqrt n\eta}{1-\eta}\right)^{-n}\ge1-\varepsilon.
+\]
+再取 $0<\delta\le\eta/\|A^{-1}\|$。由
+\[
+ \sup_Q\|D\Psi-I\|
+ \le\|A^{-1}\|\sup_Q\|D\Phi-A\|<\eta,
+\]
+式 \eqref{eq:near-id-upper}--\eqref{eq:near-id-lower} 依次给出
+\[
+ (1-\varepsilon)m_n(E)\le m_n(\Psi(E))
+ \le(1+\varepsilon)m_n(E).
+\]
+乘以 $|\det A|$ 即得 \eqref{eq:local-volume-estimate}。
+\end{proof}
+
+\begin{theorem}[集合换元公式]\label{theorem:3-2-2-2}
+设 $U,V\subset\R^n$ 为开集，$\Phi:U\to V$ 为 $C^1$ 微分同胚。若
+$E\subset U$ Lebesgue 可测，则 $\Phi(E)$ Lebesgue 可测，且
+\[
+ m_n(\Phi(E))=\int_EJ_\Phi(x)\,\dd x.
+ \tag{3.2.12}\label{eq:set-change-variables}
+\]
+\end{theorem}
+
+\begin{proof}
+先处理可测性。若 $B\subset U$ 为 Borel 集，则
+$\Phi(B)=(\Phi^{-1})^{-1}(B)$ 是 $V$ 中的 Borel 集。开集 $U$ 可由可数多个闭立方体
+$Q_j\Subset U$ 覆盖；$D\Phi$ 在每个 $Q_j$ 上有界，线段积分说明
+$\Phi|_{Q_j}$ 为 Lipschitz 映射。因此，若 $Z\subset U$ 是 Lebesgue 零集，定理
+\ref{theorem:2-4-3-2} 给出
+\[
+ \Phi(Z)=\bigcup_j\Phi(Z\cap Q_j)
+\]
+仍为零集。任意 Lebesgue 可测 $E\subset U$ 可写成
+$E\mathbin\triangle B\subset Z$，其中 $B\subset U$ 为 Borel 集、$Z\subset U$ 为 Borel 零集。于是
+$\Phi(E)\mathbin\triangle\Phi(B)\subset\Phi(Z)$，故 $\Phi(E)$ Lebesgue 可测。
+
+下面证明等式。先固定紧集 $K\subset U$ 与 $0<\varepsilon<1$。对每个 $a\in K$，矩阵
+$A_a=D\Phi(a)$ 可逆。由 $D\Phi$ 与 $J_\Phi$ 的连续性，结合引理
+\ref{lemma:3-2-2-1}，可取以 $a$ 为内点的闭立方体 $Q_a\subset U$，使对每个可测
+$F\subset Q_a$ 都有
+\[
+ (1-\varepsilon)\int_FJ_\Phi\,\dd x
+ \le m_n(\Phi(F))
+ \le(1+\varepsilon)\int_FJ_\Phi\,\dd x.
+ \tag{3.2.13}\label{eq:local-integral-sandwich}
+\]
+为说明这一步的常数选择，先取 $0<\rho<1$，使
+\[
+ \frac{1-\rho}{1+\rho}\ge1-\varepsilon,
+ \qquad
+ \frac{1+\rho}{1-\rho}\le1+\varepsilon.
+\]
+令引理中的相对误差为 $\rho$，再缩小 $Q_a$ 使
+$J_\Phi(x)/J_\Phi(a)\in[1-\rho,1+\rho]$。于是对 $F\subset Q_a$，
+\[
+ \begin{aligned}
+ m_n(\Phi(F))
+ &\ge(1-\rho)J_\Phi(a)m_n(F)
+ \ge\frac{1-\rho}{1+\rho}\int_FJ_\Phi\,\dd x,\\
+ m_n(\Phi(F))
+ &\le(1+\rho)J_\Phi(a)m_n(F)
+ \le\frac{1+\rho}{1-\rho}\int_FJ_\Phi\,\dd x,
+ \end{aligned}
+\]
+这便给出 \eqref{eq:local-integral-sandwich}。
+
+$K$ 的紧性给出有限个 $Q_1,\dots,Q_N$，其内部覆盖 $K$。令
+\[
+ P_1=K\cap Q_1,
+ \qquad
+ P_j=(K\cap Q_j)\setminus\bigcup_{i<j}P_i\quad(2\le j\le N).
+\]
+这些是两两不交的可测集，覆盖 $K$，且 $P_j\subset Q_j$。若 $E\subset K$ 可测，令
+$E_j=E\cap P_j$。由于 $\Phi$ 单射，$\Phi(E_j)$ 也两两不交。对
+\eqref{eq:local-integral-sandwich} 有限求和，得到
+\[
+ (1-\varepsilon)\int_EJ_\Phi\,\dd x
+ \le m_n(\Phi(E))
+ \le(1+\varepsilon)\int_EJ_\Phi\,\dd x.
+\]
+紧集上 $J_\Phi$ 有界且 $m_n(K)<\infty$，故中间积分有限。令
+$\varepsilon\downarrow0$，得到 \eqref{eq:set-change-variables} 对每个 $E\subset K$ 成立。
+
+最后取递增紧耗尽
+\[
+ K_j=\{x\in U:|x|\le j,\ \dist(x,U^c)\ge j^{-1}\},
+\]
+当 $U=\R^n$ 时约定 $\dist(x,\varnothing)=\infty$。则 $K_j\uparrow U$。对
+$E\cap K_j$ 使用已证等式；由于 $\Phi$ 单射，$\Phi(E\cap K_j)\uparrow\Phi(E)$。
+测度的从下连续性与单调收敛定理分别给出
+\[
+ m_n(\Phi(E))
+ =\lim_jm_n(\Phi(E\cap K_j))
+ =\lim_j\int_{E\cap K_j}J_\Phi\,\dd x
+ =\int_EJ_\Phi\,\dd x.
+\]
+证明完成。局部单射用于引理，整体单射则保证分块的像不重叠；这两个假设承担的作用不同。
+\end{proof}
+
+\begin{theorem}[函数换元公式]\label{theorem:3-2-2-3}
+在定理~\ref{theorem:3-2-2-2} 的假设下，若 $g:V\to[0,\infty]$ 可测，则
+\[
+ \int_Vg(y)\,\dd y
+ =\int_Ug(\Phi(x))J_\Phi(x)\,\dd x.
+ \tag{3.2.14}\label{eq:function-change-variables}
+\]
+若 $g$ 为实值或复值且任一侧绝对可积，同一等式仍成立，并且另一侧也绝对可积。
+\end{theorem}
+
+\begin{proof}
+先补上复合函数的可测性。若 $B\subset V$ Lebesgue 可测，把已经证明的集合换元定理应用于
+逆微分同胚 $\Phi^{-1}:V\to U$，便知 $\Phi^{-1}(B)$ Lebesgue 可测。因此，对任意 Lebesgue
+可测的扩展实值函数 $g$ 以及任意 $a\in\R$，
+\[
+ \{x\in U:g(\Phi(x))>a\}
+ =\Phi^{-1}(\{y\in V:g(y)>a\})
+\]
+可测；故 $g\circ\Phi$ 可测。又 $J_\Phi$ 连续，所以在 $g\ge0$ 时
+$g\circ\Phi\,J_\Phi$ 是非负可测函数。
+
+当 $g=\1_B$ 且 $B\subset V$ 可测时，集合换元公式应用于
+$E=\Phi^{-1}(B)$ 给出
+\[
+ \int_U\1_B(\Phi(x))J_\Phi(x)\,\dd x
+ =m_n(\Phi(\Phi^{-1}B))=m_n(B).
+\]
+有限非负线性组合给出简单函数情形。对一般 $g\ge0$ 取简单函数
+$s_k\uparrow g$，则 $s_k\circ\Phi\,J_\Phi\uparrow g\circ\Phi\,J_\Phi$；两侧分别应用
+单调收敛定理得到 \eqref{eq:function-change-variables}。实值可积函数拆成正负部分，复值函数再拆成
+实部与虚部。对 $|g|$ 的非负公式同时说明两侧的绝对可积性等价。
+\end{proof}
+
+\begin{example}[极坐标]\label{ex:3-2-2-1}
+映射
+\[
+ \Phi:(0,\infty)\times(0,2\pi)\longrightarrow
+ \R^2\setminus\{(r,0):r\ge0\},
+ \qquad \Phi(r,\theta)=(r\cos\theta,r\sin\theta)
+\]
+是 $C^1$ 微分同胚，并且
+\[
+ D\Phi(r,\theta)=
+ \begin{pmatrix}
+ \cos\theta&-r\sin\theta\\
+ \sin\theta&r\cos\theta
+ \end{pmatrix},
+ \qquad J_\Phi(r,\theta)=r.
+\]
+被切去的闭射线是 Lebesgue 零集，故对任意非负可测或可积 $g$，
+\[
+ \int_{\R^2}g(x,y)\,\dd x\dd y
+ =\int_0^{2\pi}\int_0^\infty
+ g(r\cos\theta,r\sin\theta)r\,\dd r\dd\theta.
+ \tag{3.2.15}\label{eq:polar-coordinates}
+\]
+切开射线不是审美选择：它消除了角变量的周期重叠，使映射真正单射。
+\end{example}
+
+\begin{example}[高斯积分的回收]\label{ex:3-2-2-gaussian-recovery}
+由式 \eqref{eq:gaussian-tonelli-gap} 与极坐标公式，
+\[
+ \begin{aligned}
+ I^2
+ &=\int_0^{2\pi}\int_0^\infty e^{-r^2}r\,\dd r\dd\theta\\
+ &=2\pi\left[-\frac12e^{-r^2}\right]_{0}^{\infty}=\pi.
+ \end{aligned}
+\]
+第一行中的平方只用 Tonelli；把圆对称变成一维积分才使用换元。又因
+$I\ge\int_{-1}^1e^{-1}\,\dd x>0$，所以
+\[
+ \int_\R e^{-x^2}\,\dd x=\sqrt\pi.
+\]
+\end{example}
+
+\begin{example}[球坐标的径向部分]\label{ex:3-2-2-2}
+记 $\omega_n=m_n(B(0,1))$，并令 $R(x)=|x|$。线性体积公式给出
+$m_n(B(0,r))=\omega_nr^n$。当 $r=0$ 时，球面是零测单点。若 $r>0$，则对
+$0<\delta<r$，球面包含在
+$B(0,r+\delta)\setminus B(0,r-\delta)$ 中；该环带测度为
+$\omega_n((r+\delta)^n-(r-\delta)^n)$，令 $\delta\downarrow0$ 得球面测度为零。
+因此半径推前测度 $R_*m_n$ 满足
+\[
+ (R_*m_n)((a,b])=\omega_n(b^n-a^n)\qquad(0\le a<b).
+\]
+另一方面，对 $0\le a<b$ 有
+\[
+ \int_{(a,b]}n\omega_nr^{n-1}\,\dd r
+ =\omega_n[b^n-a^n],
+\]
+且测度 $n\omega_nr^{n-1}\,\dd r$ 与 $R_*m_n$ 赋予 $\{0\}$ 的质量都为零。两者在
+$[0,N]$ 上都有限，而 $\{0\}$ 与半开区间 $(a,b]$ 构成生成 $[0,\infty)$ Borel
+$\sigma$-代数的 $\pi$-系统；因此测度的 $\sigma$-有限唯一性（也可等价地应用定理
+\ref{theorem:2-3-3-2} 的 Lebesgue--Stieltjes 唯一性）给出
+\[
+ R_*m_n=n\omega_nr^{n-1}\,\dd r.
+\]
+于是对任意非负
+可测函数 $f:[0,\infty)\to[0,\infty]$，以及任一侧绝对可积的实值或复值 $f$，推前积分公式给出
+\[
+ \int_{\R^n}f(|x|)\,\dd x
+ =n\omega_n\int_0^\infty f(r)r^{n-1}\,\dd r.
+ \tag{3.2.16}\label{eq:radial-integration}
+\]
+常数 $|S^{n-1}|:=n\omega_n$ 只是方便记号；这里没有构造曲面测度，也没有使用一般面积公式。
+\end{example}
+
+\begin{example}[密度变换]\label{ex:3-2-2-3}
+设 $U$ 上的概率测度为 $\lambda=p\,m_n|_U$，并令 $\kappa=\Phi_*\lambda$。对 Borel 集
+$B\subset V$，函数换元公式应用于 $\Phi^{-1}:V\to U$，给出
+\[
+ \begin{aligned}
+ \kappa(B)
+ &=\int_{\Phi^{-1}(B)}p(x)\,\dd x\\
+ &=\int_Bp(\Phi^{-1}(y))J_{\Phi^{-1}}(y)\,\dd y.
+ \end{aligned}
+\]
+逆函数定理给出
+$D\Phi^{-1}(y)=(D\Phi(\Phi^{-1}y))^{-1}$，所以
+\[
+ p_\kappa(y)=
+ \begin{cases}
+ p(\Phi^{-1}(y))|\det D\Phi^{-1}(y)|,&y\in V,\\
+ 0,&y\notin V,
+ \end{cases}
+\]
+是 $\kappa$ 在全 $\R^n$ 上的密度。若把 $\lambda$ 看作随机向量 $X$ 的分布，则 $\kappa$ 就是
+$\Phi(X)$ 的分布。密度公式只确定 a.e. 等价类，在零集上修改密度不改变推前测度。
+\end{example}
+
+\begin{example}[非零 Jacobian 不保证全局单射]\label{ex:3-2-2-4}
+令
+\[
+ \Psi(x,t)=(e^x\cos t,e^x\sin t).
+\]
+直接计算得 $\det D\Psi(x,t)=e^{2x}>0$，但
+$\Psi(x,t+2\pi)=\Psi(x,t)$。因此处处非退化只由逆函数定理保证局部单射，不能推出全局单射。
+把 $t$ 限制在任一长度为 $2\pi$ 的开区间，才得到去掉一条射线的平面坐标图；若保留所有
+$t$，每个目标点会被无穷多次计算。
+\end{example}
+
+对有限或可数个已知单射分支，可以直接计算每个目标点的覆盖重数。
+
+\begin{remark}[一般重数公式的边界]\label{def:3-2-2-3}
+对一般 Lipschitz 映射，形式上常写
+$N(\Phi,y)=\#\Phi^{-1}\{y\}$。一般重数的可测性、近似微分与面积公式需要几何测度论。
+以下命题处理可数个明确的 $C^1$ 微分同胚分支；在这一情形，重数是可测示性函数的可数和。
+\end{remark}
+
+\begin{proposition}[分片单射版本]\label{proposition:3-2-2-4}
+设 $U\subset\R^n$ 开，$\Phi:U\to\R^n$ 为 $C^1$。设 $N\subset U$ 是 Lebesgue 零集，且
+\[
+ U\setminus N=\bigsqcup_{j=1}^{\infty}E_j,
+\]
+其中 $E_j$ Lebesgue 可测，并包含于开集 $U_j\subset U$，而
+$\Phi|_{U_j}$ 是到开像的 $C^1$ 微分同胚。则每个 $\Phi(E_j)$ 可测；对非负可测 $g$，
+\[
+ \int_Ug(\Phi(x))J_\Phi(x)\,\dd x
+ =\int_{\R^n}g(y)\sum_{j=1}^{\infty}\1_{\Phi(E_j)}(y)\,\dd y.
+ \tag{3.2.17}\label{eq:piecewise-change-variables}
+\]
+实值或复值情形在任一侧绝对可积时同样成立。若各 $\Phi(E_j)$ 两两几乎不交，右侧就是
+$\int_{\Phi(U)}g$。
+\end{proposition}
+
+\begin{proof}
+集合换元公式的可测性部分应用于 $\Phi|_{U_j}$，说明 $\Phi(E_j)$ 可测。又因 $N$ 零测，
+每个 $E_j$ 上的 $g\circ\Phi\,J_\Phi$ 可测。可数个可测分支给出它在 $U\setminus N$ 上的
+可测性；而 $N$ 的任意子集都 Lebesgue 可测，所以把它补到 $N$ 上仍是可测函数，且在 $N$
+上的积分为零。对每个 $j$，在函数换元公式中取
+$g\1_{\Phi(E_j)}$，得到
+\[
+ \int_{E_j}g(\Phi(x))J_\Phi(x)\,\dd x
+ =\int_{\R^n}g(y)\1_{\Phi(E_j)}(y)\,\dd y.
+\]
+对 $j$ 求和，并在两侧对非负部分和使用单调收敛定理，即得
+\eqref{eq:piecewise-change-variables}。带符号或复值情形对绝对值先用非负公式，再拆正负部或实虚部。
+
+还可核对异常像确实不会藏入额外质量。用可数个相对紧凸邻域覆盖 $U$，$D\Phi$ 在每个较小闭块
+上有界，故 $\Phi$ 在各块上 Lipschitz。定理~\ref{theorem:2-4-3-2} 与可数并给出
+$m_n(\Phi(N))=0$。这一步不声称 $\Phi$ 在整个无界开集上一致 Lipschitz。
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=.8cm,y=.8cm]
+  \begin{scope}
+    \draw[book line] (0,0) rectangle (4,3);
+    \foreach \x in {1,2,3}{\draw[BookInk!45] (\x,0)--(\x,3);}
+    \foreach \y in {1,2}{\draw[BookInk!45] (0,\y)--(4,\y);}
+    \node[book label] at (2,-.38) {参数域中的小格};
+  \end{scope}
+  \draw[book accent arrow] (4.45,1.5)--(5.55,1.5) node[midway,above]{$\Phi$};
+  \begin{scope}[shift={(6,0)}]
+    \draw[book line] plot[smooth] coordinates{(0,.2)(1.1,0)(2.4,.2)(4,.65)};
+    \draw[book line] plot[smooth] coordinates{(.1,3)(1.2,2.85)(2.7,3.15)(4.25,3.5)};
+    \draw[BookInk!45] plot[smooth] coordinates{(.05,.18)(.15,1.2)(.12,2.2)(.1,3)};
+    \draw[BookInk!45] plot[smooth] coordinates{(1.05,.28)(1.15,1.33)(1.12,2.36)(1.1,3.12)};
+    \draw[BookInk!45] plot[smooth] coordinates{(2.05,.38)(2.15,1.46)(2.12,2.52)(2.1,3.24)};
+    \draw[BookInk!45] plot[smooth] coordinates{(3.05,.48)(3.15,1.59)(3.12,2.68)(3.1,3.36)};
+    \draw[BookInk!45] plot[smooth] coordinates{(4.05,.58)(4.15,1.72)(4.12,2.84)(4.1,3.48)};
+    \draw[BookInk!45] plot[smooth] coordinates{(.03,1.15)(1.1,1.05)(2.4,1.3)(4.1,1.65)};
+    \draw[BookInk!45] plot[smooth] coordinates{(.06,2.1)(1.15,1.98)(2.55,2.25)(4.18,2.58)};
+    \node[book label] at (2.1,-.38) {局部面积因子 $|\det D\Phi|$};
+  \end{scope}
+\end{tikzpicture}
+\caption{细网格在每一点近似由线性映射 $D\Phi$ 送成平行多面体；单射保证不同小格的像不重叠。}
+\label{fig:3-2-2-curved-grid}
+\end{figure}
+
+线性仿射变换的公式立即给出 Gaussian 型密度在缩放下的归一化常数；第~5~章引入随机向量后，
+同一计算会成为 Gaussian 随机向量的坐标变换公式。极坐标与径向公式则反复出现在卷积、
+Fourier 缩放以及 PDE 基本解的常数计算中。这里证明的是 $C^1$ 微分同胚及其可数分支版本，
+因此，映射若出现折叠，应用分片公式前必须先给出满足命题假设的单射分支分解。
+\begin{exercise}
+从函数换元公式推导一维严格单调 $C^1$ 微分同胚的换元公式，并分别处理递增与递减情形。
+\end{exercise}
+\begin{exercise}
+设 $A$ 可逆、$b\in\R^n$，$X$ 有密度 $p$。计算 $AX+b$ 的密度，并核对其积分为一。
+\end{exercise}
+\begin{exercise}
+由式 \eqref{eq:radial-integration} 计算
+$\int_{\R^n}e^{-|x|^2}\,\dd x$，并与一维高斯积分的乘积比较，求出 $\omega_n$。
+\end{exercise}
+\begin{exercise}
+对例~\ref{ex:3-2-2-4} 把 $t$ 分成区间 $(2\pi k,2\pi(k+1))$。写出
+\eqref{eq:piecewise-change-variables} 的重数函数，并说明为什么常数函数 $g=1$ 使两侧同为无穷。
+\end{exercise}
+
+换元公式处理的是确定的坐标搬运。概率转移和积分算子更进一步：一个起点不再去往一个点，而是产生一整个
+目标测度。要让这些测度能够继续积分，参数可测性必须成为定义的一部分。
+
+\subsection{测度核、参数积分与积分号下微分}\label{subsec:3-2-3}
+\index{测度核}\index{Markov 核}\index{积分号下微分}
+
+先看一个没有可测性困难的模型。设 $X=\{1,\dots,m\}$、$Y=\{1,\dots,n\}$，并给定非负矩阵
+$(k_{ij})$。固定 $i$ 后，第 $i$ 行定义 $Y$ 上的测度
+$K(i,\{j\})=k_{ij}$；若每行之和为一，它就是转移概率矩阵。对列向量 $f$，
+\[
+ Kf(i)=\sum_{j=1}^nk_{ij}f(j).
+\]
+这里“一个状态 $i$ 被送到一行权重”比确定性映射“一个点被送到一个点”多出了一层平均。无限空间中，
+要使这层平均随 $i$ 合法变化，逐点为测度还不够。
+
+\begin{definition}[测度核]\label{def:3-2-3-1}
+设 $(X,\mathcal A)$、$(Y,\mathcal B)$ 为可测空间。从 $X$ 到 $Y$ 的\emph{测度核}
+$K:X\leadsto Y$ 是一个映射 $K:X\times\mathcal B\to[0,\infty]$，满足：
+\begin{enumerate}
+  \item 对每个 $x\in X$，$B\mapsto K(x,B)$ 是 $Y$ 上的测度；
+  \item 对每个 $B\in\mathcal B$，$x\mapsto K(x,B)$ 是 $\mathcal A$-可测函数。
+\end{enumerate}
+若 $K(x,Y)<\infty$ 对每个 $x$ 成立，称 $K$ 为有限核；这里不要求这些总质量关于 $x$ 一致有界。
+若 $K(x,Y)=1$ 对每个 $x$ 成立，称 $K$ 为概率核或 Markov 核。
+\end{definition}
+
+第二项不是第一项的推论。例如，在任意不可测函数 $a:X\to\{0,1\}$ 上令
+$K(x,\cdot)=\delta_{a(x)}$，每个 $K(x,\cdot)$ 都是概率测度，但
+$x\mapsto K(x,\{1\})=a(x)$ 不可测，因而它不是核。
+
+\begin{definition}[核作用]\label{def:3-2-3-2}
+若 $K:X\leadsto Y$ 为核、$f:Y\to[0,\infty]$ 可测，定义
+\[
+ Kf(x)=\int_Yf(y)K(x,\dd y).
+\]
+若 $\mu$ 是 $X$ 上的测度，定义 $Y$ 上的集合函数
+\[
+ (\mu K)(B)=\int_XK(x,B)\,\mu(\dd x),\qquad B\in\mathcal B.
+\]
+\end{definition}
+
+后一个对象确实是测度。空集的积分为零；若 $B_j$ 两两不交，则对每个 $x$，
+\[
+ K\!\left(x,\bigcup_jB_j\right)
+ =\lim_{N\to\infty}\sum_{j=1}^NK(x,B_j).
+\]
+对部分和应用单调收敛定理，得到
+$(\mu K)(\bigcup_jB_j)=\sum_j(\mu K)(B_j)$。有限状态情形中，$\mu K$ 就是行向量乘矩阵。
+
+\begin{definition}[核复合]\label{def:3-2-3-3}
+若 $K:X\leadsto Y$、$L:Y\leadsto Z$，定义
+\[
+ (KL)(x,C)=\int_YL(y,C)K(x,\dd y),\qquad C\in\mathcal C.
+\]
+\end{definition}
+
+这个定义是否真的给出核，首先取决于核积分保持可测性。
+
+\begin{theorem}[核积分可测性]\label{theorem:3-2-3-1}
+若 $K:X\leadsto Y$ 为测度核，$f:Y\to[0,\infty]$ 可测，则 $Kf$ 可测。
+\end{theorem}
+
+\begin{proof}
+若 $f=\1_B$，则 $Kf(x)=K(x,B)$，由核定义可测。若
+$f=\sum_{j=1}^ra_j\1_{B_j}$ 是非负简单函数，积分的有限线性性给出
+$Kf=\sum_ja_jK\1_{B_j}$，故仍可测。对一般 $f\ge0$，取非负简单函数
+$s_n\uparrow f$。固定 $x$ 后，对测度 $K(x,\cdot)$ 应用单调收敛定理，得到
+\[
+ Ks_n(x)\uparrow Kf(x).
+\]
+右侧是可测函数列的点态极限，因此可测。
+\end{proof}
+
+证明特意只在非负锥上进行。若核不是有限核，任意有界带符号 $f$ 仍可能使正负两部分积分都为
+$+\infty$，此时 $Kf$ 根本没有定义，不能无条件套用带符号函数的单调类论证。
+对实值或复值可测函数 $f$，令
+$D_f=\{x:K|f|(x)=\int_Y|f(y)|K(x,\dd y)<\infty\}$。定理~\ref{theorem:3-2-3-1}
+说明 $D_f$ 可测；在 $D_f$ 上按第~3.1 节的实部、虚部定义 $Kf(x)$。同一定理分别作用于正负部，
+说明 $Kf$ 在 $D_f$ 上可测；在 $X\setminus D_f$ 上置零便得到一个全局可测代表。特别地，若
+$K$ 是有限核且 $f$ 有界，则该条件对每个 $x$ 成立，因而 $Kf$ 是处处有定义的可测函数。
+
+\begin{example}[确定性核]\label{ex:3-2-3-1}
+可测映射 $T:X\to Y$ 定义
+\[
+ K_T(x,B)=\delta_{T(x)}(B)=\1_B(T(x)).
+\]
+它是概率核，并且
+$K_Tf=f\circ T$。对 $X$ 上测度 $\mu$，
+\[
+ (\mu K_T)(B)=\int_X\1_B(T(x))\,\dd\mu(x)
+ =\mu(T^{-1}B)=T_*\mu(B).
+\]
+因此推前测度正是确定性核作用的特例。
+\end{example}
+
+\begin{example}[密度核]\label{ex:3-2-3-2}
+设 $(Y,\mathcal B,\nu)$ 为 $\sigma$-有限测度空间，
+$k:X\times Y\to[0,\infty]$ 联合可测，并且
+\[
+ \int_Yk(x,y)\,\dd\nu(y)=1\qquad(x\in X).
+\]
+令
+$K(x,B)=\int_Bk(x,y)\,\dd\nu(y)$。固定 $x$ 时这是概率测度；固定 $B$ 时，
+引理~\ref{proposition:3-2-1-3} 应用于 $k\1_{X\times B}$，说明
+$x\mapsto K(x,B)$ 可测。因此 $K$ 是概率核。密度记号本身不会自动提供这项参数可测性；联合可测与
+$\sigma$-有限性正是在这里使用的。
+\end{example}
+
+\begin{proposition}[核复合与结合律]\label{proposition:3-2-3-2}
+若 $K:X\leadsto Y$、$L:Y\leadsto Z$ 为测度核，则 $KL$ 仍为测度核。对任意第三个核
+$M:Z\leadsto W$，
+\[
+ (KL)M=K(LM).
+ \tag{3.2.18}\label{eq:kernel-associativity}
+\]
+等式允许共同值为 $+\infty$。若各核均为概率核，则复合核仍为概率核。
+\end{proposition}
+
+\begin{proof}
+固定 $x$ 后，$C\mapsto(KL)(x,C)$ 是测度：证明与定义~\ref{def:3-2-3-2} 后验证
+$\mu K$ 为测度的论证相同，只需把 $K(x,\cdot)$ 当作 $Y$ 上的固定测度。固定 $C$ 后，
+$y\mapsto L(y,C)$ 非负可测；定理~\ref{theorem:3-2-3-1} 说明
+$x\mapsto K(L\1_C)(x)=(KL)(x,C)$ 可测。因此 $KL$ 是核。
+
+先证明一个函数恒等式。若 $f=\1_C$，核复合的定义给出
+\[
+ (KL)f(x)=(KL)(x,C)=K(Lf)(x).
+\]
+有限线性组合把等式扩张到非负简单函数。若 $s_n\uparrow f$，分别对
+$L(y,\cdot)$、$K(x,\cdot)$ 与 $(KL)(x,\cdot)$ 使用单调收敛定理，得到
+\[
+ (KL)f=K(Lf)\qquad(f\ge0).
+ \tag{3.2.19}\label{eq:kernel-function-assoc}
+\]
+于是对 $C\subset W$ 可测，取 $f=M\1_C$，便有
+\[
+ \begin{aligned}
+ ((KL)M)(x,C)
+ &=(KL)(M\1_C)(x)\\
+ &=K(L(M\1_C))(x)
+ =(K(LM))(x,C).
+ \end{aligned}
+\]
+这证明结合律。若 $K,L$ 为概率核，则
+$(KL)(x,Z)=K(L\1_Z)(x)=K\1_Y(x)=1$。整个证明只有非负积分，没有
+$\infty-\infty$，也不需要 $\sigma$-有限性。
+\end{proof}
+
+在有限状态空间上，式 \eqref{eq:kernel-associativity} 就是矩阵乘法结合律。第~5~章定义
+Markov 链后，会把 $K^n$ 解释为 $n$ 步转移核，并把
+$K^{m+n}=K^mK^n$ 称为 Chapman--Kolmogorov 方程。它的解析基础正是这里证明的概率核复合与
+结合律。
+
+\begin{example}[热核的平移密度]\label{ex:3-2-3-3}
+对 $t>0$ 定义
+\[
+ p_t(z)=(4\pi t)^{-n/2}\exp\!\left(-\frac{|z|^2}{4t}\right).
+\]
+由一维高斯积分、Tonelli 以及线性换元 $z=2\sqrt t\,u$，
+\[
+ \int_{\R^n}e^{-|z|^2/(4t)}\,\dd z=(4\pi t)^{n/2},
+\]
+故 $p_t$ 非负且积分为一。联合连续函数 $(x,y)\mapsto p_t(y-x)$ 给出密度核
+\[
+ K_t(x,\dd y)=p_t(y-x)\,\dd y.
+\]
+它是平移不变 Markov 核。用卷积记号，核作用可以写成热核卷积；上面的归一化计算同时证明了
+$K_t(x,\R^n)=1$。
+\end{example}
+
+\begin{example}[Green 型有限核]
+密度核也包括经典积分方程中的 Green 型核。在区间 $(0,1)$ 上令
+\[
+ G(x,y)=\min\{x,y\}-xy
+ =\begin{cases}
+   y(1-x),&0<y\le x,\\
+   x(1-y),&x<y<1.
+  \end{cases}
+\]
+函数 $G$ 非负且联合连续，因而
+\[
+ K_G(x,B)=\int_B G(x,y)\,\dd y
+\]
+定义一个从 $(0,1)$ 到自身的测度核。它不是概率核，因为直接分段积分得到
+\[
+\begin{aligned}
+ K_G(x,(0,1))
+ &=\int_0^x y(1-x)\,\dd y+\int_x^1x(1-y)\,\dd y\\
+ &=(1-x)\frac{x^2}{2}+x\frac{(1-x)^2}{2}
+ =\frac{x(1-x)}2.
+\end{aligned}
+\]
+相应核作用是 $K_Gf(x)=\int_0^1G(x,y)f(y)\,\dd y$。在常微分方程中，$G$ 是
+Dirichlet 边界条件下算子 $-\frac{\dd^2}{\dd x^2}$ 的 Green 函数。这个解释说明了公式的来源，
+而上面的分段积分则具体展示了非归一化有限核的总质量。
+\end{example}
+
+核定义只保证 $Kf$ 可测。若还希望参数连续，必须把点态连续与一个共同的可积支配放在一起。
+
+\begin{theorem}[参数连续积分]\label{theorem:3-2-3-3}
+设拓扑空间 $T$ 在 $t_0$ 处第一可数，$f:T\times X\to\R$ 或 $\C$。假设每个
+$f(t,\cdot)$ 可测，并存在 $t_0$ 的邻域 $U$、非负函数 $g\in L^1(\mu)$ 与零集 $N$，使得对
+$x\notin N$：
+\begin{enumerate}
+  \item $t\mapsto f(t,x)$ 在 $t_0$ 连续；
+  \item $|f(t,x)|\le g(x)$ 对所有 $t\in U$ 成立。
+\end{enumerate}
+则 $F(t)=\int_Xf(t,x)\,\dd\mu(x)$ 对 $t\in U$ 有定义，并在 $t_0$ 连续。
+\end{theorem}
+
+\begin{proof}
+支配条件说明每个 $t\in U$ 的截面 $f(t,\cdot)$ 都绝对可积。若 $(t_n)\subset U$ 且
+$t_n\to t_0$，则在共同零集外
+$f(t_n,x)\to f(t_0,x)$，且
+$|f(t_n,x)-f(t_0,x)|\le2g(x)$。复值支配收敛定理给出
+\[
+ F(t_n)-F(t_0)=\int_X(f(t_n,x)-f(t_0,x))\,\dd\mu(x)\longrightarrow0.
+\]
+
+还需把序列结论升级为拓扑连续性。将 $t_0$ 的一个可数邻域基逐项与支配邻域
+$U$ 交，再取前 $n$ 项之交，得到一个满足 $U_n\subset U$ 的递减可数邻域基
+$(U_n)$。若 $F$ 不在
+$t_0$ 连续，则存在 $\varepsilon>0$，使每个 $U_n$ 中都可取 $t_n$ 满足
+$|F(t_n)-F(t_0)|\ge\varepsilon$。递减邻域基保证 $t_n\to t_0$，与上一段矛盾。
+第一可数性正用于这一步；对任意拓扑空间中的网，不能把序列版支配收敛定理无声替代为网版本。
+\end{proof}
+
+\begin{remark}[Feller 性]
+当 $X,Y$ 带拓扑时，可测 Markov 核未必把连续函数送到连续函数。若
+$K(C_b(Y))\subset C_b(X)$，称 $K$ 具有 Feller 性；在局部紧理论中也常使用 $C_0$ 版本。
+例如，对热核与 $f\in C_b(\R^n)$，若 $x_k\to x$，则
+\[
+ K_tf(x_k)=\int_{\R^n}f(x_k+z)p_t(z)\,\dd z
+ \longrightarrow\int_{\R^n}f(x+z)p_t(z)\,\dd z
+\]
+由参数连续积分定理得到，因为点态连续成立，且共同支配为
+$\|f\|_\infty p_t\in L^1$。因此 $K_tf$ 连续，且
+$|K_tf|\le\|f\|_\infty$。
+\end{remark}
+
+积分号下微分需要支配的不是单个导数值，而是邻近参数的全部差商。失败模型已经很具体：在
+$(0,1)$ 上令 $f(t,x)=\1_{(0,t)}(x)$，则对每个固定 $x>0$，$t=0$ 处的右导数为零；可是差商
+$t^{-1}\1_{(0,t)}$ 的积分恒为 $1$。因此下一定理把统一可积支配直接加在差商上；
+例~\ref{ex:3-2-3-4} 随后用显式计算对比满足该条件与违反该条件的模型。
+
+\begin{theorem}[积分号下微分]\label{theorem:3-2-3-4}
+设 $I\subset\R$ 为开区间，$t_0\in I$，且 $f:I\times X\to\R$ 或 $\C$ 满足每个
+$f(t,\cdot)$ 可测。假设 $f(t_0,\cdot)\in L^1(\mu)$，
+$\partial_tf(t_0,x)$ 对几乎处处 $x$ 存在，并且存在 $\delta>0$、$g\in L^1(\mu)$ 与一个零集
+$N$，使 $[t_0-\delta,t_0+\delta]\subset I$，且
+\[
+ \left|\frac{f(t_0+h,x)-f(t_0,x)}{h}\right|\le g(x)
+ \tag{3.2.20}\label{eq:difference-quotient-domination}
+\]
+对所有 $x\notin N$ 及 $0<|h|<\delta$ 成立。则 $F(t)=\int_Xf(t,x)\,\dd\mu(x)$
+在 $|t-t_0|<\delta$ 时有定义，并且
+\[
+ F'(t_0)=\int_X\partial_tf(t_0,x)\,\dd\mu(x).
+ \tag{3.2.21}\label{eq:differentiate-under-integral}
+\]
+\end{theorem}
+
+\begin{proof}
+由 \eqref{eq:difference-quotient-domination}，
+\[
+ |f(t_0+h,x)|\le|f(t_0,x)|+|h|g(x)
+\]
+在同一零集外成立，所以 $f(t_0+h,\cdot)\in L^1$。取任意实数列
+$h_k\to0$ 且 $0<|h_k|<\delta$。相应差商是可测函数，并在几乎处处收敛到
+$\partial_tf(t_0,\cdot)$。把导数不存在的可测零集上的值定义为零；所得函数在零集补集上等于
+可测差商列的极限，因而可测。由支配收敛定理，它属于
+$L^1$，且
+\[
+ \begin{aligned}
+ \lim_{k\to\infty}\frac{F(t_0+h_k)-F(t_0)}{h_k}
+ &=\lim_{k\to\infty}\int_X
+ \frac{f(t_0+h_k,x)-f(t_0,x)}{h_k}\,\dd\mu(x)\\
+ &=\int_X\partial_tf(t_0,x)\,\dd\mu(x).
+ \end{aligned}
+\]
+极限对每个趋于零的非零实数列都相同；实直线中的序列判别说明差商本身在 $h\to0$ 时有该极限。
+这就是 \eqref{eq:differentiate-under-integral}。
+\end{proof}
+
+一个常用的充分条件是：对几乎处处 $x$，函数 $t\mapsto f(t,x)$ 在邻域中处处可微，而且
+$|\partial_tf(t,x)|\le g(x)$。实值情形由一维中值定理得到
+\eqref{eq:difference-quotient-domination}。复值情形也不需要复分析：若
+$z=f(t_0+h,x)-f(t_0,x)\ne0$，取 $u=z/|z|$，对实函数
+$t\mapsto\Re(\overline u f(t,x))$ 使用中值定理，得到
+\[
+ |z|=\Re(\overline uz)
+ \le |h|\sup_{t\text{ 在线段上}}|\partial_tf(t,x)|.
+\]
+若 $z=0$，则左端为零而右端非负，估计仍成立。
+
+\begin{example}[成功与失败的差商]\label{ex:3-2-3-4}
+对 $t>0$ 令
+\[
+ F(t)=\int_0^\infty e^{-tx}\,\dd x.
+\]
+固定 $t_0>0$。当 $|t-t_0|<t_0/2$ 时，
+\[
+ |\partial_te^{-tx}|=xe^{-tx}\le xe^{-t_0x/2},
+\]
+作代换 $u=t_0x/2$，并用分部积分
+$\int_0^\infty ue^{-u}\,\dd u=[-ue^{-u}]_0^\infty+\int_0^\infty e^{-u}\,\dd u=1$，可得
+$\int_0^\infty xe^{-t_0x/2}\,\dd x=4/t_0^2$；以 $u=t_0x$ 作同一计算又得
+$\int_0^\infty xe^{-t_0x}\,\dd x=t_0^{-2}$。因此定理~\ref{theorem:3-2-3-4} 给出
+\[
+ F'(t_0)=-\int_0^\infty xe^{-t_0x}\,\dd x=-t_0^{-2},
+\]
+与直接计算 $F(t)=t^{-1}$ 一致。
+
+反过来，在 $x\in(0,1)$、$0<t<1$ 时令
+$f(t,x)=\1_{(0,t)}(x)$，并置 $f(0,x)=0$。对每个固定 $x>0$，当 $0<t<x$ 时
+$f(t,x)=0$，所以 $f(\cdot,x)$ 在 $0$ 的右导数为零。然而
+\[
+ \int_0^1f(t,x)\,\dd x=t
+\]
+在 $0$ 的右导数为一。差商
+$t^{-1}\1_{(0,t)}$ 不可能有共同可积支配；否则支配收敛定理会迫使其积分趋于零，而其积分恒为一。
+仅有逐点导数存在不足以交换微分与积分。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=18mm and 23mm]
+  \node[book strong node,minimum width=25mm] (x) {$x\in X$};
+  \node[book strong node,right=of x,minimum width=31mm] (y) {$K(x,\cdot)$\\在 $Y$ 上的质量云};
+  \node[book strong node,right=of y,minimum width=31mm] (z) {$(KL)(x,\cdot)$\\在 $Z$ 上的质量云};
+  \draw[book accent arrow] (x)--node[above]{$K$}(y);
+  \draw[book accent arrow] (y)--node[above]{$L$}(z);
+  \draw[book dashed arrow,bend right=27] (x.south)--node[below]{$KL$}(z.south);
+  \foreach \p in {-.32,0,.32}{
+    \fill[BookAccent!70] ($(y.center)+(0.45,\p)$) circle (1.2pt);
+    \fill[BookWarm!75] ($(z.center)+(0.58,\p)$) circle (1.2pt);
+  }
+\end{tikzpicture}
+\caption{核把一点散成一个测度；复合核对中间的质量云再作一次积分。}
+\label{fig:3-2-3-kernel-cloud}
+\end{figure}
+
+\begin{remark}[正则条件分布与核]
+在概率论中，正则条件分布是一个 Markov 核。任意两个可测空间之间未必存在这种核；常用的存在定理
+要求目标空间是标准 Borel 空间（standard Borel space）等额外条件。这里“标准 Borel”指一个与某个
+完备可分度量空间的 Borel 子集（赋予相对 Borel $\sigma$-代数）可测同构的可测空间。
+本章不证明正则条件分布的存在定理，也不在后续论证中调用它；使用条件分布时必须另行核对相应的存在性假设。
+\end{remark}
+
+在统计中，边缘化就是让一个概率核作用在常数或似然函数上；梯度交换则必须逐项核对
+定理~\ref{theorem:3-2-3-4} 的差商支配。积分算子的半群性质可由
+命题~\ref{proposition:3-2-3-2} 化为核复合。三类应用共享同一条边界：可测性由核公理负责，
+极限或微分的交换另需支配条件。
+
+\begin{exercise}
+证明确定性核满足 $K_SK_T=K_{T\circ S}$，其中映射方向取为
+$X\xrightarrow{S}Y\xrightarrow{T}Z$；并用推前测度核对次序。
+\end{exercise}
+\begin{exercise}
+设 $K(x,\dd y)=k(x,y)\nu(\dd y)$、
+$L(y,\dd z)=\ell(y,z)\rho(\dd z)$ 是概率密度核。用 Tonelli 写出 $KL$ 相对于 $\rho$ 的密度，
+并直接核对其积分为一。
+\end{exercise}
+\begin{exercise}
+从定义证明三个概率核的结合律，并在有限状态情形把每一步写成矩阵求和。
+\end{exercise}
+\begin{exercise}
+在例~\ref{ex:3-2-3-4} 的失败模型中证明：不存在 $g\in L^1(0,1)$ 同时支配所有
+$t^{-1}\1_{(0,t)}$，$0<t<1/2$。
+\end{exercise}
+
+核之间的绝对连续关系仍缺少一个关键问题：如果每个 $K(x,\cdot)$ 都相对于同一测度绝对连续，
+Radon--Nikodym 定理会对每个固定的 $x$ 给出密度的几乎处处类，却不会自动从这些等价类中选出
+联合可测的 $(x,y)\mapsto k(x,y)$。联合可测密度的存在需要另外的可测 Radon--Nikodym
+选择定理及相应的可数生成或标准 Borel 结构。下一节先建立每个标量测度的 RN 表示与唯一性，
+并由此进入支撑后续条件期望构造的 $L^p$ 空间；条件期望的正式算子理论留在第~5~章。

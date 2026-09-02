@@ -1,0 +1,1097 @@
+\section{过程的存在、版本与路径空间}\label{sec:06-01}
+
+\subsection{随机过程、有限维分布与典范路径空间}\label{subsec:6-1-1}
+\index{随机过程}\index{有限维分布}\index{典范路径空间}
+
+一次观测由一个随机变量描述；一族随时间或空间位置变化的观测则要求一族随机变量。困难并不在于
+给这族变量添一个下标，而在于同时回答所有有限组观测的联合问题。实验和计算机都只能读取有限多个
+坐标，所以我们通常先知道
+\[
+  (X_{t_1},\ldots,X_{t_n})
+\]
+的分布，而不是一条已经放在手边的随机函数。于是首先要分清两件事：有限观测怎样组织成一个
+路径空间上的分布，以及这个分布是否保证路径连续。前者是本小节与下一小节的问题；后者必须再等到
+增量估计介入。
+
+早期的过程常由随机游走、递推式或随机级数逐个构造。Kolmogorov 的公理化改变了起点：先把所有
+有限维分布及其相容关系写清，再把“过程存在”化成一个测度扩张问题。典范空间观点则把坐标映射
+本身当作过程，使样本点不再承担任何未经定义的物理含义。
+
+\begin{definition}[随机过程]\label{def:6-1-1-1}
+设 $(\Omega,\mathcal F,\Prob)$ 为概率空间，$T$ 为非空指标集，$(E,\mathcal E)$ 为可测空间。
+一个取值于 $E$、以 $T$ 为指标的\emph{随机过程}是随机元族
+\[
+  X=(X_t)_{t\in T},\qquad X_t:(\Omega,\mathcal F)\longrightarrow(E,\mathcal E).
+\]
+固定 $\omega\in\Omega$ 后，函数 $t\mapsto X_t(\omega)$ 称为 $X$ 在 $\omega$ 处的\emph{样本路径}。
+\end{definition}
+
+定义只要求每个固定时刻的坐标可测。它没有要求 $(t,\omega)\mapsto X_t(\omega)$ 联合可测，也没有
+要求样本路径关于 $t$ 可测或连续。这不是疏忽：这些正则性都需要额外论证。
+
+\begin{definition}[有限维分布]\label{def:6-1-1-2}
+设 $I$ 为非空有限集，$\mathbf t:I\to T$ 为一个有限有标号的时刻族。过程 $X$ 在这些时刻的
+\emph{有限维分布}为
+\[
+  \mu_{\mathbf t}
+  =\Law\bigl((X_{\mathbf t(i)})_{i\in I}\bigr).
+\]
+这是 $(E^I,\mathcal E^{\otimes I})$ 上的概率测度。
+特别地，当 $I=\{1,\ldots,n\}$ 时也写作 $\mu_{t_1,\ldots,t_n}$。允许 $\mathbf t$ 取重复值；
+这样，坐标的重排、删除和复制可由同一个公式处理。
+\end{definition}
+
+单时刻边缘远不足以描述一个过程。下面两个过程甚至在每个时刻都有同一个 Bernoulli 分布。
+
+\begin{example}[随机常函数与独立坐标]\label{ex:6-1-1-2}
+令 $T=\mathbb N_0=\{0,1,2,\ldots\}$，并令 $Y$ 为参数 $1/2$ 的 Bernoulli 变量。置 $X_n=Y$。则
+\[
+  \Prob(X_0=X_1)=1,
+  \qquad
+  \Law(X_{n_1},\ldots,X_{n_k})
+  \text{ 集中在 }\{(0,\ldots,0),(1,\ldots,1)\}.
+\]
+另一方面，在乘积概率空间 $\{0,1\}^{\mathbb N_0}$ 上令 $Z_n(\omega)=\omega_n$，各坐标独立且具有同一
+Bernoulli 分布。此时
+\[
+  \Prob(Z_0=Z_1)=\frac12,
+  \qquad
+  \Law(Z_{n_1},\ldots,Z_{n_k})
+  =\operatorname{Bernoulli}(1/2)^{\otimes k}
+\]
+（这里 $n_1,\ldots,n_k$ 互异）。两者的所有一维分布相同，二维分布已经把它们分开。
+\end{example}
+
+\begin{definition}[典范路径空间与过程分布]\label{def:6-1-1-3}
+令
+\[
+  \Omega_0=E^T,\qquad \pi_t(\omega)=\omega(t).
+\]
+使全部坐标映射 $\pi_t$ 可测的最小 $\sigma$-代数记为 $\mathcal E^{\otimes T}$，称为\emph{柱
+$\sigma$-代数}。若 $F\Subset T$ 为有限集，记 $\pi_F:E^T\to E^F$ 为限制映射；形如
+\[
+  \pi_F^{-1}(A),\qquad A\in\mathcal E^{\otimes F},
+\]
+的集合称为有限坐标柱集。
+
+对过程 $X$，定义路径映射
+\[
+  \mathbf X:\Omega\longrightarrow E^T,
+  \qquad \mathbf X(\omega)(t)=X_t(\omega).
+\]
+因为每个 $X_t$ 可测，而柱 $\sigma$-代数由坐标映射生成，$\mathbf X$ 对
+$\mathcal E^{\otimes T}$ 可测；命题~\ref{proposition:6-1-1-1} 随后给出这一点的完整等价证明。
+它的推前概率 $\mathbf X_*\Prob$ 称为 $X$ 的\emph{过程分布}，记作 $\Law(X)$。
+\end{definition}
+
+这里的“路径空间”首先只是所有函数的集合。即便 $T$ 有拓扑，柱 $\sigma$-代数的定义也只记录有限
+坐标观测；路径正则性还没有加入样本空间。
+
+\begin{example}[离散时间柱事件]\label{ex:6-1-1-1}
+当 $T=\mathbb N_0$ 时，路径空间为 $E^{\mathbb N_0}$。若 $A_0,A_3\in\mathcal E$，则
+\[
+  C=\{\omega:\omega(0)\in A_0,\ \omega(3)\in A_3\}
+   =\pi_{\{0,3\}}^{-1}(A_0\times A_3)
+\]
+是柱事件。它询问两次可以实际执行的观测，而不读取其余无穷多个坐标。
+\end{example}
+
+\begin{proposition}[过程映射的可测性]\label{proposition:6-1-1-1}
+路径映射 $\mathbf X:(\Omega,\mathcal F)\to(E^T,\mathcal E^{\otimes T})$ 可测，当且仅当每个
+$X_t$ 可测。
+\end{proposition}
+
+\begin{proof}
+若 $\mathbf X$ 可测，则 $X_t=\pi_t\circ\mathbf X$ 是可测映射的复合。反之，设每个 $X_t$ 可测，并令
+\[
+  \mathcal G=\{A\subset E^T:\mathbf X^{-1}(A)\in\mathcal F\}.
+\]
+逆像保持补集和可数并，所以 $\mathcal G$ 是 $E^T$ 上的 $\sigma$-代数。对每个 $t\in T$ 和
+$B\in\mathcal E$，
+\[
+  \mathbf X^{-1}(\pi_t^{-1}(B))=X_t^{-1}(B)\in\mathcal F.
+\]
+因此 $\mathcal G$ 包含生成 $\mathcal E^{\otimes T}$ 的全部单坐标柱集，故
+$\mathcal E^{\otimes T}\subset\mathcal G$。
+\end{proof}
+
+过程分布的有限坐标推前正是有限维分布。下一定理说明，在柱 $\sigma$-代数上，没有比全部有限维
+分布更多的概率信息。
+
+\begin{theorem}[有限维分布的唯一性]\label{theorem:6-1-1-2}
+设 $P,Q$ 为 $(E^T,\mathcal E^{\otimes T})$ 上的概率测度。若对每个有限 $F\Subset T$ 都有
+\[
+  (\pi_F)_*P=(\pi_F)_*Q,
+\]
+则 $P=Q$。
+\end{theorem}
+
+\begin{proof}
+令 $\mathcal C$ 为全部有限坐标柱集。若
+$C=\pi_F^{-1}(A)$、$D=\pi_G^{-1}(B)$，并置 $H=F\cup G$，则
+\[
+ C\cap D
+ =\pi_H^{-1}\!\left((\pi_F^H)^{-1}(A)\cap(\pi_G^H)^{-1}(B)\right)\in\mathcal C,
+\]
+其中 $\pi_F^H:E^H\to E^F$ 为坐标限制。故 $\mathcal C$ 是 $\pi$-系统，并且
+$\sigma(\mathcal C)=\mathcal E^{\otimes T}$。
+
+定义
+\[
+ \mathcal D=\{A\in\mathcal E^{\otimes T}:P(A)=Q(A)\}.
+\]
+因为 $P(E^T)=Q(E^T)=1$，取补集保持 $\mathcal D$；若 $(A_n)$ 两两不交且都属于
+$\mathcal D$，则可数可加性给
+\[
+ P\!\left(\bigcup_nA_n\right)=\sum_nP(A_n)
+ =\sum_nQ(A_n)=Q\!\left(\bigcup_nA_n\right).
+\]
+所以 $\mathcal D$ 是 $\lambda$-系统。题设说明 $\mathcal C\subset\mathcal D$，由
+$\pi$--$\lambda$ 定理~\ref{theorem:2-2-1-1}，
+$\mathcal E^{\otimes T}=\sigma(\mathcal C)\subset\mathcal D$。
+\end{proof}
+
+证明只使用有限柱集生成、可数可加性和 $\pi$--$\lambda$ 定理；它没有使用路径空间的紧性。
+这种“有限观测唯一识别全局分布”的力量来自可测生成类，而不是来自一条路径可由有限数据重建。
+
+\begin{proposition}[有限维分布的相容性]\label{proposition:6-1-1-3}
+设 $X$ 为过程，$I,J$ 为非空有限集，$\mathbf t:I\to T$，且 $\phi:J\to I$。定义
+\[
+ q_\phi:E^I\longrightarrow E^J,
+ \qquad q_\phi((x_i)_{i\in I})=(x_{\phi(j)})_{j\in J}.
+\]
+则
+\[
+  \mu_{\mathbf t\circ\phi}=(q_\phi)_*\mu_{\mathbf t}.
+  \tag{6.1.1}\label{eq:6-1-1-functorial-consistency}
+\]
+双射 $\phi$ 给出重排，单射给出删坐标，一般映射还包括复制坐标。
+\end{proposition}
+
+\begin{proof}
+对每个 $\omega\in\Omega$，坐标恒等式
+\[
+ (X_{\mathbf t(\phi(j))}(\omega))_{j\in J}
+ =q_\phi((X_{\mathbf t(i)}(\omega))_{i\in I})
+\]
+成立。对两边的随机元取分布，并使用推前映射的复合律，得到
+\eqref{eq:6-1-1-functorial-consistency}。
+\end{proof}
+
+相容性是过程存在的必要条件。下一小节的主要任务是证明：在适当的状态空间上，它也足够。
+
+\begin{proposition}[典范实现]\label{proposition:6-1-1-4}
+任一过程 $X$ 与概率空间
+\[
+  (E^T,\mathcal E^{\otimes T},\Law(X))
+\]
+上的坐标过程 $(\pi_t)_{t\in T}$ 具有相同的全部有限维分布。因此，只依赖过程分布的问题可以先在
+典范路径空间上研究。
+\end{proposition}
+
+\begin{proof}
+对任意有限 $F\Subset T$，有 $\pi_F\circ\mathbf X=(X_t)_{t\in F}$。于是
+\[
+ (\pi_F)_*\Law(X)
+ =(\pi_F)_*(\mathbf X_*\Prob)
+ =(\pi_F\circ\mathbf X)_*\Prob
+ =\Law((X_t)_{t\in F}).
+\]
+\end{proof}
+
+同一框架容纳多种索引：$T=\mathbb N_0$ 给离散时间序列，$T\subset\R^d$ 给随机场。Markov 性、Gaussian 性与
+Brownian 增量结构都是过程分布的附加条件，而不是“随机过程”定义的不同版本。这个区分使我们可以
+先统一解决存在问题，再逐项研究各类分布的特殊结构。
+
+\begin{example}[同一分布的不同实现]\label{ex:6-1-1-3}
+分别在两个概率空间上取
+\[
+ \begin{aligned}
+ &([0,1],\Borel([0,1]),m), &&U(u)=u,\\
+ &([0,2],\Borel([0,2]),\tfrac12m), &&V(v)=v/2.
+ \end{aligned}
+\]
+二者都服从 $[0,1]$ 上的均匀分布，
+却定义在不同样本空间。令 $X_t=U$、$Y_t=V$ 对所有 $t\in T$，便得到两个底层样本点毫无对应关系、
+过程分布却相同的过程。若要比较 $X_t(\omega)$ 与 $Y_t(\omega)$，必须另行给出共同实现或耦合；
+“同分布”本身不提供这样的逐点比较。
+\end{example}
+
+当 $T$ 不可数时，柱 $\sigma$-代数还有一条必须公开的边界。有限坐标生成不允许悄悄执行不可数次
+交并。
+
+\begin{proposition}[柱事件只依赖可数多个坐标]\label{proposition:6-1-1-countable-support}
+若 $A\in\mathcal E^{\otimes T}$，则存在至多可数的 $J\subset T$，使得只要
+$\omega|_J=\eta|_J$，便有
+\[
+  \omega\in A\quad\Longleftrightarrow\quad\eta\in A.
+\]
+\end{proposition}
+
+\begin{proof}
+令 $\mathcal H$ 为满足结论的全部子集 $A\subset E^T$。若 $A$ 由 $J$ 决定，则 $A^c$ 也由 $J$
+决定。若 $A_n$ 由至多可数的 $J_n$ 决定，则 $\bigcup_nA_n$ 由至多可数的
+$\bigcup_nJ_n$ 决定。因此 $\mathcal H$ 是 $\sigma$-代数。每个有限柱集由其有限坐标集决定，故
+$\mathcal E^{\otimes T}=\sigma(\mathcal C)\subset\mathcal H$。
+\end{proof}
+
+\begin{remark}[不可数乘积中的 Borel 边界]\label{remark:6-1-1-countable-coordinates}
+取不可数集 $T$ 与离散空间 $E=\{0,1\}$。全零路径 $\mathbf0$ 的单点集
+\[
+ \{\mathbf0\}=\bigcap_{t\in T}\{\omega:\omega(t)=0\}
+\]
+在乘积拓扑中是闭集，因而属于该拓扑的 Borel $\sigma$-代数。它却不属于柱
+$\sigma$-代数。事实上，若它由某个至多可数 $J\subset T$ 决定，取 $t_0\in T\setminus J$，再把
+$\mathbf0$ 的 $t_0$ 坐标改成 $1$，所得路径在 $J$ 上与 $\mathbf0$ 相同，却不属于该单点集，矛盾。
+
+所以当 $T$ 不可数时，不能默认
+$\mathcal E^{\otimes T}=\Borel(E^T)$。有限维分布唯一决定柱 $\sigma$-代数上的概率，却不自动决定
+一个另行指定的更大 Borel $\sigma$-代数上的取值。已确定概率在柱 $\sigma$-代数上的自身完成化当然也
+随之确定；问题在于不能把这个完成化与其他未经构造的路径事件 $\sigma$-代数混为一谈。连续路径空间
+必须另行建立，而不能把“所有路径都连续”写成一个未经核验的不可数交。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=13mm and 18mm]
+  \node[book strong node] (sample) {原概率空间\\$(\Omega,\mathcal F,\Prob)$};
+  \node[book strong node,right=of sample] (path) {典范路径空间\\$(E^T,\mathcal E^{\otimes T})$};
+  \node[book warm node,right=of path] (finite) {有限坐标空间\\$E^F$};
+  \draw[book accent arrow] (sample)--node[above,book label]{$\mathbf X$}(path);
+  \draw[book arrow] (path)--node[above,book label]{$\pi_F$}(finite);
+  \draw[book dashed arrow,bend right=22] (sample) to
+    node[pos=.50,below=1mm,book label]{$(X_t)_{t\in F}=\pi_F\circ\mathbf X$}(finite);
+  \node[book label,above=5mm of path] {$\mathbf X_*\Prob=\Law(X)$};
+  \node[book label,above=5mm of finite] {$(\pi_F)_*\Law(X)=\mu_F$};
+\end{tikzpicture}
+\caption{过程分布位于路径空间；有限维分布是它经有限坐标投影得到的影子。}
+\label{fig:6-1-1-law-and-fdd}
+\end{figure}
+
+\begin{remark}[四种不同的比较]
+同一概率空间上的逐点相等、几乎处处相等、同一有限维分布以及同一过程分布是不同层次的陈述。
+在柱 $\sigma$-代数上，全部有限维分布相同等价于过程分布相同；它仍不推出两个过程定义在同一空间，
+更不推出它们几乎处处相等。数值模拟检验的通常也是有限坐标统计量，所以即使这些检验全部吻合，
+路径连续性仍未得到证明。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 直接由定义证明：若两个过程互为逐时刻的 a.s. 版本，则它们的有限维分布相同；指出这里只能对
+        有限多个零集取并。
+  \item 用式~\eqref{eq:6-1-1-functorial-consistency} 分别写出三坐标分布在交换前两坐标、删除第二坐标
+        和复制第一坐标时的公式。
+  \item 在 $\{0,1\}^{\N}$ 上再构造一对所有一维分布相同、二时刻分布不同的过程，并明确计算
+        $\Prob(X_0=X_1)$。
+  \item 证明典范实现的过程分布正是原过程分布，而不仅是具有相同的一维边缘。
+\end{enumerate}
+\end{exercise}
+
+相容性回答了局部分布之间不能互相矛盾，却还没有构造全局概率。下一步要把柱集上的形式赋值证明为
+真正的可数可加测度。
+
+
+\subsection{Kolmogorov 扩张：由相容有限观测生成过程}\label{subsec:6-1-2}
+\index{Kolmogorov 扩张定理}\index{投影相容族}
+
+设想我们给每个有限时刻集 $F\Subset T$ 都指定了一个概率 $\mu_F$。把
+$\pi_F^{-1}(A)$ 的“概率”写成 $\mu_F(A)$ 并不困难；困难在于同一个柱集可由不同的 $F$ 表示，
+而且有限可加还不等于可数可加。扩张定理恰好处理这两个缺口。
+
+历史上也可以从正泛函出发，沿 Daniell 路线得到扩张。本书采用柱代数路线：在紧状态空间中用
+有限维 Radon 内正则性与 Tychonoff 紧性证明从上连续，再调用已经建立的 \Caratheodory{} 扩张；
+一般标准 Borel 空间随后编码进紧区间。因而柱代数上的预测度构造不依赖正泛函表示定理。
+
+\begin{definition}[投影相容族]\label{def:6-1-2-1}
+对每个非空有限集 $F\Subset T$，设 $\mu_F$ 为
+$(E^F,\mathcal E^{\otimes F})$ 上的概率测度。若 $F\subset G$ 时总有
+\[
+  (\pi_F^G)_*\mu_G=\mu_F,
+  \tag{6.1.2}\label{eq:6-1-2-projective-consistency}
+\]
+则称 $(\mu_F)_{F\Subset T}$ 为\emph{投影相容族}。这里
+$\pi_F^G:E^G\to E^F$ 是坐标限制映射。
+\end{definition}
+
+如果从有序时刻组开始，命题~\ref{proposition:6-1-1-3} 还要求置换和重复坐标相容。改用有限子集
+$F$ 后，坐标名称已经固定，式~\eqref{eq:6-1-2-projective-consistency} 只需记录删除坐标；两种说法包含
+同一份有限观测信息。
+
+\begin{definition}[柱集候选赋值]\label{def:6-1-2-2}
+令 $\mathcal A_T$ 为 $E^T$ 上全部有限坐标柱集构成的代数。对
+$C=\pi_F^{-1}(A)$，考虑候选赋值
+\[
+  P_0(C)=\mu_F(A),
+  \tag{6.1.3}\label{eq:6-1-2-cylinder-content}
+\]
+并置 $P_0(E^T)=1$。
+\end{definition}
+
+同一柱集可有不同的有限坐标表示，因而式
+\eqref{eq:6-1-2-cylinder-content} 是否真正定义集函数，需要先由投影相容性验证。
+
+\begin{lemma}[柱集赋值的良定义与有限可加性]\label{lemma:6-1-2-cylinder-content}
+若 $E\ne\varnothing$ 且 $(\mu_F)$ 投影相容，则式
+\eqref{eq:6-1-2-cylinder-content} 良定义，并在 $\mathcal A_T$ 上有限可加。
+\end{lemma}
+
+\begin{proof}
+设
+$\pi_F^{-1}(A)=\pi_G^{-1}(B)$，并置 $H=F\cup G$。因为 $E\ne\varnothing$，限制映射
+$\pi_H:E^T\to E^H$ 为满射。又
+\[
+ \pi_F^{-1}(A)=\pi_H^{-1}((\pi_F^H)^{-1}(A)),\qquad
+ \pi_G^{-1}(B)=\pi_H^{-1}((\pi_G^H)^{-1}(B)),
+\]
+所以满射性给出
+\[
+  (\pi_F^H)^{-1}(A)=(\pi_G^H)^{-1}(B).
+\]
+由相容性，
+\[
+ \mu_F(A)
+ =\mu_H((\pi_F^H)^{-1}(A))
+ =\mu_H((\pi_G^H)^{-1}(B))
+ =\mu_G(B),
+\]
+故赋值与表示无关。
+
+对有限多个两两不交柱集 $C_1,\ldots,C_n$，取包含它们所用全部坐标的有限集 $H$，写成
+$C_j=\pi_H^{-1}(A_j)$。$\pi_H$ 满射，所以 $A_1,\ldots,A_n$ 两两不交，并且
+\[
+ P_0\!\left(\bigcup_{j=1}^nC_j\right)
+ =\mu_H\!\left(\bigcup_{j=1}^nA_j\right)
+ =\sum_{j=1}^n\mu_H(A_j)
+ =\sum_{j=1}^nP_0(C_j).
+\]
+\end{proof}
+
+由引理~\ref{lemma:6-1-2-cylinder-content}，$P_0$ 现在是 $\mathcal A_T$ 上良定义的有限可加概率；称它为相容族给出的
+\emph{柱集预分布}。
+
+若只停在这里，得到的仍是有限可加概率。一般代数上的有限可加赋值未必能扩张为测度。紧状态空间
+提供了所需的从上连续性，而且它是在整个乘积的拓扑紧性与每个有限维分布的内正则性之间搭桥。
+
+\begin{lemma}[紧状态空间上的柱预测度]\label{lemma:6-1-2-2}
+设 $E$ 为非空紧度量空间并取 $\mathcal E=\Borel(E)$，
+$(\mu_F)_{F\Subset T}$ 为投影相容概率族。则柱集预分布
+$P_0$ 是 $\mathcal A_T$ 上的预测度，并且它唯一扩张为
+$(E^T,\mathcal E^{\otimes T})$ 上的概率测度。
+\end{lemma}
+
+\begin{proof}
+若 $T=\varnothing$，则 $E^T$ 为单点，$\mathcal A_T=\{\varnothing,E^T\}$，而 $P_0$ 是该点上的
+单位质量；结论直接成立。以下设 $T\ne\varnothing$。
+
+由引理~\ref{lemma:6-1-2-cylinder-content}，$P_0$ 已经良定义且有限可加。我们先证明：若
+\[
+  C_n\in\mathcal A_T,\qquad C_n\downarrow\varnothing,
+\]
+则 $P_0(C_n)\downarrow0$。
+
+固定 $\varepsilon>0$。写 $C_n=\pi_{F_n}^{-1}(A_n)$。有限乘积 $E^{F_n}$ 仍是紧度量空间；
+$\mu_{F_n}$ 是其上的 Borel 概率，因而由定理~\ref{theorem:2-2-2-2} 具有 Radon 内正则性。
+可取紧集 $L_n\subset A_n$，使
+\[
+  \mu_{F_n}(A_n\setminus L_n)<\varepsilon2^{-n}.
+\]
+令 $K_n=\pi_{F_n}^{-1}(L_n)$。坐标投影关于乘积拓扑连续，所以 $K_n$ 在 $E^T$ 中闭，且
+\[
+      K_n\subset C_n,\qquad
+ P_0(C_n\setminus K_n)<\varepsilon2^{-n}.
+ \tag{6.1.4}\label{eq:6-1-2-closed-cylinder-approx}
+\]
+
+由 Tychonoff 定理~\ref{theorem:1-2-2-2}，$E^T$ 紧。若每个有限交
+$\bigcap_{n=1}^NK_n$ 都非空，则闭集族 $(K_n)$ 具有有限交性质，从而
+$\bigcap_{n\ge1}K_n\ne\varnothing$。但 $K_n\subset C_n$，这会给出
+$\bigcap_nC_n\ne\varnothing$，与假设矛盾。因此存在 $N$ 使
+$\bigcap_{n=1}^NK_n=\varnothing$。
+
+任取 $x\in C_N$。因为 $(C_n)$ 递减，$x\in C_n$ 对 $1\le n\le N$ 成立；有限个
+$K_n$ 的交为空，所以至少有一个 $n\le N$ 满足 $x\notin K_n$。于是
+\[
+ C_N\subset\bigcup_{n=1}^N(C_n\setminus K_n).
+\]
+有限可加非负集合函数在代数上有限次可次加，结合
+\eqref{eq:6-1-2-closed-cylinder-approx} 得
+\[
+  P_0(C_N)
+  \le\sum_{n=1}^NP_0(C_n\setminus K_n)
+  <\varepsilon.
+\]
+由于 $P_0(C_n)$ 单调不增，且 $\varepsilon$ 任意，故 $P_0(C_n)\downarrow0$。
+
+现在设 $(D_n)$ 为 $\mathcal A_T$ 中两两不交的集合，且
+$D=\bigcup_nD_n\in\mathcal A_T$。置
+\[
+ R_N=D\setminus\bigcup_{n=1}^ND_n.
+\]
+则 $R_N\downarrow\varnothing$，有限可加性给
+\[
+ P_0(D)=\sum_{n=1}^NP_0(D_n)+P_0(R_N).
+\]
+令 $N\to\infty$，刚证的从上连续性给
+$P_0(D)=\sum_nP_0(D_n)$。所以 $P_0$ 是预测度。
+
+最后对 $P_0$ 应用 \Caratheodory{} 扩张定理~\ref{theorem:2-2-1-0}。因为
+$E^T\in\mathcal A_T$ 且 $P_0(E^T)=1$，有限测度唯一性也适用；所得扩张在
+$\sigma(\mathcal A_T)=\mathcal E^{\otimes T}$ 上唯一。
+\end{proof}
+
+紧性证明中没有把“每个坐标分别紧”相加成一个不可数乘积估计。真正使用的是闭柱集位于同一个
+紧空间 $E^T$ 中，从而有限交性质可用。下一步把一般标准 Borel 空间编码进紧区间；编码后的路径
+不必声称逐坐标都落在编码集合中。
+
+\begin{definition}[标准 Borel 状态空间]\label{def:6-1-2-3}
+一个可测空间若与某个 Polish 空间的 Borel 可测空间可测同构，称为\emph{标准 Borel 空间}。
+这里保留的是可测结构，而不是某个指定的完备度量。
+\end{definition}
+
+\begin{proposition}[标准 Borel 编码约化]\label{proposition:6-1-2-3}
+设 $E$ 为非空标准 Borel 空间。任一投影相容概率族
+$(\mu_F)_{F\Subset T}$ 都是某个
+$(E^T,\mathcal E^{\otimes T})$ 上概率的全部有限维边缘。
+\end{proposition}
+
+\begin{proof}
+若 $T=\varnothing$，取单点空间 $E^T$ 上的单位质量即可。以下设 $T\ne\varnothing$。
+
+由定理~\ref{theorem:1-4-2-4}，存在 Borel 集 $B\subset[0,1]$ 与 Borel 同构
+$h:E\to B$。记 $i:B\hookrightarrow[0,1]$ 为包含映射，并对有限 $F$ 定义
+\[
+  \widetilde\mu_F=((i\circ h)^F)_*\mu_F.
+\]
+推前的复合律与式~\eqref{eq:6-1-2-projective-consistency} 说明
+$(\widetilde\mu_F)$ 是 $[0,1]^F$ 上的投影相容族。由
+引理~\ref{lemma:6-1-2-2}，存在 $[0,1]^T$ 的柱 $\sigma$-代数上的概率 $Q$，满足
+$(\pi_F)_*Q=\widetilde\mu_F$。
+
+取定 $e_0\in E$，并定义
+\[
+ r:[0,1]\longrightarrow E,
+ \qquad
+ r(x)=
+ \begin{cases}
+   h^{-1}(x),&x\in B,\\
+   e_0,&x\notin B.
+ \end{cases}
+ \tag{6.1.5}\label{eq:6-1-2-retraction}
+\]
+对 $A\in\mathcal E$，集合 $h(A)$ 是 $B$ 的 Borel 子集，从而也是 $[0,1]$ 的 Borel 子集；
+而
+\[
+ r^{-1}(A)=
+ \begin{cases}
+   h(A),&e_0\notin A,\\
+   h(A)\cup B^c,&e_0\in A.
+ \end{cases}
+\]
+故 $r$ 可测。逐坐标映射
+$r^T:[0,1]^T\to E^T$ 对柱 $\sigma$-代数可测，因为
+$\pi_t\circ r^T=r\circ\pi_t$ 可测。令 $P=(r^T)_*Q$。对有限 $F$，
+\[
+ (\pi_F)_*P
+ =(r^F)_*(\pi_F)_*Q
+ =(r^F)_*\widetilde\mu_F
+ =\bigl(r\circ i\circ h\bigr)^F_*\mu_F
+ =\mu_F,
+\]
+其中最后一步使用 $r\circ i\circ h=\id_E$。
+
+这个构造没有使用事件
+$\{x\in[0,1]^T:x(t)\in B\text{ 对所有 }t\in T\}$。当 $T$ 不可数时，该事件可能不是柱
+$\sigma$-代数中的集合；坐标映射 $r^T$ 正是为了避开这一不可数交。
+\end{proof}
+
+\begin{theorem}[Kolmogorov 扩张定理]\label{theorem:6-1-2-1}
+设 $(E,\mathcal E)$ 为标准 Borel 空间，$T$ 为任意指标集，
+$(\mu_F)_{F\Subset T}$ 为投影相容概率族。则在
+$(E^T,\mathcal E^{\otimes T})$ 上存在唯一概率测度 $P$，使
+\[
+  (\pi_F)_*P=\mu_F\qquad (F\Subset T).
+\]
+\end{theorem}
+
+\begin{proof}
+若 $T=\varnothing$，则 $E^T$ 为单点空间，结论由该点上的单位质量给出。以下设 $T\ne\varnothing$；
+有限维概率的存在迫使 $E\ne\varnothing$。存在性由
+命题~\ref{proposition:6-1-2-3} 得到。若 $P,Q$ 都具有指定有限维边缘，则它们在所有有限柱集上
+相同；定理~\ref{theorem:6-1-1-2} 给出 $P=Q$。
+\end{proof}
+
+\begin{corollary}[过程存在与分布的对应]\label{corollary:6-1-2-4}
+标准 Borel 状态空间上，投影相容有限维分布族与典范路径空间上的过程分布一一对应。具体地，
+Kolmogorov 扩张所得概率空间上的坐标过程具有给定有限维分布；反之，每个过程的有限维分布投影相容。
+\end{corollary}
+
+\begin{proof}
+由定理~\ref{theorem:6-1-2-1}，相容族给出唯一概率 $P$；在
+$(E^T,\mathcal E^{\otimes T},P)$ 上取坐标过程即可。反方向是
+命题~\ref{proposition:6-1-1-3} 的删坐标情形。两次对应互逆由有限维分布唯一性定理
+\ref{theorem:6-1-1-2} 保证。
+\end{proof}
+
+下面几项计算展示相容性如何核验。
+
+\begin{example}[任意指标族的独立坐标]\label{ex:6-1-2-1}
+给每个 $t\in T$ 指定 $(E,\mathcal E)$ 上的概率 $\nu_t$。对有限 $F$ 令
+\[
+ \mu_F=\bigotimes_{t\in F}\nu_t.
+\]
+若 $F\subset G$，对可测矩形 $A=\prod_{t\in F}A_t$ 计算
+\[
+ \mu_G((\pi_F^G)^{-1}(A))
+ =\prod_{t\in F}\nu_t(A_t)\prod_{t\in G\setminus F}\nu_t(E)
+ =\mu_F(A).
+\]
+有限矩形是生成的 $\pi$-系统，有限测度唯一性定理~\ref{theorem:2-2-1-2} 把等式推广到
+$\mathcal E^{\otimes F}$。Kolmogorov 扩张于是给出任意指标集上的独立坐标族。
+\end{example}
+
+\begin{example}[半正定核生成 Gaussian 过程]\label{ex:6-1-2-2}
+这里称一个过程为 Gaussian 过程，是指它的每个有限维向量都联合 Gaussian；等价地，任意有限
+线性组合都具有一维 Gaussian 分布，允许方差为零的退化情形。第~\ref{subsec:6-4-1}~小节将
+在构造 Brownian motion 前正式重述这一定义。
+
+设 $m:T\to\R$，$K:T\times T\to\R$ 对称，并满足：对任意
+$t_1,\ldots,t_n\in T$ 与 $a_1,\ldots,a_n\in\R$，
+\[
+ \sum_{j,k=1}^na_ja_kK(t_j,t_k)\ge0.
+ \tag{6.1.6}\label{eq:6-1-2-positive-kernel}
+\]
+对有限 $F$，矩阵 $K_F=(K(s,t))_{s,t\in F}$ 半正定。线性代数给出矩阵 $A_F$ 使
+$K_F=A_FA_F^T$；取标准正态向量 $Z$，令 $m_F+A_FZ$ 的分布为 $\mu_F$。由
+例~\ref{ex:5-4-3-1}，其特征函数为
+\[
+ \widehat\mu_F(u)
+ =\exp\!\left(i\sum_{t\in F}u_tm(t)
+ -\frac12\sum_{s,t\in F}u_sK(s,t)u_t\right).
+ \tag{6.1.7}\label{eq:6-1-2-gaussian-fdd-cf}
+\]
+若 $F\subset G$，把 $u\in\R^F$ 在 $G\setminus F$ 上补成零，式
+\eqref{eq:6-1-2-gaussian-fdd-cf} 表明 $(\pi_F^G)_*\mu_G$ 与 $\mu_F$ 的特征函数相同。
+特征函数唯一性定理~\ref{theorem:5-4-3-2} 给出投影相容性。故存在一个均值为 $m$、协方差核为
+$K$ 的 Gaussian 过程。
+
+例如 $T=[0,\infty)$、$K(s,t)=s\wedge t$ 满足
+\[
+ \sum_{j,k}a_ja_k(t_j\wedge t_k)
+ =\int_0^\infty\left(\sum_ja_j\1_{[0,t_j]}(u)\right)^2\dd u\ge0.
+\]
+扩张定理因此已经给出 Brownian 有限维分布的一个典范过程，但尚未给出连续路径。连续版本要由下一
+小节的矩估计得到；Brownian motion 的完整构造见 \S\ref{subsec:6-4-1}。
+\end{example}
+
+\begin{example}[互相冲突的二时刻要求]\label{ex:6-1-2-3}
+设 $X_0,X_1$ 都应为参数 $1/2$ 的 Bernoulli 变量。若再要求 $X_0=X_1$ a.s.，则二维分布满足
+\[
+ \Prob((X_0,X_1)=(0,1))=\Prob((X_0,X_1)=(1,0))=0.
+\]
+若同时要求 $X_0,X_1$ 独立，则这两个概率都必须等于 $1/4$。因此不存在同时满足两项要求的二维
+分布，更不可能存在相应过程。检查相容性必须在扩张之前完成；扩张定理不会替我们调解矛盾的局部指定。
+\end{example}
+
+\begin{example}[可数状态 Markov 链的初始构造]\label{ex:6-1-2-markov-chain}
+设 $E$ 可数，$\nu$ 为 $E$ 上的概率，$p(x,y)\ge0$ 且
+$\sum_{y\in E}p(x,y)=1$。在 $E^{\{0,\ldots,n\}}$ 上定义
+\[
+\mu_{0:n}(x_0,\ldots,x_n)
+=\nu(x_0)\prod_{k=1}^np(x_{k-1},x_k).
+\tag{6.1.8}\label{eq:6-1-2-markov-fdd}
+\]
+从 $x_n,x_{n-1},\ldots,x_1$ 依次求和，并逐次使用
+$\sum_y p(x,y)=1$，可得
+\[
+ \sum_{x_0,\ldots,x_n}\mu_{0:n}(x_0,\ldots,x_n)
+ =\sum_{x_0}\nu(x_0)=1;
+\]
+因此这确为概率
+分布。对末坐标求和得到
+\[
+ \sum_{x_n\in E}\mu_{0:n}(x_0,\ldots,x_n)
+ =\mu_{0:n-1}(x_0,\ldots,x_{n-1}),
+\]
+因为 $\sum_{x_n}p(x_{n-1},x_n)=1$。反复删除末坐标后，任意有限
+$F\subset\mathbb N_0$ 的分布可定义为 $\mu_{0:N}$ 在 $F$ 上的边缘，其中 $N\ge\max F$；上式保证定义与
+$N$ 无关并给出投影相容性。扩张定理产生整个离散时间链。一般状态空间的转移核版本将在本章第三节
+正式展开。
+\end{example}
+
+有限体积 Gibbs 分布的无限体积极限也有相似外形：大有限体积的分布必须向小体积投影为指定分布。
+但实际 Gibbs 一致性通常涉及边界条件和条件核，不是把
+定理~\ref{theorem:6-1-2-1} 的符号替换一下便自动完成；这里的类比只指出“局部规格先相容、全局对象后
+存在”的共同结构。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=11mm and 18mm]
+  \node[book strong node] (P) {$E^T$ 上的 $P$};
+  \node[book node,below left=of P] (G) {$E^G$ 上的 $\mu_G$};
+  \node[book node,below right=of P] (H) {$E^H$ 上的 $\mu_H$};
+  \node[book warm node,below=18mm of P] (F) {$E^F$ 上的 $\mu_F$};
+  \draw[book accent arrow] (P)--node[left,book label]{$\pi_G$}(G);
+  \draw[book accent arrow] (P)--node[right,book label]{$\pi_H$}(H);
+  \draw[book arrow] (G)--node[left,book label]{$\pi_F^G$}(F);
+  \draw[book arrow] (H)--node[right,book label]{$\pi_F^H$}(F);
+  \node[book label,above=2mm of F] {$F\subset G,\ F\subset H$};
+\end{tikzpicture}
+\caption{相容三角形要求从任一较大有限坐标集投影到 $F$ 都得到同一个 $\mu_F$；扩张定理把整张
+有限集合有向图汇聚为路径空间概率 $P$。}
+\label{fig:6-1-2-projective-family}
+\end{figure}
+
+\begin{remark}[扩张只解决存在，不蕴含路径正则性]
+定理~\ref{theorem:6-1-2-1} 得到的是全部函数 $E^T$ 上柱 $\sigma$-代数中的概率。即使每个
+有限维分布都有光滑密度，也不能据此推出样本路径连续、可测或有界。另一方面，一般非标准 Borel 状态
+空间缺少上述可测编码，扩张结论可能失败或需要额外假设；“可测空间”在定理中不能无条件替换“标准
+Borel 空间”。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 对例~\ref{ex:6-1-2-1} 完成从可测矩形到全部乘积可测集的 $\pi$--$\lambda$ 论证。
+  \item 证明式~\eqref{eq:6-1-2-positive-kernel} 等价于每个有限矩阵 $K_F$ 半正定，并验证常数核
+        $K(s,t)=1$ 与核 $K(s,t)=s\wedge t$ 的条件。
+  \item 在 $E=\{0,1\}$ 上沿引理~\ref{lemma:6-1-2-2} 的路线构造独立公平 Bernoulli 坐标，指出
+        闭柱逼近在有限离散空间中为何可直接取 $K_n=C_n$。
+  \item 只给出全部一维边缘 $\Law(X_t)$ 时，构造至少两个不同的相容有限维族，说明它们扩张出的过程
+        分布不同。
+\end{enumerate}
+\end{exercise}
+
+扩张把相容有限观测拼成了过程，却可能拼出极不规则的路径。接下来要从增量的定量控制中选择连续
+版本；这是另一个存在问题，不能由有限维唯一性代替。
+
+
+\subsection{版本、可分性与 Kolmogorov 连续性定理}\label{subsec:6-1-3}
+\index{版本}\index{不可分辨}\index{Kolmogorov--Chentsov 定理}
+
+假设对每个固定 $t$，两个过程 $X_t$ 与 $Y_t$ 几乎处处相等。若 $T$ 不可数，把这些概率一事件
+全部相交不是测度论允许的可数运算；共同零集可能根本不存在。连续版本理论的作用，正是用可数稠密
+网格和一致增量控制制造一个对所有时刻同时有效的事件。
+
+Kolmogorov--Chentsov 方法是“离散估计生成连续路径”的原型：先在逐层加密的二进网格上同时
+控制所有相邻增量，再沿格点链求和，最后借目标空间的完备性延拓。它补上的正是扩张定理看不见的
+样本函数正则性。
+
+\begin{definition}[版本与不可分辨]\label{def:6-1-3-1}
+同一概率空间上、具有同一指标集并取值于同一标准 Borel 空间的两个过程 $X,Y$ 若满足
+\[
+  \Prob(X_t=Y_t)=1\qquad\text{对每个固定 }t\in T,
+\]
+则称它们互为\emph{版本}（modifications）。若存在 $N\in\mathcal F$，
+$\Prob(N)=0$，使得
+\[
+  X_t(\omega)=Y_t(\omega)\qquad
+  (\omega\notin N,\ t\in T),
+\]
+则称它们\emph{不可分辨}。
+\end{definition}
+
+标准 Borel 空间的对角线可测，所以定义中的逐时刻等式确实给出事件。
+
+后一表述刻意使用一个可测共同零集，而不把不可数交
+$\bigcap_{t\in T}\{X_t=Y_t\}$ 未经核验地称作事件。不可分辨蕴含互为版本；反向一般失败。
+
+\begin{example}[单点异常版本]\label{ex:6-1-3-1}
+在 $([0,1],\Borel([0,1]),m)$ 上令 $U(\omega)=\omega$，并对 $t\in[0,1]$ 定义
+\[
+  X_t=\1_{\{U=t\}},\qquad Y_t=0.
+\]
+对固定 $t$，单点集 $\{t\}$ 的 Lebesgue 测度为零，故 $X_t=Y_t$ a.s.；所以 $X,Y$ 互为版本。
+但对每个 $\omega$，取 $t=U(\omega)$ 就有 $X_t(\omega)=1\ne0=Y_t(\omega)$。不存在使两条路径
+处处相同的样本点，更不存在概率一的此类样本点。因此它们并非不可分辨。
+\end{example}
+
+互为版本的过程具有相同有限维分布：对固定有限时刻组，只需把有限多个坐标等式的零集取并。
+因此版本改变不影响柱 $\sigma$-代数上的过程分布，却可能彻底改变逐路径性质。上例中 $Y$ 的每条路径
+连续，$X$ 的每条路径都在一个点发生尖峰。
+
+\begin{definition}[可分版本]\label{def:6-1-3-3}
+设 $T$ 为度量空间，$X$ 为实过程。若存在可数稠密集 $D\subset T$ 与零集 $N$，使对每个开球
+$G\subset T$ 及每个 $\omega\notin N$ 都有
+\[
+ \sup_{t\in G}X_t(\omega)=\sup_{t\in G\cap D}X_t(\omega),
+ \qquad
+ \inf_{t\in G}X_t(\omega)=\inf_{t\in G\cap D}X_t(\omega),
+ \tag{6.1.9}\label{eq:6-1-3-separable-version}
+\]
+其中允许取扩展实值，则称该版本相对于 $D$ \emph{可分}。
+\end{definition}
+
+连续路径自动满足式~\eqref{eq:6-1-3-separable-version}：对 $t\in G$，从 $G\cap D$ 中取收敛到
+$t$ 的序列，再用连续性。单点异常过程则说明任意版本未必可分。事实上，固定可数稠密集 $D$ 后，
+$\Prob(U\in D)=0$；当 $U(\omega)\notin D$ 时，任何包含 $U(\omega)$ 的开球 $G$ 都满足
+\[
+  \sup_{t\in G}X_t(\omega)=1,
+  \qquad \sup_{t\in G\cap D}X_t(\omega)=0.
+\]
+
+\begin{definition}[路径 \Holder{} 正则性]\label{def:6-1-3-2}
+设 $T\subset\R^d$。若过程的一条 $\R^m$ 值路径 $x:T\to\R^m$ 满足
+\[
+  \|x(t)-x(s)\|\le M\|t-s\|^\gamma\qquad(s,t\in T)
+  \tag{6.1.10}\label{eq:6-1-3-holder-path}
+\]
+对某个有限常数 $M$ 成立，则称该路径为全局 $\gamma$-\Holder{}。若式
+\eqref{eq:6-1-3-holder-path} 在每个紧子集上成立而常数可依赖紧集与路径，则称其局部
+$\gamma$-\Holder{}。
+\end{definition}
+
+连续性定理的证明先在二进网格上进行。令
+\[
+ D_n=\{0,2^{-n},2\cdot2^{-n},\ldots,1\}^d,
+ \qquad D=\bigcup_{n\ge0}D_n.
+\]
+若 $u,v\in D_n$ 只在一个坐标上相差 $2^{-n}$，称 $\{u,v\}$ 为第 $n$ 层的一条相邻边。
+
+\begin{lemma}[二进相邻边估计]\label{lemma:6-1-3-2}
+设 $X_t\in\R^m$，$t\in[0,1]^d$，并且存在 $\alpha,\beta,C>0$ 使
+\[
+ \E\|X_t-X_s\|^\alpha\le C\|t-s\|^{d+\beta}
+ \qquad(s,t\in[0,1]^d).
+ \tag{6.1.11}\label{eq:6-1-3-moment-condition}
+\]
+若 $0<\gamma<\beta/\alpha$，则以概率一存在随机层数 $N$，使每个 $n\ge N$ 及第 $n$ 层的
+每条相邻边 $\{u,v\}$ 都满足
+\[
+  \|X_u-X_v\|\le2^{-n\gamma}.
+  \tag{6.1.12}\label{eq:6-1-3-eventual-edge-control}
+\]
+\end{lemma}
+
+\begin{proof}
+第 $n$ 层在第 $j$ 个坐标方向上的边数是
+$2^n(2^n+1)^{d-1}$，故全部相邻边不超过
+\[
+ d\,2^n(2^n+1)^{d-1}\le d\,2^{d-1}2^{nd}.
+\]
+固定一条边 $\{u,v\}$。由 Markov 不等式~\ref{theorem:5-1-1-2} 和
+$\|u-v\|=2^{-n}$，
+\[
+ \Prob(\|X_u-X_v\|>2^{-n\gamma})
+ \le2^{n\alpha\gamma}\E\|X_u-X_v\|^\alpha
+ \le C2^{-n(d+\beta-\alpha\gamma)}.
+\]
+令 $B_n$ 表示第 $n$ 层至少有一条边违反
+\eqref{eq:6-1-3-eventual-edge-control}。并集界给
+\[
+ \Prob(B_n)
+ \le Cd2^{d-1}2^{-n(\beta-\alpha\gamma)}.
+\]
+因为 $\beta-\alpha\gamma>0$，级数 $\sum_n\Prob(B_n)$ 收敛。Borel--Cantelli 引理
+\ref{theorem:5-1-3-1} 给出 $\Prob(B_n\ \mathrm{i.o.})=0$，这正是所需的最终逐层控制。
+\end{proof}
+
+只控制相邻边还需一次链式计算，才能比较任意两个稠密格点。
+
+\begin{lemma}[二进链估计]\label{lemma:6-1-3-dyadic-chain}
+设 $\gamma>0$，函数 $x:D\to\R^m$ 满足：存在 $M<\infty$，使每个 $n$ 及第 $n$ 层相邻边
+$\{u,v\}$ 都有
+\[
+  \|x(u)-x(v)\|\le M2^{-n\gamma}.
+\]
+则存在只依赖于 $d,\gamma$ 的常数 $A_{d,\gamma}$，使
+\[
+  \|x(u)-x(v)\|
+  \le A_{d,\gamma}M\|u-v\|_\infty^\gamma
+  \qquad(u,v\in D).
+  \tag{6.1.13}\label{eq:6-1-3-dyadic-chain}
+\]
+\end{lemma}
+
+\begin{proof}
+取不同的 $u,v\in D$，并先设 $\|u-v\|_\infty\le1/2$。选 $n\ge0$ 使
+\[
+  2^{-(n+1)}<\|u-v\|_\infty\le2^{-n}.
+  \tag{6.1.14}\label{eq:6-1-3-scale-choice}
+\]
+再取 $N\ge n$ 使 $u,v\in D_N$。对每个第 $k$ 层格点，逐坐标舍入到最近的第 $k-1$ 层格点；
+所得父点与原点可由至多 $d$ 条第 $k$ 层相邻边连接。由此分别从 $u,v$ 构造父点链
+\[
+ u=u_N,u_{N-1},\ldots,u_n,
+ \qquad
+ v=v_N,v_{N-1},\ldots,v_n.
+\]
+舍入误差和式~\eqref{eq:6-1-3-scale-choice} 表明 $u_n,v_n$ 的每个坐标至多相差三个第 $n$ 层
+网格步长，所以它们可由至多 $3d$ 条第 $n$ 层相邻边连接。三角不等式于是给
+\begin{align*}
+ \|x(u)-x(v)\|
+ &\le3dM2^{-n\gamma}
+   +2dM\sum_{k=n+1}^N2^{-k\gamma}\\
+ &\le dM\left(3+\frac{2}{2^\gamma-1}\right)2^{-n\gamma}\\
+ &\le 2^\gamma d\left(3+\frac{2}{2^\gamma-1}\right)
+ M\|u-v\|_\infty^\gamma.
+\end{align*}
+若 $\|u-v\|_\infty>1/2$，在 $D_0$ 处汇合两条父点链，并用同一个几何级数估计；此时
+$\|u-v\|_\infty^\gamma\ge2^{-\gamma}$，把所得固定常数再乘 $2^\gamma$ 即覆盖该情形。
+\end{proof}
+
+\begin{theorem}[Kolmogorov--Chentsov 连续性定理]\label{theorem:6-1-3-1}
+设 $X_t\in\R^m$，$t\in[0,1]^d$，并满足矩条件
+\eqref{eq:6-1-3-moment-condition}。则 $X$ 有连续版本。更精确地，对每个
+\[
+  0<\gamma<\frac{\beta}{\alpha},
+\]
+$X$ 都有全局 $\gamma$-\Holder{} 版本。
+
+若过程以 $\R^d$（或 $[0,\infty)^d$）为指标，且对每个 $R>0$，式
+\eqref{eq:6-1-3-moment-condition} 在参数立方体 $[-R,R]^d$（或 $[0,R]^d$）上成立，指数
+$\alpha,\beta$ 固定而常数可依赖 $R$，则存在局部 $\gamma$-\Holder{} 版本，其中仍可取任意
+$0<\gamma<\beta/\alpha$。
+\end{theorem}
+
+\begin{proof}
+先处理参数集 $[0,1]^d$。固定
+$0<\gamma<\beta/\alpha$。由
+引理~\ref{lemma:6-1-3-2}，存在概率一事件 $\Omega_*$，使
+\eqref{eq:6-1-3-eventual-edge-control} 从某个随机层数起成立。对
+$\omega\in\Omega_*$，把此前有限多层中所有边的量
+\[
+  2^{n\gamma}\|X_u(\omega)-X_v(\omega)\|
+\]
+取最大，并再与 $1$ 取最大，得到有限随机常数 $M(\omega)$。于是每一层的每条相邻边都满足
+\[
+ \|X_u(\omega)-X_v(\omega)\|\le M(\omega)2^{-n\gamma}.
+\]
+引理~\ref{lemma:6-1-3-dyadic-chain} 给出
+\[
+ \|X_u(\omega)-X_v(\omega)\|
+ \le A_{d,\gamma}M(\omega)\|u-v\|_\infty^\gamma
+ \qquad(u,v\in D).
+ \tag{6.1.15}\label{eq:6-1-3-holder-on-D}
+\]
+
+对每个 $t\in[0,1]^d$，固定一列 $q_n(t)\in D_n$，使
+$q_n(t)\to t$；若 $t\in D$，约定从足够大的 $n$ 起 $q_n(t)=t$。式
+\eqref{eq:6-1-3-holder-on-D} 说明 $(X_{q_n(t)}(\omega))_n$ 在完备空间 $\R^m$ 中为 Cauchy 列。
+定义
+\[
+ Y_t(\omega)=
+ \begin{cases}
+  \displaystyle\lim_{n\to\infty}X_{q_n(t)}(\omega),&\omega\in\Omega_*,\\
+  0,&\omega\notin\Omega_*.
+ \end{cases}
+ \tag{6.1.16}\label{eq:6-1-3-extension-definition}
+\]
+把 $\Omega_*$ 换成其中可测的概率一事件（由 Borel--Cantelli 证明中的可数格点事件直接给出），
+可见 $Y_t$ 是可测随机向量。令二进格点趋近 $s,t$，式
+\eqref{eq:6-1-3-holder-on-D} 给出
+\[
+ \|Y_t(\omega)-Y_s(\omega)\|
+ \le A_{d,\gamma}M(\omega)\|t-s\|_\infty^\gamma
+ \qquad(\omega\in\Omega_*).
+\]
+在 $\Omega_*^c$ 上路径为零，所以 $Y$ 的每条路径都是 $\gamma$-\Holder{}。
+
+还需核验 $Y$ 是 $X$ 的版本。固定 $t$。矩条件给
+\[
+ \E\|X_{q_n(t)}-X_t\|^\alpha
+ \le C\|q_n(t)-t\|^{d+\beta}\longrightarrow0.
+\]
+由 Markov 不等式，$X_{q_n(t)}\to X_t$ 依概率；定义
+\eqref{eq:6-1-3-extension-definition} 又给
+$X_{q_n(t)}\to Y_t$ a.s.，因而也依概率收敛。依概率极限的唯一性给
+$\Prob(Y_t=X_t)=1$。这里的零集可以依赖 $t$，这正符合“版本”的定义。紧参数集情形得证。
+
+最后固定任意 $0<\rho<\beta/\alpha$ 并处理 $\R^d$；半空间情形同理。令
+$Q_n=[-n,n]^d$。经过仿射缩放，把已证结论以指数 $\rho$ 应用于
+$X|_{Q_n}$，得到 $Q_n$ 上的 $\rho$-\Holder{} 版本 $Y^{(n)}$。对可数稠密集
+$D_n=Q_n\cap\Q^d$ 中每个 $t$，$Y_t^{(n)}$ 与 $Y_t^{(n+1)}$ 都是 $X_t$ 的版本。对
+$t\in D_n$ 的零集取可数并，再用两条路径在 $Q_n$ 上的连续性，得到一个零集 $N_n$，使
+\[
+ Y_t^{(n)}(\omega)=Y_t^{(n+1)}(\omega)
+ \qquad(\omega\notin N_n,\ t\in Q_n).
+\]
+再对 $n$ 取可数并，所有局部版本在嵌套立方体上同时吻合。于该概率一事件上将它们拼接，并在
+异常集上取零路径，便得到全空间上的版本；每个 $Q_n$ 上的估计给出局部
+$\rho$-\Holder{} 性。
+\end{proof}
+
+上述论证中，每层 $O(2^{nd})$ 条边正好说明参数维数 $d$ 为何出现在矩条件中；严格不等式
+$\alpha\gamma<\beta$ 保证坏事件概率可和。Borel--Cantelli 定理先在可数二进格点集上给出共同零集，
+再由目标空间的完备性将估计延拓到全部参数点。因而这个几何级数论证不包含端点
+$\gamma=\beta/\alpha$。
+若允许的指数 $\gamma>1$，所得 \Holder{} 路径在连通的立方体上必为常函数：把任意线段等分为 $n$
+段并求和，差值至多为 $Mn^{1-\gamma}\|t-s\|^\gamma\to0$。这与定理并不冲突，而是矩条件过强时
+过程退化的结论。
+
+\begin{proposition}[连续版本的唯一性]\label{proposition:6-1-3-3}
+设 $T$ 为可分度量空间，$X,Y$ 取值于同一度量空间。若 $X,Y$ 互为版本，且两者在各自一个概率一
+事件上具有连续路径，则
+$X,Y$ 不可分辨。
+\end{proposition}
+
+\begin{proof}
+取可数稠密集 $D\subset T$。对每个 $t\in D$，事件 $\{X_t=Y_t\}$ 有概率一；对这些事件以及
+$X,Y$ 路径连续的两个概率一事件取可数交，得到概率一事件 $A$。固定 $\omega\in A$。连续函数
+$t\mapsto X_t(\omega)$ 与 $t\mapsto Y_t(\omega)$ 在稠密集 $D$ 上相等，故在 $T$ 上处处相等。
+取 $N=A^c$ 即得不可分辨性。
+\end{proof}
+
+这个命题也解释了上一证明的局部拼接为什么不能“在每个紧集上随便选一个版本”以后便停止：必须先在
+可数稠密集上协调重叠，再由连续性获得同一个零集上的逐点一致。
+
+\begin{proposition}[连续路径空间上的分布]\label{proposition:6-1-3-4}
+令 $K=[0,1]^d$，$\mathcal C=C(K;\R^m)$ 配以上确界范数。若一个 $\R^m$ 值过程有连续版本，则可取
+一个每条路径都连续的版本 $Y$，使路径映射
+\[
+  \mathbf Y:\Omega\longrightarrow\mathcal C,
+  \qquad \mathbf Y(\omega)=Y_\bullet(\omega)
+\]
+为 Borel 随机元。并且对任一可数稠密集 $D\subset K$，
+\[
+  \Borel(\mathcal C)=\sigma(e_t:t\in D),
+  \qquad e_t(f)=f(t).
+  \tag{6.1.17}\label{eq:6-1-3-path-borel}
+\]
+因此 $\Law(\mathbf Y)$ 是 $\mathcal C$ 上的 Borel 概率，其有限维分布由连续评价映射推前恢复。
+\end{proposition}
+
+\begin{proof}
+先在原连续版本的异常零集上把整条路径改成零路径，便可假设每条路径连续，同时不改变任何固定时刻的
+版本关系。空间 $\mathcal C$ 是 Banach 空间。它也是可分的：在每一级二进网格上取有理向量值，
+再作逐小立方体的多线性插值，所得函数全体可数；连续函数的一致连续性表明这些函数在上确界范数下
+稠密。
+
+每个评价映射 $e_t$ 连续，所以
+$\sigma(e_t:t\in D)\subset\Borel(\mathcal C)$。反过来，对 $f,g\in\mathcal C$，连续性与 $D$ 稠密给
+\[
+  \|f-g\|_\infty=\sup_{t\in D}\|f(t)-g(t)\|.
+\]
+于是对 $r>0$，
+\[
+ B(f,r)
+ =\bigcup_{\substack{q\in\Q\\0<q<r}}
+   \bigcap_{t\in D}\{g\in\mathcal C:\|g(t)-f(t)\|<q\}
+ \in\sigma(e_t:t\in D).
+\]
+可分度量空间的开集是可数个基开球之并，故得到
+\eqref{eq:6-1-3-path-borel}。
+
+对 $t\in D$，$e_t\circ\mathbf Y=Y_t$ 可测。式
+\eqref{eq:6-1-3-path-borel} 因而给出 $\mathbf Y$ 的 Borel 可测性。最后，有限评价映射
+$(e_{t_1},\ldots,e_{t_n})$ 连续，且
+\[
+ (e_{t_1},\ldots,e_{t_n})_*\Law(\mathbf Y)
+ =\Law(Y_{t_1},\ldots,Y_{t_n}),
+\]
+所以路径空间上的分布恢复全部有限维分布。
+\end{proof}
+
+这个结论并未声称连续函数集合在 $\R^K$ 的柱 $\sigma$-代数中可测。事实上，当 $K$ 不可数时，任意
+可数坐标集之外都可修改一个函数而不改变已读坐标，连续性因此不是由柱坐标中的某个可数子族决定的。
+正确做法是先构造连续版本，再把它直接视作可分 Banach 空间 $C(K;\R^m)$ 中的随机元。
+这也把过程分布放进 Prokhorov 紧性可以作用的 Polish 空间；但要证明一族过程分布是紧的，仍需另行给出
+一致的路径模量与点值控制，单个过程有连续版本并不自动提供族的一致紧性。
+
+\begin{remark}[两类增量模型的路径正则性]
+以下两个例子从给定的增量分布出发，对比连续性判据对 Gaussian 型与 Poisson 型增量给出的
+不同结论。
+\end{remark}
+
+\begin{example}[Brownian 型增量矩]\label{ex:6-1-3-2}
+假定某过程满足 $B_t-B_s\sim N(0,|t-s|)$。若 $Z\sim N(0,1)$，则对每个 $p>0$，
+$C_p=\E|Z|^p<\infty$，而尺度换元给
+\[
+  \E|B_t-B_s|^p=C_p|t-s|^{p/2}.
+\]
+给定 $\gamma<1/2$，可取足够大的 $p>2$ 使
+$\gamma<1/2-1/p$。在定理~\ref{theorem:6-1-3-1} 中取
+$\alpha=p$、$d=1$、$\beta=p/2-1$，便得到 $\gamma$-\Holder{} 版本。固定一个 $p>2$ 只能推出
+$\gamma<1/2-1/p$；要覆盖每个 $\gamma<1/2$，矩阶必须随目标指数增大。定理也不包含端点
+$\gamma=1/2$。
+\end{example}
+
+\begin{example}[Gaussian 核的连续性判据]\label{ex:6-1-3-gaussian-kernel-continuity}
+设 $X$ 是例~\ref{ex:6-1-2-2} 构造的中心 Gaussian 过程，参数集为 $[0,1]^d$。若存在
+$L,H>0$ 使
+\[
+ \E|X_t-X_s|^2
+ =K(t,t)+K(s,s)-2K(s,t)
+ \le L\|t-s\|^{2H},
+\]
+则对 $Z\sim N(0,1)$ 及任意 $p>0$，Gaussian 尺度关系给
+\[
+ \E|X_t-X_s|^p
+ =\E|Z|^p\bigl(\E|X_t-X_s|^2\bigr)^{p/2}
+ \le C_pL^{p/2}\|t-s\|^{pH}.
+\]
+给定 $\gamma<H$，取 $p$ 充分大，使 $p(H-\gamma)>d$。在
+定理~\ref{theorem:6-1-3-1} 中置 $\alpha=p$、$\beta=pH-d>0$，便有
+$\gamma<\beta/\alpha=H-d/p$，从而得到 $\gamma$-\Holder{} 版本。这里路径正则性来自协方差核对角线
+附近的定量控制，不是“Gaussian”这个名称本身。
+\end{example}
+
+\begin{example}[Poisson 型路径不能连续]\label{ex:6-1-3-3}
+假定 $\lambda>0$、$N_0=0$，且 $N_t-N_s$ 在 $0\le s<t$ 时服从参数
+$\lambda(t-s)$ 的 Poisson 分布。由于增量
+非负，
+\[
+ \E|N_t-N_s|=\lambda|t-s|,
+\]
+这只有参数维数 $d=1$ 的临界一次幂，没有定理所需的额外 $\beta>0$。更高阶矩在短时间内也仍以
+$|t-s|$ 为主阶。
+
+它不可能有连续版本。若 $Y$ 是连续版本，则对每个有理 $q\in[0,1]$，$Y_q$ 取整数值 a.s.；
+对可数多个有理数取交并用连续性，得到几乎每条 $Y$ 路径都取值于离散集 $\Z$。从连通区间
+$[0,1]$ 到 $\Z$ 的连续映射只能为常函数，所以 $Y_1=Y_0=0$ a.s.。但
+$\Prob(N_1>0)=1-e^{-\lambda}>0$，与 $Y_1$ 是 $N_1$ 的版本矛盾。此类过程应放入 \cadlagPathSpace{}，
+而不是连续路径空间。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.92]
+  \begin{scope}[xshift=0cm]
+    \draw[book line,step=0.5] (0,0) grid (2,2);
+    \draw[BookAccent,very thick] (0.5,1)--(1,1)--(1.5,1)--(1.5,1.5);
+    \fill[BookAccent] (0.5,1) circle (1.5pt);
+    \fill[BookAccent] (1,1) circle (1.5pt);
+    \fill[BookAccent] (1.5,1) circle (1.5pt);
+    \fill[BookAccent] (1.5,1.5) circle (1.5pt);
+    \node[book label] at (1,-0.35) {相邻边尾界};
+  \end{scope}
+  \draw[book accent arrow] (2.35,1)--(3.25,1);
+  \begin{scope}[xshift=3.6cm]
+    \draw[book line,step=0.25] (0,0) grid (2,2);
+    \draw[BookWarm,very thick]
+      (0.25,0.5)--(0.5,0.5)--(0.5,0.75)--(0.75,0.75)--(0.75,1)--(1,1)--(1,1.25)--(1.25,1.25)--(1.25,1.5)--(1.5,1.5);
+    \fill[BookWarm] (0.25,0.5) circle (1.7pt);
+    \fill[BookWarm] (1.5,1.5) circle (1.7pt);
+    \node[book label] at (1,-0.35) {多层链与几何级数};
+  \end{scope}
+  \draw[book accent arrow] (5.95,1)--(6.85,1);
+  \node[book strong node,minimum width=2.5cm,minimum height=1.25cm] at (8.35,1)
+    {稠密集上的 \Holder{} 控制\\$\Downarrow$\\完备性延拓};
+\end{tikzpicture}
+\caption{Kolmogorov--Chentsov 方法先同时控制每层有限多条相邻边，再以二进链求和，最后从
+可数稠密集延拓到连续路径。}
+\label{fig:6-1-3-dyadic-extension}
+\end{figure}
+
+\begin{remark}[版本、路径事件与分布]
+版本改变保持所有有限维分布，却可能改变某些逐路径陈述的代表。若已经选定连续版本，则
+命题~\ref{proposition:6-1-3-3} 保证该连续版本在不可分辨意义下唯一，
+命题~\ref{proposition:6-1-3-4} 又把它的分布放在一个可分 Banach 路径空间上。以后讨论路径上确界、
+停时、随机积分或 SDE 时，所用版本及其共同零集必须明确；“对每个 $t$ 都 a.s.”不能替代这项工作。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 逐项验证例~\ref{ex:6-1-3-1} 中 $X,Y$ 互为版本但并非不可分辨，并证明 $X$ 相对于任一固定
+        可数稠密集都不是可分版本。
+  \item 重做引理~\ref{lemma:6-1-3-2} 的边数计算，明确指出参数维数 $d$ 在何处被矩指数
+        $d+\beta$ 抵消。
+  \item 从式~\eqref{eq:6-1-3-eventual-edge-control} 出发，完整构造父点链并推导
+        \eqref{eq:6-1-3-dyadic-chain} 中的常数。
+  \item 假定 $B_t-B_s\sim N(0,|t-s|)$，对给定 $\gamma<1/2$ 选一个具体偶整数 $p$，并写出
+        Kolmogorov--Chentsov 定理中的 $\alpha,\beta$。
+  \item 证明若 $T$ 可分，两个连续版本的路径空间分布相同；再说明为什么这个结论仍不提供它们在
+        不同底层概率空间上的逐点耦合。
+\end{enumerate}
+\end{exercise}
+
+至此，有限维相容性产生了过程分布，增量矩估计又从中选出可分析的路径。下一节加入随时间增长的
+信息 $\sigma$-代数；鞅将把条件平均在这条信息流中的稳定性编码为等式。

@@ -1,0 +1,937 @@
+\section{Borel 测度、Radon 正则性与有符号扩张}\label{sec:02-02}
+
+\subsection{生成类、单调类与测度唯一性}\label{subsec:2-2-1}
+\index{Dynkin 系统}\index{单调类}\index{预测度}
+
+测度常常只在少数集合上可以直接计算：实线上的区间、Euclidean 空间中的矩形、坐标空间中的
+柱集。假设两个有限测度在这样一族集合上相同。把“相等的集合”收集起来，看上去可以证明它们
+组成 $\sigma$-代数；尝试补集时却立刻出现
+\[
+ \mu(A^c)=\mu(X)-\mu(A).
+\]
+这个式子要求先知道总质量相等且有限。处理不交并比处理任意并自然得多。与其强迫这个集合族
+满足过多运算，不如准确记录证明真正保持的闭包。
+
+\begin{definition}[半环、环与代数]\label{def:2-2-1-0a}
+集合族 $\mathcal S\subset2^X$ 称为半环，如果 $\varnothing\in\mathcal S$，它对有限交封闭，
+并且 $A\setminus B$ 可写成有限个两两不交的 $\mathcal S$ 中集合之并。对有限并和差封闭的集合族
+称为环；含 $X$ 的环称为代数。半环中集合的有限不交并构成它生成的环。
+\end{definition}
+
+\begin{definition}[预测度]\label{def:2-2-1-0b}
+环 $\mathcal R$ 上的函数 $\mu_0:\mathcal R\to[0,\infty]$ 称为预测度，如果
+$\mu_0(\varnothing)=0$，并且每当 $A=\bigsqcup_{k\ge1}A_k$ 且
+$A,A_k\in\mathcal R$ 时，
+\[
+ \mu_0(A)=\sum_{k=1}^{\infty}\mu_0(A_k).
+\]
+\end{definition}
+
+\begin{lemma}[半环数据延拓到环]\label{lem:premeasure-semiring-to-ring}
+若 $\mu_0$ 在半环 $\mathcal S$ 上满足上述不交可数分解条件，则
+\[
+ \widetilde\mu_0\Bigl(\bigsqcup_{j=1}^rS_j\Bigr)=\sum_{j=1}^r\mu_0(S_j)
+ \label{eq:semiring-ring-extension}
+\]
+在 $\mathcal S$ 生成的环上良定义，并且是预测度。
+\end{lemma}
+
+\begin{proof}
+若同一集合还有不交表示 $\bigsqcup_{k=1}^tT_k$，则
+$S_j=\bigsqcup_k(S_j\cap T_k)$ 和 $T_k=\bigsqcup_j(S_j\cap T_k)$，其中所有交仍在半环中。
+半环上的有限可加性给
+\[
+ \sum_j\mu_0(S_j)=\sum_{j,k}\mu_0(S_j\cap T_k)=\sum_k\mu_0(T_k),
+\]
+故 \eqref{eq:semiring-ring-extension} 良定义。
+
+若环中 $A=\bigsqcup_{n\ge1}A_n$，写成不交半环分解
+\[
+ A=\bigsqcup_{j=1}^rS_j,
+ \qquad A_n=\bigsqcup_{k=1}^{r_n}T_{n,k}.
+\]
+因为 $A_n\subset A$ 且各 $A_n$ 不交，对固定的 $n,k$ 有
+$T_{n,k}=\bigsqcup_{j=1}^r(T_{n,k}\cap S_j)$；对固定的 $j$ 又有可数不交分解
+$S_j=\bigsqcup_{n,k}(S_j\cap T_{n,k})$。于是半环上的分解条件和非负级数的换序给
+\[
+ \sum_{n=1}^{\infty}\widetilde\mu_0(A_n)
+ =\sum_{n,k,j}\mu_0(T_{n,k}\cap S_j)
+ =\sum_{j=1}^r\mu_0(S_j)
+ =\widetilde\mu_0(A).
+\]
+所以 $\widetilde\mu_0$ 是预测度。
+\end{proof}
+
+\begin{example}[半开盒的扩张数据]\label{ex:2-2-1-0}
+$\R^n$ 中的半开盒连同空集构成半环：两个盒的交仍是盒，而盒之差可沿双方端点切成有限个不交
+盒。盒体积满足不交分解可加性。若 $Q=\bigsqcup_{k\ge1}Q_k$，取紧内缩盒 $K_\eta\subset Q$。
+把每个 $Q_k$ 外扩为开盒 $U_k$，并分配误差使
+\[
+ |U_k|<|Q_k|+\varepsilon2^{-k}.
+\]
+紧性给有限子覆盖 $K_\eta\subset\bigcup_{k\in F}U_k$；共同端点网格比较给
+\[
+ |K_\eta|\le\sum_{k\in F}|U_k|
+ \le\sum_{k=1}^{\infty}|Q_k|+\varepsilon.
+\]
+依次令 $\varepsilon\downarrow0$、$\eta\downarrow0$，得到
+$|Q|\le\sum_k|Q_k|$。反向地，对每个 $N$，有限共同网格给
+\[
+ \sum_{k=1}^N|Q_k|
+ =\left|\bigsqcup_{k=1}^NQ_k\right|\le|Q|;
+\]
+令 $N\to\infty$ 得 $\sum_k|Q_k|\le|Q|$。因此盒体积先延拓到有限不交盒环，再由下文扩张为
+Lebesgue 测度。乘积测度会重复同一结构。
+\end{example}
+
+\begin{definition}[$\pi$-系统与 $\lambda$-系统]\label{def:2-2-1-1}
+集合族 $\mathcal P$ 对有限交封闭时称为 $\pi$-系统。集合族 $\mathcal D$ 称为 $\lambda$-系统
+或 Dynkin 系统，如果
+\begin{enumerate}
+ \item $X\in\mathcal D$；
+ \item $A\subset B$ 且 $A,B\in\mathcal D$ 时，$B\setminus A\in\mathcal D$；
+ \item 两两不交的 $D_k\in\mathcal D$ 满足 $\bigsqcup_kD_k\in\mathcal D$。
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[单调类]\label{def:2-2-1-2}
+集合族若对递增并和递减交封闭，称为集合单调类。一个有界实值函数类若含常数，并且对具有共同
+一致界的点态单调函数列之极限封闭，称为函数单调类。
+\end{definition}
+
+\begin{definition}[简单函数]\label{def:2-2-1-simple-function}
+可测空间 $(X,\mathcal A)$ 上只取有限多个值的可测函数称为简单函数。非负简单函数总可按其非零
+水平集写成
+\[
+ s=\sum_{j=1}^r a_j\1_{A_j},
+ \qquad a_j>0,\quad A_j\in\mathcal A,\quad A_j\cap A_k=\varnothing\ (j\ne k).
+\]
+反过来，任何这样的有限和都是非负可测简单函数。表示未必唯一；需要从表示定义数值时，必须证明
+共同有限分割不会改变结果。
+\end{definition}
+
+\begin{definition}[生成 $\sigma$-代数]\label{def:2-2-1-3}
+$\sigma(\mathcal C)$ 是所有包含 $\mathcal C$ 的 $\sigma$-代数之交。它是包含
+$\mathcal C$ 的最小 $\sigma$-代数，而不只是能由某个有限集合公式写出的集合族。
+\end{definition}
+
+\begin{theorem}[Dynkin 的 $\pi$--$\lambda$ 定理]\label{theorem:2-2-1-1}
+若 $\mathcal P$ 是 $\pi$-系统，则包含 $\mathcal P$ 的最小 $\lambda$-系统等于
+$\sigma(\mathcal P)$。
+\end{theorem}
+
+\begin{proof}
+令 $\mathcal D$ 为包含 $\mathcal P$ 的最小 $\lambda$-系统。只需证明 $\mathcal D$ 对有限交封闭，
+因为此时补集和任意可数并均可由 $\lambda$-运算得到。
+
+对 $A\subset X$ 令
+$\mathcal D_A=\{B\in\mathcal D:A\cap B\in\mathcal D\}$。固定
+$A\in\mathcal P$。由于 $\mathcal P$ 对交封闭，$\mathcal P\subset\mathcal D_A$。而且
+$A\cap X=A\in\mathcal D$；若 $B\subset C$ 且 $B,C\in\mathcal D_A$，则
+\[
+ A\cap(C\setminus B)=(A\cap C)\setminus(A\cap B)\in\mathcal D;
+\]
+若 $(B_k)$ 在 $\mathcal D_A$ 中两两不交，则
+$A\cap\bigsqcup_kB_k=\bigsqcup_k(A\cap B_k)\in\mathcal D$。因此
+$\mathcal D_A$ 是 $\lambda$-系统，故最小性给
+$\mathcal D_A=\mathcal D$。因此 $A\cap B\in\mathcal D$ 对所有
+$A\in\mathcal P,B\in\mathcal D$ 成立。
+
+现在固定 $B\in\mathcal D$，令
+$\mathcal E_B=\{A\in\mathcal D:A\cap B\in\mathcal D\}$。上一段给
+$\mathcal P\subset\mathcal E_B$。用恒等式
+$(C\setminus A)\cap B=(C\cap B)\setminus(A\cap B)$ 与
+$(\bigsqcup_kA_k)\cap B=\bigsqcup_k(A_k\cap B)$，可以逐条验证
+$\mathcal E_B$ 为 $\lambda$-系统，所以
+$\mathcal E_B=\mathcal D$。于是 $\mathcal D$ 对有限交封闭，证明完成。
+\end{proof}
+
+\begin{theorem}[测度唯一性]\label{theorem:2-2-1-2}
+设有限测度 $\mu,\nu$ 在 $\pi$-系统 $\mathcal P$ 上相等，并且
+$\mu(X)=\nu(X)<\infty$，则二者在 $\sigma(\mathcal P)$ 上相等。
+
+若存在共同耗尽 $P_n\in\mathcal P$，满足 $P_n\uparrow X$ 且
+$\mu(P_n)=\nu(P_n)<\infty$，则同一结论对 $\sigma$-有限测度成立。
+\end{theorem}
+
+\begin{proof}
+有限情形令 $\mathcal D=\{A:\mu(A)=\nu(A)\}$。总质量相等使 $X\in\mathcal D$；若
+$A\subset B$ 且二者在 $\mathcal D$ 中，有限性给
+\[
+ \mu(B\setminus A)=\mu(B)-\mu(A)=\nu(B)-\nu(A)=\nu(B\setminus A).
+\]
+对不交可数并则用两测度的可数可加性。因此 $\mathcal D$ 是含 $\mathcal P$ 的 $\lambda$-系统，
+由 $\pi$--$\lambda$ 定理包含 $\sigma(\mathcal P)$。
+
+$\sigma$-有限情形固定 $n$，比较有限测度
+$A\mapsto\mu(A\cap P_n)$ 与 $A\mapsto\nu(A\cap P_n)$。它们在
+$\mathcal P$ 上相等，因为 $A\cap P_n\in\mathcal P$，故在生成 $\sigma$-代数上相等。再令
+$n\to\infty$ 并用从下连续性。共同耗尽必须位于测试类中，正是为了保证交后的等式仍在已知范围内。
+\end{proof}
+
+\begin{theorem}[\Caratheodory{} 扩张：环版]\label{theorem:2-2-1-0}
+设 $\mu_0$ 是环 $\mathcal R$ 上的预测度，并令
+$X=\bigcup_{R\in\mathcal R}R$。以可数个 $\mathcal R$ 中集合覆盖并取 $\mu_0$ 成本下确界得到
+$\mu^*$。则每个 $R\in\mathcal R$ 都是 $\mu^*$-可测，且
+$\mu^*|_{\sigma(\mathcal R)}$ 扩张 $\mu_0$。若存在
+$R_n\uparrow X$、$R_n\in\mathcal R$ 且 $\mu_0(R_n)<\infty$，扩张在
+$\sigma(\mathcal R)$ 上唯一。
+\end{theorem}
+
+\begin{proof}
+覆盖下确界是外测度。固定 $A\in\mathcal R$ 和测试集 $E\subset X$。若
+$E\subset\bigcup_kR_k$，则
+\[
+ E\cap A\subset\bigcup_k(R_k\cap A),\qquad
+ E\setminus A\subset\bigcup_k(R_k\setminus A).
+\]
+环对交和差封闭，且预测度的有限可加性给
+$\mu_0(R_k)=\mu_0(R_k\cap A)+\mu_0(R_k\setminus A)$。对覆盖成本求和、再对所有覆盖取下确界，
+得到
+\[
+ \mu^*(E)\ge\mu^*(E\cap A)+\mu^*(E\setminus A).
+\]
+与次可加合并，$A$ 可测。这里没有使用 $A^c\in\mathcal R$。
+
+单集合覆盖给 $\mu^*(A)\le\mu_0(A)$。反过来，若 $A\subset\bigcup_kR_k$，把
+$R_k$ 显式不交化为
+\[
+ D_1=R_1,\qquad D_k=R_k\setminus\bigcup_{j<k}R_j\quad(k\ge2).
+\]
+环对有限并与差封闭，故 $D_k,A\cap D_k\in\mathcal R$；这些集合两两不交，而且
+$A=\bigsqcup_k(A\cap D_k)$。预测度的可数可加性与由有限可加性推出的单调性给
+\[
+ \mu_0(A)=\sum_k\mu_0(A\cap D_k)
+ \le\sum_k\mu_0(D_k)
+ \le\sum_k\mu_0(R_k).
+\]
+对所有覆盖取下确界得反向不等式。所以限制确实扩张 $\mu_0$。
+存在性由 \Caratheodory{} 定理完成；唯一性在共同有限耗尽上应用上一测度唯一性定理。
+\end{proof}
+
+\begin{theorem}[集合与函数单调类定理]\label{theorem:2-2-1-3}
+包含代数 $\mathcal A$ 的最小集合单调类是 $\sigma(\mathcal A)$。若有界实函数的线性类
+$\mathcal H$ 含常数，对有共同一致界的点态单调极限封闭，并且
+$\1_A\in\mathcal H$ 对每个 $A\in\mathcal A$ 成立，则 $\mathcal H$ 包含所有有界
+$\sigma(\mathcal A)$-可测实函数。复值版分别处理实部、虚部。
+\end{theorem}
+
+\begin{proof}
+令 $\mathcal M$ 为含 $\mathcal A$ 的最小单调类。固定 $B\in\mathcal A$，考察满足
+$A\cap B,A\setminus B,B\setminus A\in\mathcal M$ 的 $A\in\mathcal M$。对递增列
+$A_n\uparrow A$，三个相应序列分别为
+\[
+ A_n\cap B\uparrow A\cap B,\qquad
+ A_n\setminus B\uparrow A\setminus B,\qquad
+ B\setminus A_n\downarrow B\setminus A;
+\]
+对递减列，三个单调方向全部反转。因此该类是含 $\mathcal A$ 的单调类，必等于
+$\mathcal M$。这说明：对每个 $B\in\mathcal A$ 和 $A\in\mathcal M$，上述三个集合都属于
+$\mathcal M$。
+
+现在固定 $B\in\mathcal M$，并对 $A$ 重复同一个单调类论证。上一段保证这个新类包含
+$\mathcal A$，故它也等于 $\mathcal M$。从而 $\mathcal M$ 对任意两个成员的交与差封闭。特别地，
+$X\setminus A\in\mathcal M$，有限并也属于 $\mathcal M$；任意可数并是其有限部分并的递增极限。所以
+$\mathcal M$ 是 $\sigma$-代数，即 $\mathcal M=\sigma(\mathcal A)$。
+
+对函数版，令 $\mathcal G=\{A:\1_A\in\mathcal H\}$。常数给
+$X\in\mathcal G$；线性和有界单调极限使 $\mathcal G$ 成为含 $\mathcal A$ 的单调类。因此
+$\1_A\in\mathcal H$ 对所有 $A\in\sigma(\mathcal A)$ 成立。线性性给所有有界简单函数。
+若 $0\le f\le M$ 可测，dyadic 下逼近
+\[
+ s_n=2^{-n}\lfloor2^nf\rfloor
+\]
+是简单函数、递增至 $f$ 且共同由 $M$ 控制，故 $f\in\mathcal H$。一般有界实函数拆成正负部。
+\end{proof}
+
+\begin{proposition}[分布由半直线确定]\label{proposition:2-2-1-4}
+有限 Borel 测度 $\mu$ 在 $\R$ 上由
+$F(x)=\mu(( -\infty,x])$ 唯一决定。
+\end{proposition}
+
+\begin{proof}
+集合族 $\{(-\infty,q]:q\in\Q\}$ 对有限交封闭。对任意实数 $a$，
+\[
+ (-\infty,a)=\bigcup_{\substack{q\in\Q\\q<a}}(-\infty,q],\qquad
+ (-\infty,a]=\bigcap_{\substack{q\in\Q\\q>a}}(-\infty,q].
+\]
+因此每个开区间可由两个这样的半直线作差得到，该族生成 $\Borel(\R)$。两个具有同一 $F$ 的测度在
+这个 $\pi$-系统上相等；测度的从下连续性还给出
+\[
+ \mu(\R)=\lim_{n\to\infty}F(n)=\nu(\R).
+\]
+总质量相等且有限，故测度唯一性定理可以应用并给出结论。
+\end{proof}
+
+\begin{example}[矩形与柱集]\label{ex:2-2-1-2}
+可测矩形 $A\times B$ 对有限交封闭并生成乘积 $\sigma$-代数。对坐标空间
+$\prod_{i\in I}X_i$，只限制有限个坐标的柱集也是 $\pi$-系统；这些有限观测生成柱
+$\sigma$-代数。确切地，若
+\[
+ C=\bigcap_{i\in F}\pi_i^{-1}(A_i),\qquad
+ D=\bigcap_{i\in G}\pi_i^{-1}(B_i),
+\]
+其中 \(F,G\subset I\) 有限，则 \(C\cap D\) 仍只限制 \(F\cup G\) 中的有限多个坐标。后续乘积
+测度与过程的有限维分布都由此被唯一识别。
+\end{example}
+
+\begin{example}[相等类恰好需要 Dynkin 闭包]\label{ex:2-2-1-3}
+令 \(X=\{1,2,3,4\}\)，取均匀概率 \(\nu\)，并令
+\[
+ \mu(\{1\})=\mu(\{4\})=\frac38,\qquad
+ \mu(\{2\})=\mu(\{3\})=\frac18.
+\]
+对 \(A=\{1,2\}\) 和 \(B=\{1,3\}\)，有
+\[
+ \mu(A)=\nu(A)=\mu(B)=\nu(B)=\frac12,
+\]
+但
+\[
+ \mu(A\cap B)=\mu(\{1\})=\frac38
+ \ne\frac14=\nu(\{1\}).
+\]
+因此相等类 \(\mathcal D=\{E:\mu(E)=\nu(E)\}\) 虽是 \(\lambda\)-系统，却不必对交封闭；唯一性
+证明必须从一个本身对交封闭的 \(\pi\)-系统起步。
+\end{example}
+
+\begin{example}[区间生成 Borel]\label{ex:2-2-1-1}
+上一命题的证明同时说明，有理端点半直线已经生成 $\Borel(\R)$。不可数的所有开集观测因此可由
+一个可数测试族编码。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=8mm and 12mm]
+ \node[book strong node] (p) {$\pi$-系统\\有限交};
+ \node[book node,right=of p] (d) {最小 $\lambda$-系统\\补差、不交可数并};
+ \node[book strong node,right=of d] (s) {$\sigma(\mathcal P)$};
+ \node[book warm node,below=of d] (m) {函数单调类\\简单函数 $\to$ 有界可测函数};
+ \draw[book arrow] (p)--(d);
+ \draw[book arrow] (d)--node[above]{双重闭包}(s);
+ \draw[book dashed arrow] (p)--(m);
+ \draw[book arrow] (m)--(s);
+\end{tikzpicture}
+\caption{集合的 $\pi$--$\lambda$ 闭包与函数单调闭包。两条路线都把简单观测扩展到生成对象。}
+\label{fig:pi-lambda-monotone-closures}
+\end{figure}
+
+\begin{remark}
+$\sigma$-有限唯一性不是把“有限”两个字删除。必须给出共同有限耗尽，而且耗尽集合要落在测试类中。
+函数单调类也不是对任意点态极限封闭：共同一致界保证极限仍属于有界函数的论域。
+\end{remark}
+
+这些闭包机制在后文有三类应用：独立性可先在生成 $\pi$-系统上检验；乘积测度与随机过程的有限维
+分布可先在矩形或柱集上识别；第~3~章定义积分后，函数单调类将把简单函数等式推进到有界可测函数。
+
+\begin{exercise}
+证明有理端点半开区间生成 $\Borel(\R)$。
+\end{exercise}
+\begin{exercise}
+证明两个概率测度若在一个生成 $\pi$-系统上相等，则处处相等。
+\end{exercise}
+\begin{exercise}
+在三点集合上构造一个 $\lambda$-系统，它不是 $\sigma$-代数。
+\end{exercise}
+\begin{exercise}
+从半开区间半环构造有限不交并环，并证明长度函数从上连续于空集。
+\end{exercise}
+\begin{exercise}
+逐层复现函数单调类证明，从指标函数推进到一般有界可测函数。
+\end{exercise}
+
+唯一性回答了“简单测试能否识别测度”；接下来要问的是，已经识别出的 Borel 测度能否由开集、紧集与
+紧支撑连续函数可靠地逼近。
+
+\subsection{Radon 测度、支撑与一致紧性}\label{subsec:2-2-2}
+\index{Radon 测度}\index{支撑}\index{一致紧性}
+
+Borel $\sigma$-代数告诉我们哪些集合可以测，却没有保证一个 Borel 集能由几何上可见的开集和紧集
+逼近。分析中常用的测试对象有紧支撑，概率极限也必须阻止质量逃向无穷；两件事都要求测度与拓扑
+之间有更强的配合。
+
+\begin{definition}[Dirac 测度]\label{def:dirac-measure}
+设 $(X,\mathcal A)$ 为可测空间且 $x\in X$。定义
+\[
+ \delta_x(A)=\1_A(x)=
+ \begin{cases}1,&x\in A,\\0,&x\notin A.
+ \end{cases}
+\]
+称为点 $x$ 处的 Dirac 测度。这个定义不要求 $\{x\}\in\mathcal A$；只有当我们把单点本身作为
+事件或讨论原子集合时，才需要单点可测。
+\end{definition}
+
+\begin{definition}[原子]\label{def:measure-atom}
+设 $\mu$ 为测度。若可测集 $A$ 满足 $\mu(A)>0$，并且每个可测子集 $B\subset A$ 都满足
+$\mu(B)=0$ 或 $\mu(A\setminus B)=0$，则称 $A$ 为 $\mu$ 的原子。若单点可测且
+$\mu(\{x\})>0$，则 $\{x\}$ 是原子，并简称 $x$ 为点原子。Dirac 测度 $\delta_x$ 的全部质量
+集中在点原子 $x$ 上。
+\end{definition}
+
+\begin{example}[质量逃向无穷]\label{ex:2-2-2-3}
+在 $\R$ 上取 $\delta_n$。任何紧集 $K$ 有界，故当 $n$ 足够大时
+$\delta_n(\R\setminus K)=1$。所以没有一个紧集能统一包含这些概率的大部分质量。另一方面，若
+$f$ 连续且在某个紧集外为零，则 $f(n)=0$ 最终成立；于是只观察这类函数时，$\delta_n$ 看起来趋于
+零，总质量却逸向无穷。这个差别将在模糊收敛（vague convergence）与概率弱收敛之间再次出现。
+\end{example}
+
+\begin{definition}[Radon 测度]\label{def:2-2-2-1}
+测度称为局部有限，如果每点有有限测度的开邻域。局部紧 Hausdorff 空间 $X$ 上的 Borel 测度
+$\mu$ 称为 Radon 测度，如果
+\begin{enumerate}
+ \item 每个紧集具有有限测度；
+ \item 每个 Borel 集外正则；
+ \item 每个开集内正则。
+\end{enumerate}
+紧集有限蕴含局部有限，因为每点有相对紧邻域。
+\end{definition}
+
+\begin{definition}[支撑]\label{def:2-2-2-2}
+拓扑空间上 Borel 测度 $\mu$ 的支撑定义为
+\[
+ \supp\mu=\{x\in X:\mu(U)>0\text{ 对每个含 }x\text{ 的开集 }U\}.
+\]
+其补集是所有零测开集之并，因此 $\supp\mu$ 总是闭集。这个任意并是否仍零测，需要额外的可数或
+紧性压缩，不能从定义推出。
+\end{definition}
+
+\begin{example}[Dirac 与原子测度的支撑]\label{ex:2-2-2-1}
+在 Hausdorff 空间的 Borel $\sigma$-代数上，
+\(\supp\delta_x=\{x\}\)：含 \(x\) 的开集具有 \(\delta_x\)-质量 \(1\)，而对 \(y\ne x\)，
+Hausdorff 性给出 \(y\) 的一个不含 \(x\) 的开邻域。更一般地，若 \(x_1,\dots,x_r\) 两两不同且
+\[
+ \mu=\sum_{j=1}^r a_j\delta_{x_j},\qquad a_j>0,
+\]
+则
+\[
+ \mu(B)=\sum_{\{j:x_j\in B\}}a_j,
+ \qquad \supp\mu=\{x_1,\dots,x_r\}.
+\]
+若改取可数多个正权原子并假设 \(\sum_j a_j<\infty\)，同一邻域判据给出
+\(\supp\mu=\overline{\{x_j:j\ge1\}}\)。
+\end{example}
+
+\begin{definition}[一致紧测度族]\label{def:2-2-2-3}
+概率测度族 $\mathcal P$ 称为\emph{一致紧的}（tight），如果对每个 $\varepsilon>0$，存在紧集
+$K\subset X$
+使
+\[
+ \sup_{\mu\in\mathcal P}\mu(X\setminus K)<\varepsilon.
+\]
+单个 Radon 概率测度构成的一点族是一致紧的，因为 $X$ 本身是开集，开集内正则给出
+$\mu(K)>1-\varepsilon$ 的紧集。
+\end{definition}
+
+\begin{example}[原子质量逃逸]\label{ex:2-2-2-2}
+在 $\R$ 上令 $\mu_n=\delta_n$。对任意紧集 $K$，存在 $R>0$ 使 $K\subset[-R,R]$；当整数
+$n>R$ 时，
+\[
+  \mu_n(\R\setminus K)=1.
+\]
+因此 $(\mu_n)$ 不是一致紧的，尽管每个 $\mu_n$ 单独都是 Radon 概率测度。这个例子把一致紧性所排除的
+“质量逃向无穷远”写成了精确的紧集外质量计算。
+\end{example}
+
+\begin{remark}[矩界给出一致紧性]
+积分建立后，若一族 $\R^n$ 上的概率测度满足
+$\sup_\alpha\int |x|^2\,\mu_\alpha(\dd x)\le C$，则对每个 $R>0$，
+\[
+  \mu_\alpha(\{|x|>R\})
+  \le R^{-2}\int |x|^2\,\mu_\alpha(\dd x)
+  \le C/R^2.
+\]
+所以取闭球 $\overline B(0,R)$ 并令 $R\to\infty$ 即得一致紧性。这是 Chebyshev 不等式的测度形式。
+\end{remark}
+
+\begin{lemma}[紧集与开集之间的帽函数]\label{lem:lch-compact-open-bump}
+设 $X$ 局部紧 Hausdorff，$K\subset U$，其中 $K$ 紧、$U$ 开。则存在
+$f\in C_c(X)$ 使 $0\le f\le1$、$f=1$ 于 $K$，并且 $\supp f\subset U$。
+\end{lemma}
+
+\begin{proof}
+这正是上一章已经完整证明的局部 Urysohn 引理
+\ref{theorem:1-3-1-2}；该定理先由相对紧邻域引理得到
+$K\subset V\Subset U$，再在一点紧化中对 $K$ 与补集作连续分离。因此它给出的函数同时满足
+$f|_K=1$ 与严格的支撑包含 $\supp f\subset U$，而不只是 $f=0$ 于 $X\setminus U$。
+\end{proof}
+
+\begin{lemma}[Radon 测度的开集逼近]\label{lemma:2-2-2-1}
+若 $U$ 开且 $\mu$ Radon，则集合层已有
+\[
+ \mu(U)=\sup\{\mu(K):K\subset U,\ K\text{ 紧}\}.
+ \label{eq:radon-open-set-skeleton}
+\]
+\end{lemma}
+
+\begin{proof}
+这正是 Radon 测度对开集的内正则性。
+\end{proof}
+
+\begin{remark}[连续函数形式]
+上一帽函数引理把每个紧核 \(K\subset U\) 夹在一个函数
+\(f\in C_c(X)\) 的水平集之间。第~3~章定义积分后，这一事实将给出
+\[
+ \mu(U)=\sup\left\{\int f\,\dd\mu:
+ f\in C_c(X),\ 0\le f\le1,\ \supp f\subset U\right\}.
+ \label{eq:radon-open-function-future}
+\]
+\end{remark}
+
+\begin{lemma}[可数相对紧基]\label{lem:radon-relative-compact-base}
+第二可数局部紧 Hausdorff 空间有一个可数基 $(V_j)$，每个 $\overline{V_j}$ 紧；还可选递增紧集
+$K_j$ 使 $K_j\subset\interior K_{j+1}$ 且 $\bigcup_jK_j=X$。
+\end{lemma}
+
+\begin{proof}
+若 $X=\varnothing$，结论平凡。以下设 $X\ne\varnothing$；若所得基只有有限多个元素，就周期性重复
+这些元素，把它枚举为一个序列。
+给定 $x\in U$ 且 $U$ 开，上一章的相对紧邻域引理
+\ref{proposition:1-3-1-1} 给出 $x\in V$ 且 $\overline V\subset U$、$\overline V$ 紧。
+若 $(B_i)$ 是一个可数基，再取 $x\in B_i\subset V$，便有
+$\overline{B_i}\subset\overline V\subset U$。因此从该可数基中保留所有闭包紧的基元素后，所得
+子族仍能细化任意邻域。枚举为 $(V_j)$。取 $K_1=\overline{V_1}$；已得 $K_j$ 后，紧集
+$K_j\cup\overline{V_{j+1}}$ 可由有限个相对紧基元
+$V_{i_1},\ldots,V_{i_r}$ 覆盖。令
+\[
+ K_{j+1}=\overline{V_{i_1}}\cup\cdots\cup\overline{V_{i_r}}.
+\]
+则 $K_{j+1}$ 紧，而开集 $\bigcup_{\ell=1}^rV_{i_\ell}$ 包含
+$K_j\cup\overline{V_{j+1}}$ 并包含于 $K_{j+1}$。因此
+$K_j\subset\interior K_{j+1}$；每个基元最终包含于某个 $K_j$，所以
+$\bigcup_jK_j=X$。
+\end{proof}
+
+\begin{theorem}[自动 Radon 判据]\label{theorem:2-2-2-2}
+若 $X$ 第二可数、局部紧 Hausdorff，$\mu$ 是在紧集上有限的 Borel 测度，则 $\mu$ 为 Radon
+测度。并且每个有限测度 Borel 集都可由紧集从内逼近。
+\end{theorem}
+
+\begin{proof}
+取上一引理的相对紧基。空开集的内正则性是平凡的。若 $U$ 是非空开集，把满足 $\overline{V_j}\subset U$ 的基元素列为
+$W_1,W_2,\dots$，并令 $L_n=\bigcup_{j\le n}\overline{W_j}$。则 $L_n$ 紧、包含于 $U$，而
+$\bigcup_nW_n=U$，并且 $\bigcup_{j\le n}W_j\subset L_n$。从下连续性给
+\[
+ \mu(U)=\lim_n\mu\Bigl(\bigcup_{j\le n}W_j\Bigr)
+ \le\sup_{K\subset U,\ K\text{ 紧}}\mu(K)\le\mu(U),
+\]
+故开集内正则。紧耗尽还说明 $\mu$ 为 $\sigma$-有限。
+
+先记录有限测度空间中的推广步骤。若 $O\subset X$ 是相对紧开集，则限制测度
+$\mu_O(A)=\mu(A)$（$A$ 为 $O$ 的 Borel 子集）满足 $\mu_O(O)<\infty$；而 $O$ 的开子集也是
+$X$ 的开集，所以上一段给出它们的紧内逼近。令 $\mathcal R_O$ 为这些 Borel 集 $A\subset O$
+的集族：对每个 $\varepsilon>0$，存在 $O$ 中的相对闭集 $F\subset A$ 与相对开集 $G\supset A$，
+使
+\[
+ \mu_O(A\setminus F)<\varepsilon,\qquad
+ \mu_O(G\setminus A)<\varepsilon.
+\]
+开集属于 $\mathcal R_O$：上一段的紧内逼近同时给出相对闭内逼近，外逼近可取它本身。由于总测度有限，
+若 $A\in\mathcal R_O$，对 $A$ 的闭内逼近取补便给 $O\setminus A$ 的开外逼近，对 $A$ 的开外
+逼近取补则给 $O\setminus A$ 的闭内逼近。因此 $\mathcal R_O$ 对补封闭。若
+$A=\bigcup_{n\ge1}A_n$ 且 $A_n\in\mathcal R_O$，给每个 $A_n$ 取误差小于
+$\varepsilon2^{-n}$ 的开外逼近并取并，得到 $A$ 的开外逼近。再由从下连续性选 $N$，使
+\[
+ \mu_O\Bigl(A\setminus\bigcup_{n=1}^NA_n\Bigr)<\frac{\varepsilon}{2},
+\]
+并在前 $N$ 个集合内各取闭集，使误差总和小于 $\varepsilon/2$；这些闭集的有限并给出 $A$ 的闭
+内逼近。确切地，若 $F_n\subset A_n$，则
+\[
+ A\setminus\bigcup_{n=1}^NF_n
+ \subset
+ \left(A\setminus\bigcup_{n=1}^NA_n\right)
+ \cup\bigcup_{n=1}^N(A_n\setminus F_n),
+\]
+右端测度小于 $\varepsilon$。故 $\mathcal R_O$ 是含所有开集的 $\sigma$-代数，因而 $O$ 中每个
+Borel 集都开外正则。
+
+把相对紧基枚举为 $(O_j)_{j\ge1}$；它覆盖 $X$。令
+\[
+ D_1=O_1,\qquad D_j=O_j\setminus\bigcup_{i<j}O_i\quad(j\ge2),
+\]
+则 $D_j$ 是两两不交的 Borel 集，$D_j\subset O_j$，且 $\bigcup_jD_j=X$。给定 Borel 集 $E$
+与 $\varepsilon>0$，在有限测度空间 $O_j$ 中对 $E\cap D_j$ 取相对开集 $U_j$，使
+\[
+ E\cap D_j\subset U_j\subset O_j,
+ \qquad \mu\bigl(U_j\setminus(E\cap D_j)\bigr)<\varepsilon2^{-j}.
+\]
+因为 $O_j$ 在 $X$ 中开，每个 $U_j$ 也在 $X$ 中开。于是 $U=\bigcup_jU_j$ 是包含 $E$ 的开集，
+并且
+\[
+ U\setminus E
+ \subset\bigcup_{j\ge1}\bigl(U_j\setminus(E\cap D_j)\bigr),
+ \qquad
+ \mu(U\setminus E)<\varepsilon.
+\]
+这给出全局外正则。
+
+最后若 $\mu(E)<\infty$，对 $E^c$ 取开集 $U\supset E^c$ 且
+$\mu(U\setminus E^c)<\varepsilon$。闭集 $F=X\setminus U$ 包含于 $E$，并且
+\[
+ E\setminus F=E\cap U=U\setminus E^c,
+ \qquad \mu(E\setminus F)<\varepsilon.
+\]
+由 $E\cap K_n\uparrow E$ 及 $\mu(E)<\infty$，可取足够大的紧耗尽层 $K_n$，使
+$\mu(E\setminus K_n)<\varepsilon$。此时 $F\cap K_n$ 是包含于 $E$ 的紧集，而且
+\[
+ E\setminus(F\cap K_n)=(E\setminus F)\cup(E\setminus K_n),
+ \qquad
+ \mu(E\setminus(F\cap K_n))<2\varepsilon.
+\]
+把上述论证中的 $\varepsilon$ 换成任意给定误差的一半，便证明有限
+Borel 集内正则，三条 Radon 条件全部成立。
+\end{proof}
+
+\begin{proposition}[支撑的最小性]\label{proposition:2-2-2-3}
+若 $X$ 第二可数或 $\mu$ Radon，则
+$\mu(X\setminus\supp\mu)=0$。若闭集 $F$ 满足 $\mu(X\setminus F)=0$，则
+$\supp\mu\subset F$。所以在上述假设下，支撑是最小闭全测集。
+\end{proposition}
+
+\begin{proof}
+对每个 $x\notin\supp\mu$ 取零测开邻域 $U_x$。若 $X$ 第二可数，开覆盖
+$(U_x)$ 有可数子族覆盖其并。更显式地，若 $(B_j)$ 是可数基，令
+$J=\{j:\mu(B_j)=0\}$。每个 $x\notin\supp\mu$ 的某个零测开邻域含有一个包含 $x$ 的基元，故
+$x\in B_j$ 对某个 $j\in J$ 成立；反向包含由零测基元本身是零测开邻域得到。因此
+\[
+ X\setminus\supp\mu=\bigcup_{j\in J}B_j,
+ \qquad \mu(B_j)=0\quad(j\in J).
+\]
+故该并零测。若 $\mu$ Radon，记
+$U=\bigcup_xU_x$。每个紧集 $K\subset U$ 有有限子覆盖，故 $\mu(K)=0$；开集内正则给
+$\mu(U)=0$。两种情形都得到第一式。
+
+若 $F$ 闭且补集零测，任取 $x\notin F$，开邻域 $X\setminus F$ 的测度为零，所以
+$x\notin\supp\mu$。故 $\supp\mu\subset F$。
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=17mm]
+ \node[book strong node,minimum width=42mm,minimum height=18mm] (s) {闭支撑 $\supp\mu$\\每个邻域有正质量};
+ \node[book warning node,left=of s] (z) {外部点\\有零测开邻域};
+ \node[book warm node,right=of s] (k) {共同紧集 $K$\\包含 $1-\varepsilon$ 质量};
+ \draw[book dashed arrow] (z)--node[above]{可数或紧压缩}(s);
+ \draw[book accent arrow] (k)--node[above]{一致紧性}(s);
+\end{tikzpicture}
+\caption{支撑刻画单个测度的零质量外部；一致紧性用同一个紧集控制一族概率测度。}
+\label{fig:support-and-tightness}
+\end{figure}
+
+\begin{remark}
+在这里的第二可数或 Radon 假设下，支撑为空当且仅当测度为零。删除把任意开覆盖压成可数或有限
+控制的机制后，零测开集的任意并可能有正测度，因此这句话不再来自定义。
+\end{remark}
+
+Radon 正则性把抽象测度与开集、紧集及紧支撑连续函数联系起来。第~7~章的 Riesz 表示定理将反向地
+从 \(C_c(X)\) 上的正线性泛函恢复测度；弱收敛与 Prokhorov 定理则进一步使用这里建立的支撑和
+一致紧性概念。
+
+\begin{exercise}
+设 $X$ 是非空的第二可数 LCH 空间。证明每个非零有限 Borel 测度 $\mu$ 都可唯一写成
+$\mu(X)P$，其中 $P$ 是一致紧的 Radon 概率测度；并单独核对零测度。
+\end{exercise}
+\begin{exercise}
+计算有限原子测度以及具有连续正密度的 Borel 测度的支撑。
+\end{exercise}
+\begin{exercise}
+分别用第二可数性和 Radon 内正则性证明支撑补集零测，并指出两种压缩发生在哪一步。
+\end{exercise}
+\begin{exercise}
+给出一族非一致紧的概率测度，并证明任何子列仍不一致紧。
+\end{exercise}
+
+正测度只能累积质量。为了处理线性观测中的抵消，下一步必须在保持可数可加性的同时分离正负部分，并给
+这种抵消一个不依赖具体分解的绝对大小。
+
+\subsection{有符号测度、复测度与全变差}\label{subsec:2-2-3}
+\index{Hahn 分解}\index{Jordan 分解}\index{全变差}
+
+正测度只会累积质量，线性问题却不断产生抵消。在实线的 Borel $\sigma$-代数上，最小的例子是
+$\nu=\delta_0-\delta_1$：总质量为零，但若把两个原子分开看，绝对质量应为二。把一个有符号测度
+随意写成两个正测度之差并不能解决问题，因为可以同时给两部分加上同一个正测度。我们需要一对
+彼此不重叠的最小正负部分，以及一种对所有可测划分稳定的绝对值。
+
+\begin{definition}[有限有符号测度与有限复测度]\label{def:2-2-3-1}
+固定可测空间 $(X,\mathcal M)$。本节的有限有符号测度是实值可数可加函数
+$\nu:\mathcal M\to\R$；有限复测度是复值可数可加函数
+$\nu:\mathcal M\to\C$。这里不允许 $\pm\infty$，所以每次差和每个可数级数都在实数或复数中
+解释。复值部分只使用复数的模、实虚部和级数完备性。
+\end{definition}
+
+\begin{definition}[正负集合与互相奇异]\label{def:2-2-3-2}
+若 $P$ 的每个可测子集 $A$ 都满足 $\nu(A)\ge0$，称 $P$ 为 $\nu$-正集合。若可测集 $N$ 的
+每个可测子集 $A$ 都满足 $\nu(A)\le0$，称 $N$ 为 $\nu$-负集合。
+正测度 $\mu,\lambda$ 称互相奇异，记作 $\mu\perp\lambda$，如果存在可测 $P$ 使
+$\mu(X\setminus P)=0$ 且 $\lambda(P)=0$。
+\end{definition}
+
+\begin{definition}[全变差]\label{def:2-2-3-3}
+有限复测度 $\nu$ 的全变差定义为
+\[
+ |\nu|(E)=\sup\left\{\sum_{k=1}^r|\nu(E_k)|:
+ E=\bigsqcup_{k=1}^rE_k,\ E_k\in\mathcal M,\ r<\infty\right\}.
+\]
+总变差范数为 $\|\nu\|_{TV}=|\nu|(X)$。
+\end{definition}
+
+\begin{example}[两个 Dirac 的抵消]\label{ex:2-2-3-2}
+在 $(\R,\Borel(\R))$ 上，对 $\nu=\delta_0-\delta_1$，总质量 $\nu(\R)=0$。划分
+$\{0\},\{1\},\R\setminus\{0,1\}$ 给出变差和 $1+1+0=2$。任一划分中，含 $0$ 的块贡献至多
+$1$，含 $1$ 的块贡献至多 $1$，其余块贡献 $0$，故 $|\nu|(\R)=2$。
+\end{example}
+
+\begin{example}[复相位]\label{ex:2-2-3-3}
+仍在 $(\R,\Borel(\R))$ 上，若 $\nu=i\delta_0-(1+i)\delta_1$，同样的原子划分给
+\[
+ |\nu|(X)=|i|+|-(1+i)|=1+\sqrt2.
+\]
+把两个系数除以其模，所得单位相位分别为 $i$ 和 $-(1+i)/\sqrt2$。一般复测度的相位表示要等到
+Radon--Nikodym 定理之后才能证明。
+\end{example}
+
+\begin{remark}[由密度产生的有符号测度]\label{ex:2-2-3-1}
+下一章定义积分后，可积实函数 $f$ 将给出
+$\nu(E)=\int_Ef\,\dd\mu$；届时
+$\nu^+,\nu^-$ 分别由 $f^+,f^-$ 给出，而
+$|\nu|(E)=\int_E|f|\,\dd\mu$。这些公式将在 Radon--Nikodym 理论建立后证明。
+\end{remark}
+
+\begin{lemma}[有限有符号测度的值域有界]\label{lem:signed-measure-bounded-range}
+若 $\nu$ 为有限有符号测度，则 $\sup_{E\in\mathcal M}|\nu(E)|<\infty$。
+\end{lemma}
+
+\begin{proof}
+反设某个集合 $R_0=X$ 上的限制值域无界。若 $R$ 上限制无界，可取 $A\subset R$ 使
+$|\nu(A)|>|\nu(R)|+1$。由
+$\nu(R\setminus A)=\nu(R)-\nu(A)$，
+\[
+ |\nu(R\setminus A)|
+ \ge\bigl||\nu(A)|-|\nu(R)|\bigr|>1,
+\]
+而 $|\nu(A)|>1$。至少一块上的限制仍无界；否则若两块上的绝对值分别由 $M_1,M_2$ 控制，则任意
+$C\subset R$ 满足
+\[
+ |\nu(C)|
+ \le|\nu(C\cap A)|+|\nu(C\cap(R\setminus A))|
+ \le M_1+M_2,
+\]
+与 $R$ 上无界矛盾。保留限制仍无界的一块作下一轮 $R$，把另一块记为 $E_k$。
+由此得到两两不交且 $|\nu(E_k)|>1$ 的序列。可数可加性却要求
+$\sum_k\nu(E_k)=\nu(\bigsqcup_kE_k)$ 收敛，收敛级数的项必须趋于零，矛盾。
+\end{proof}
+
+\begin{lemma}[正子集抽取]\label{lem:hahn-positive-subset}
+若 $\nu(A)>0$，则 $A$ 含有一个 $\nu$-正集合 $P$，并且 $\nu(P)>0$。
+\end{lemma}
+
+\begin{proof}
+置 $R_0=A$。若某一步的 $R_{n-1}$ 已是正集合，便取 $P=R_{n-1}$；下述递推估计给
+$\nu(P)\ge\nu(A)>0$，结论已经成立。否则由
+\cref{lem:signed-measure-bounded-range}知下式的下确界是有限实数，令
+\[
+ \alpha_n=\inf\{\nu(B):B\subset R_{n-1},\ B\in\mathcal M\}<0
+\]
+并选 $B_n\subset R_{n-1}$ 使 $\nu(B_n)<\alpha_n/2<0$，再令
+$R_n=R_{n-1}\setminus B_n$。各 $B_n$ 两两不交，且
+\[
+ \nu(R_n)=\nu(A)-\sum_{j=1}^n\nu(B_j)\ge\nu(A)>0.
+\]
+若过程不停，令 $P=\bigcap_nR_n$。可数可加性给
+$\nu(P)=\nu(A)-\sum_n\nu(B_n)\ge\nu(A)>0$，并且
+$\nu(B_n)\to0$。若 $P$ 含子集 $C$ 且 $\nu(C)<0$，则
+$C\subset R_{n-1}$ 使 $\alpha_n\le\nu(C)$，从而
+$\nu(B_n)<\nu(C)/2<0$ 对每个 $n$ 成立，与 $\nu(B_n)\to0$ 矛盾。因此 $P$ 为正集合。
+\end{proof}
+
+\begin{theorem}[Hahn 分解]\label{theorem:2-2-3-1}
+存在可测分割 $X=P\sqcup N$，其中 $P$ 是 $\nu$-正集合、$N$ 是 $\nu$-负集合。若
+$X=P'\sqcup N'$ 是另一 Hahn 分解，则 $P\mathbin\triangle P'$ 是 $\nu$-零集，即其每个可测
+子集的 $\nu$-值均为零。
+\end{theorem}
+
+\begin{proof}
+令
+$\alpha=\sup\{\nu(P):P\text{ 为正集合}\}$；上一有界性引理保证 $\alpha<\infty$。取正集合
+$P_n$ 使 $\nu(P_n)>\alpha-2^{-n}$，并置 $P=\bigcup_nP_n$。若 $A\subset P$，把
+$A$ 按
+\[
+ D_1=P_1,\qquad D_n=P_n\setminus\bigcup_{j<n}P_j\quad(n\ge2)
+\]
+不交化。因 $A\cap D_n\subset P_n$，每项 $\nu(A\cap D_n)\ge0$，可数可加性给
+\[
+ \nu(A)=\sum_{n=1}^{\infty}\nu(A\cap D_n)\ge0.
+\]
+故
+$P$ 是正集合。它包含每个 $P_n$，所以
+$\nu(P)\ge\sup_n\nu(P_n)=\alpha$；按 $\alpha$ 的定义又不超过 $\alpha$，故等号成立。
+
+令 $N=X\setminus P$。若 $N$ 不是负集合，存在 $A\subset N$ 且 $\nu(A)>0$。正子集抽取引理给
+$Q\subset A$，其中 $Q$ 正且 $\nu(Q)>0$。于是 $P\sqcup Q$ 正而
+$\nu(P\sqcup Q)>\alpha$，矛盾。因此 $N$ 负。
+
+若还有 $P',N'$，则 $P\cap N'$ 同时是正、负集合，它的每个可测子集测度为零；
+$P'\cap N$ 也同时包含于正集合 $P'$ 和负集合 $N$，故同样为零。二者之并是
+$P\mathbin\triangle P'$，故为 $\nu$-零集。
+\end{proof}
+
+\begin{theorem}[Jordan 分解]\label{theorem:2-2-3-2}
+存在唯一互相奇异的正测度 $\nu^+,\nu^-$，使
+$\nu=\nu^+-\nu^-$。而且
+\[
+ \nu^+(E)=\sup_{A\subset E}\nu(A),\qquad
+ \nu^-(E)=-\inf_{A\subset E}\nu(A),
+ \label{eq:jordan-extrema}
+\]
+上、下确界均取可测子集。
+\end{theorem}
+
+\begin{proof}
+取 Hahn 分解 $X=P\sqcup N$，定义
+\[
+ \nu^+(E)=\nu(E\cap P),\qquad
+ \nu^-(E)=-\nu(E\cap N).
+\]
+正负集合性质说明二者为正测度；它们分别集中于 $P,N$，因而互相奇异，且差为 $\nu$。
+对 $A\subset E$，
+\[
+ \nu(A)=\nu(A\cap P)+\nu(A\cap N)
+ \le\nu(A\cap P)\le\nu(E\cap P)=\nu^+(E),
+\]
+其中第一步用 $\nu(A\cap N)\le0$，第二步用正集合 $P$ 上的单调性；取 $A=E\cap P$ 达到上界。
+另一方面，
+\[
+ \nu(A)\ge\nu(A\cap N),
+ \qquad
+ \nu(E\cap N)=\nu(A\cap N)+\nu((E\setminus A)\cap N)
+ \le\nu(A\cap N),
+\]
+所以 $\nu(A)\ge\nu(E\cap N)=-\nu^-(E)$；取 $A=E\cap N$ 达到下界。这就得到
+\eqref{eq:jordan-extrema}。
+
+若 $\nu=\alpha-\beta$，其中 $\alpha,\beta$ 为有限正测度，则对 $A\subset E$ 有
+$\nu(A)\le\alpha(A)\le\alpha(E)$，故上确界公式给 $\nu^+(E)\le\alpha(E)$。又有
+$-\nu(A)\le\beta(A)\le\beta(E)$，故下确界公式给 $\nu^-(E)\le\beta(E)$。若再有
+$\alpha\perp\beta$，取可测集 $S$，使
+$\alpha(X\setminus S)=0$、$\beta(S)=0$。对每个 $E$，
+\[
+ \nu(E\cap S)=\alpha(E\cap S)-\beta(E\cap S)=\alpha(E),
+\]
+所以上确界公式给 $\nu^+(E)\ge\alpha(E)$；结合上一不等式得到 $\nu^+=\alpha$。同时，
+$-\nu(E\setminus S)=\beta(E)$，下确界公式给 $\nu^-(E)\ge\beta(E)$；与已经证明的反向不等式
+合并得到 $\nu^-=\beta$。因此互异差分解唯一。
+\end{proof}
+
+\begin{remark}[回到两个原子]
+对 $\delta_0-\delta_1$ 可取 $P=\{0\}$、$N=X\setminus\{0\}$；零测区域如何分配不影响结果。
+于是 $\nu^+=\delta_0,\nu^-=\delta_1$。在 \eqref{eq:jordan-extrema} 中，包含于 $E$ 的集合能获得
+的最大净质量恰为 $\1_E(0)$，最小净质量恰为 $-\1_E(1)$。Hahn 分的是空间，Jordan 分的是测度。
+\end{remark}
+
+\begin{theorem}[全变差测度]\label{theorem:2-2-3-3}
+由有限划分上确界定义的 $|\nu|$ 是有限正测度，并满足
+$|\nu(E)|\le|\nu|(E)$。若 $\nu$ 为实值，则
+\[
+ |\nu|=\nu^++\nu^-.
+\]
+\end{theorem}
+
+\begin{proof}
+先证有限性。实部、虚部分别是有限有符号测度。用已经证明的 Jordan 分解置
+\[
+ \lambda_R=(\Re\nu)^++(\Re\nu)^-,\qquad
+ \lambda_I=(\Im\nu)^++(\Im\nu)^-;
+\]
+它们是有限正测度。对任意有限划分，
+\[
+ \sum_k|\nu(E_k)|
+ \le\sum_k\bigl(|\Re\nu(E_k)|+|\Im\nu(E_k)|\bigr)
+ \le \lambda_R(E)+\lambda_I(E),
+\]
+故上确界有限。单块划分给 $|\nu(E)|\le|\nu|(E)$。
+
+设 $E_j$ 两两不交，并记 $E=\bigsqcup_{j\ge1}E_j$。固定 $N$。对每个 $1\le j\le N$，在
+$E_j$ 内取有限可测划分 $(E_{j,k})_{1\le k\le r_j}$，使
+\[
+ \sum_{k=1}^{r_j}|\nu(E_{j,k})|>|\nu|(E_j)-\frac{\varepsilon}{N}.
+\]
+合并这些划分，并另加余块
+$E\setminus\bigcup_{j\le N}E_j$，便得到 $E$ 的有限划分。因此
+\[
+ |\nu|(E)\ge\sum_{j=1}^N|\nu|(E_j)-\varepsilon.
+\]
+先令 $\varepsilon\downarrow0$，再令 $N\to\infty$，得到“$\ge$”。反过来，任取 $E$ 的有限划分
+$E=\bigsqcup_{k=1}^rA_k$，用可数可加性和三角不等式，
+\[
+ \sum_{k=1}^r|\nu(A_k)|
+ \le\sum_{k=1}^r\sum_j|\nu(A_k\cap E_j)|
+ \le\sum_j|\nu|(E_j).
+\]
+对所有划分取上确界得“$\le$”，所以 $|\nu|$ 可数可加。
+
+实值情形，对任意划分 $E=\bigsqcup_kE_k$，由
+$\nu(E_k)=\nu^+(E_k)-\nu^-(E_k)$ 得
+\[
+ \sum_k|\nu(E_k)|
+ \le\sum_k\bigl(\nu^+(E_k)+\nu^-(E_k)\bigr)
+ =\nu^+(E)+\nu^-(E).
+\]
+用 Hahn 分区把 $E$ 切成 $E\cap P,E\cap N$，则
+\[
+ |\nu(E\cap P)|+|\nu(E\cap N)|
+ =\nu(E\cap P)-\nu(E\cap N)
+ =\nu^+(E)+\nu^-(E),
+\]
+所以该划分达到上界，故等号成立。
+\end{proof}
+
+\begin{theorem}[复测度极分解]\label{theorem:2-2-3-4}
+对有限复测度 $\nu$，存在 $|\nu|$-可测函数 $h$，满足
+$|h|=1$ 在 $|\nu|$-几乎处处成立，并且
+\[
+ \nu(E)=\int_Eh\,\dd|\nu|.
+\]
+\end{theorem}
+
+证明见\cref{theorem:3-3-1-3}；其核心工具是 Radon--Nikodym 定理。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=12mm and 14mm]
+ \node[book strong node] (x) {空间 $X=P\sqcup N$};
+ \node[book node,below left=of x] (p) {$P$：所有子集非负\\$\nu^+$};
+ \node[book warning node,below right=of x] (n) {$N$：所有子集非正\\$\nu^-$};
+ \node[book warm node,below=22mm of x] (v) {$|\nu|=\nu^++\nu^-$\\把负区翻正后相加};
+ \draw[book arrow] (x)--(p); \draw[book arrow] (x)--(n);
+ \draw[book arrow] (p)--(v); \draw[book arrow] (n)--(v);
+\end{tikzpicture}
+\caption{Hahn 分区、Jordan 分量与全变差的关系；复测度的对应结构由全变差与单位相位给出。}
+\label{fig:hahn-jordan-variation}
+\end{figure}
+
+\begin{remark}
+“正集合”要求它的每个可测子集非负，不只是整块质量非负。Jordan 分解的唯一性来自正负部分互相
+奇异；若删除互异条件，给两部分同时加任意正测度便得到另一差分解。全变差从有限划分定义，其
+可数可加性则是上一定理的结论。
+\end{remark}
+
+全变差在第~3~章控制复积分并产生 Radon--Nikodym 极分解；它也把概率测度之间的全变差距离写成
+可计算的上确界。第~7~章研究 \(C_0(X)\) 的对偶时，还会把这一结构推广到实、复 Radon 测度。
+
+\begin{exercise}
+计算任意有限原子复测度 $\sum_{j=1}^rc_j\delta_{x_j}$ 的全变差。
+\end{exercise}
+\begin{exercise}
+若 $\nu=\alpha-\beta$，其中 $\alpha,\beta$ 为正测度，证明
+$\nu^+\le\alpha$、$\nu^-\le\beta$。
+\end{exercise}
+\begin{exercise}
+设 $(\alpha_j)$ 与 $(\beta_k)$ 是有限族或可数族正测度，并且
+$\alpha_j\perp\beta_k$ 对每一对 $(j,k)$ 成立。证明
+$\sum_j\alpha_j\perp\sum_k\beta_k$；若要求两边仍为有限正测度，写出对可数和所需的总质量条件。
+再构造一个例子，说明仅有 $\alpha_j\perp\beta_j$ 并不足够。
+\end{exercise}
+\begin{exercise}
+不使用 Jordan 分解，直接从划分定义证明 $|\nu(E)|\le|\nu|(E)$。
+\end{exercise}
+
+测度一旦能够携带正负和复相位，下一步便是研究它怎样沿映射移动、在积空间组合，以及怎样由实线
+上的单调函数编码。

@@ -1,0 +1,1225 @@
+\section{可数性、完备性与选择成本}\label{sec:01-04}
+
+紧性从空间本身提供聚点；完备性所作的承诺要窄得多：一旦一批点已经彼此靠拢到 Cauchy 的程度，
+它们便不会在空间的边界处消失。这一差别带来一种与有限覆盖截然不同的存在性论证。
+我们不再提取收敛子网，而是逐层缩小允许区域，使任何仍留在其中的点同时避开前若干个坏集。
+可数性决定这套方法能处理多少条件，选择原则则决定“逐层取一个”究竟用了什么。
+
+
+\subsection{完备度量空间与 Baire 范畴}\label{subsec:1-4-1}
+\index{Baire 空间}
+\index{无处稠密集}
+
+先看一个不太体面的覆盖。把有理数枚举为 $\Q=\{q_1,q_2,\ldots\}$，便有
+\[
+  \Q=\bigcup_{n=1}^{\infty}\{q_n\}.
+\]
+在 $\Q$ 的子空间拓扑中，每个单点都是闭集，却没有内点。于是整个空间可以由可数多个
+“闭而没有任何局部厚度”的集合拼成。若同样的事情发生在函数空间，逐点成立的估计便可能在每个
+开集内都失去统一控制。Baire 定理说明：完备性排除了这种覆盖。
+
+\begin{definition}[无处稠密、第一范畴与剩余集]\label{def:1-4-1-1}
+设 $X$ 为拓扑空间。集合 $A\subset X$ 称为\emph{无处稠密}，若
+\[
+  \interior{\clos A}=\varnothing.
+\]
+可数个无处稠密集的并称为 $X$ 中的\emph{第一范畴集}；第一范畴集的补集称为\emph{剩余集}。
+这里的闭包和内部都在环境空间 $X$ 中取。换一个环境空间，同一个点集的范畴大小可能改变。
+\end{definition}
+
+\begin{definition}[Baire 空间]\label{def:1-4-1-2}
+若 $X$ 中每个可数族稠密开集的交仍然稠密，则称 $X$ 为 \emph{Baire 空间}。
+\end{definition}
+
+这个定义有一个常用的等价形式：$X$ 是 Baire 空间，当且仅当 $X$ 的每个非空开集都不是
+$X$ 中的第一范畴集。事实上，若 $A_n$ 无处稠密，则
+$U_n=X\setminus\clos{A_n}$ 是稠密开集。若某个非空开集 $O$ 包含于
+$\bigcup_nA_n$，则
+\[
+ O\cap\bigcap_nU_n=\varnothing,
+\]
+所以 $\bigcap_nU_n$ 不稠密。反过来，若稠密开集 $U_n$ 的交不稠密，便有非空开集
+$O$ 与该交不相交；于是
+\[
+ O\subset\bigcup_n(X\setminus U_n),
+\]
+而每个 $X\setminus U_n$ 都是无处稠密闭集。这证明了等价性。
+
+\begin{example}[$\Q$ 的稀薄覆盖]\label{ex:1-4-1-1}
+对任意 $q\in\Q$ 和任意 $\varepsilon>0$，区间
+$(q-\varepsilon,q+\varepsilon)\cap\Q$ 含有异于 $q$ 的有理数。因此
+$\{q\}$ 在 $\Q$ 中没有内点。上面的枚举表明 $\Q$ 是自身中的第一范畴集，故 $\Q$ 不是
+Baire 空间。
+\end{example}
+
+\begin{theorem}[Baire 范畴定理]\label{theorem:1-4-1-1}
+每个非空完备度量空间都是 Baire 空间。更具体地，若 $(X,d)$ 完备，$U_n\subset X$ 均为
+稠密开集，则对每个非空开集 $O\subset X$ 都有
+\[
+  O\cap\bigcap_{n=1}^{\infty}U_n\ne\varnothing.
+\]
+\end{theorem}
+
+\begin{proof}
+固定非空开集 $O$。取 $x_0\in O$。由 $O$ 开，存在 $R_0>0$ 使
+$B(x_0,R_0)\subset O$；取 $0<r_0<R_0$，便有
+\[
+  \clos{B}(x_0,r_0)\subset B(x_0,R_0)\subset O.
+\]
+假设已经选出开球 $B(x_{n-1},r_{n-1})$。
+集合
+\[
+  B(x_{n-1},r_{n-1})\cap U_n
+\]
+非空且开：非空性来自 $U_n$ 的稠密性。于是可以在其中取一点 $x_n$。记该交为 $G_n$；取
+$R_n>0$ 使 $B(x_n,R_n)\subset G_n$，再选
+\[
+  0<r_n<\min\{2^{-n},R_n\}.
+\]
+于是
+\[
+  \clos{B}(x_n,r_n)
+  \subset B(x_{n-1},r_{n-1})\cap U_n.                 \tag{1.4.1}
+\]
+这一递归取球的写法使用依赖选择；这里只记录所给证明使用的原则，并不主张这是定理的最弱公理强度。
+
+若 $m>n$，由闭球的嵌套关系，$x_m\in\clos B(x_n,r_n)$，从而
+\[
+ d(x_m,x_n)\le r_n<2^{-n}.
+\]
+故 $(x_n)$ 是 Cauchy 序列。完备性给出 $x_n\to x\in X$。固定 $n$ 后，所有 $m\ge n$
+都落在闭集 $\clos B(x_n,r_n)$ 中，取极限得到
+$x\in\clos B(x_n,r_n)\subset U_n$。同理
+$x\in\clos B(x_0,r_0)\subset O$。因此
+$x\in O\cap\bigcap_nU_n$。由于 $O$ 任意，交集稠密。
+\end{proof}
+
+现在可以看出，不完备并不是“非 Baire”的同义词。开区间 $(0,1)$ 在通常度量下不完备，但同胚
+\[
+ t\longmapsto \tan\!\bigl(\pi(t-\tfrac12)\bigr)
+\]
+把它送到完备空间 $\R$。由定理，$\R$ 是 Baire 空间；Baire 性由开集及稠密性定义，因而在同胚下保持。
+所以 $(0,1)$ 仍是 Baire 空间。这也完成了\cref{ex:1-4-1-1}中完备与范畴的对照。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[BookInk!45] (-4.7,-1.9) rectangle (4.7,1.9);
+  \node[book label] at (-4.35,1.58) {$O$};
+  \fill[BookWarning!18] (-3.2,.75) ellipse (.72 and .42);
+  \fill[BookWarning!18] (-2.9,-.75) ellipse (.52 and .3);
+  \node[BookWarning] at (-3.1,1.42) {$X\setminus U_1$};
+  \draw[BookAccent,very thick] (0,0) ellipse (4.15 and 1.55);
+  \draw[BookAccent!85,very thick] (0.55,0.05) ellipse (2.25 and 1.0);
+  \draw[BookAccent!70,very thick] (0.92,0.08) ellipse (1.38 and .58);
+  \draw[BookAccent!55,very thick] (1.02,0.1) ellipse (.86 and .3);
+  \node[book label] at (-3.1,-1.25) {$\clos B_0\subset O$};
+  \node[book label] at (-1.15,.78) {$\clos B_1\subset B_0\cap U_1$};
+  \node[book label] at (.35,-.5) {$\clos B_2\subset B_1\cap U_2$};
+  \node[book point] (p) at (1.12,.1) {};
+  \node[book label,right=5pt of p] {$x\in\bigcap_nU_n$};
+  \draw[book arrow] (-4.15,2.15) -- node[above,book label]{半径趋于 $0$，闭包逐层嵌套} (4.15,2.15);
+\end{tikzpicture}
+\caption{嵌套闭球逐层避开稀薄坏集，完备性保证这些闭球具有共同点。}
+\label{fig:1-4-1-baire-balls}
+\end{figure}
+
+序列完备性是 Analysis II 中的标准概念。网也有相应的 Cauchy 条件，而在度量空间中二者并不产生
+两种不同的完备性。
+
+\begin{definition}[Cauchy 网]\label{def:1-4-1-3}
+度量空间中的网 $(x_\alpha)_{\alpha\in D}$ 称为 \emph{Cauchy 网}，若对每个
+$\varepsilon>0$，存在 $\alpha_0\in D$，使得
+\[
+  \alpha,\beta\ge\alpha_0
+  \quad\Longrightarrow\quad
+  d(x_\alpha,x_\beta)<\varepsilon.
+\]
+\end{definition}
+
+\begin{proposition}[序列完备蕴含网完备]\label{proposition:1-4-1-2}
+若度量空间 $(X,d)$ 中每个 Cauchy 序列都收敛，则每个 Cauchy 网都收敛。
+\end{proposition}
+
+\begin{proof}
+设 $(x_\alpha)_{\alpha\in D}$ 为 Cauchy 网。对每个 $n\ge1$，存在指标阈值，使该阈值以后的
+任意两项距离小于 $2^{-n}$。递归选择递增指标
+\[
+  \alpha_1\le\alpha_2\le\cdots
+\]
+使 $\alpha_n$ 本身就是误差 $2^{-n}$ 的一个阈值。具体地，已有 $\alpha_n$ 后，先取误差
+$2^{-(n+1)}$ 的阈值，再利用 $D$ 的有向性取它与 $\alpha_n$ 的共同后继作为 $\alpha_{n+1}$。
+这次递归使用依赖选择；若先为每个 $n$ 选阈值，再逐次取共同后继，则相应地使用可数选择和依赖选择。
+
+当 $m\ge n$ 时，$\alpha_m\ge\alpha_n$，因而
+\[
+ d(x_{\alpha_m},x_{\alpha_n})<2^{-n}.
+\]
+序列 $(x_{\alpha_n})$ 是 Cauchy 序列，故收敛于某个 $x\in X$。给定 $\varepsilon>0$，取 $n$
+使 $2^{-n}<\varepsilon/2$ 且
+$d(x_{\alpha_n},x)<\varepsilon/2$。对每个 $\alpha\ge\alpha_n$，
+\[
+ d(x_\alpha,x)
+ \le d(x_\alpha,x_{\alpha_n})+d(x_{\alpha_n},x)
+ <2^{-n}+\frac{\varepsilon}{2}<\varepsilon.
+\]
+所以整个网收敛于 $x$。
+\end{proof}
+
+Baire 定理最短的应用之一，是把逐点有限的数值族变成某个开集上的共同上界。
+
+\begin{theorem}[一致有界原理的标量原型]\label{theorem:1-4-1-3}
+设 $X$ 为非空 Baire 空间，$\{f_i:X\to\R\}_{i\in I}$ 为非空连续函数族。若对每个
+$x\in X$ 都有
+\[
+  \sup_{i\in I}|f_i(x)|<\infty,
+\]
+则存在非空开集 $U\subset X$ 和常数 $M<\infty$，使
+\[
+  |f_i(x)|\le M\qquad(x\in U,\ i\in I).
+\]
+\end{theorem}
+
+\begin{proof}
+对 $n\in\N$ 令
+\[
+ E_n=\left\{x\in X:\sup_{i\in I}|f_i(x)|\le n\right\}
+     =\bigcap_{i\in I}f_i^{-1}([-n,n]).
+\]
+每个 $E_n$ 都是闭集。逐点有界假设给出 $X=\bigcup_nE_n$。若所有 $E_n$ 都没有内点，
+它们便都是无处稠密集，于是非空开集 $X$ 自身成为第一范畴集，这与 $X$ 为 Baire 空间矛盾。
+故某个 $E_N$ 含有非空开集 $U$；在 $U$ 上取 $M=N$ 即得结论。
+\end{proof}
+
+\begin{example}[逐点有界并不产生全局共同界]\label{ex:1-4-1-3}
+令
+\[
+ \psi(t)=\max\{1-4|t|,0\},\qquad f_n(x)=n\psi(x-n)\quad(n\ge1).
+\]
+函数 $f_n$ 连续，支撑包含于 $[n-\tfrac14,n+\tfrac14]$。这些区间两两不交，所以对固定
+$x\in\R$，至多一个 $f_n(x)$ 非零；从而 $\sup_n|f_n(x)|<\infty$。然而
+\[
+  \norm{f_n}_\infty=f_n(n)=n,
+\]
+故不存在全空间上的共同界。上一定理只承诺某个非空开集上的共同界。日后的一致有界原理还会使用
+线性、平移和缩放，把局部信息推进到算子范数的全局估计。
+\end{example}
+
+在 Banach 空间的一般理论中，一致有界原理把上面的闭集覆盖与线性缩放结合；开映射定理则把像空间写成
+一列闭集的并，再由 Baire 性取得某个集合的内点。第~3~章证明 $L^p$ 完备性时也会使用“Cauchy 极限仍
+留在由范数闭条件确定的函数类中”这一机制。
+这一段只预告后续路线；一致有界原理、开映射定理与 $L^p$ 空间均不作为本章论证的前提。
+
+\begin{example}[连续函数典型地不局部 Lipschitz]\label{ex:1-4-1-2}
+对有理数 $0\le a<b\le1$ 与 $M\in\N$，令
+\[
+ E_{a,b,M}=\{f\in C([0,1]):|f(x)-f(y)|\le M|x-y|\text{ 对所有 }x,y\in[a,b]\}.
+\]
+若 $f_k\in E_{a,b,M}$ 且 $f_k\to f$ 一致，则对 $x,y\in[a,b]$，
+\[
+ |f(x)-f(y)|
+ \le 2\norm{f-f_k}_\infty+|f_k(x)-f_k(y)|
+ \le 2\norm{f-f_k}_\infty+M|x-y|.
+\]
+令 $k\to\infty$ 得 $f\in E_{a,b,M}$，所以 $E_{a,b,M}$ 闭。
+
+它没有内点。给定 $f\in C([0,1])$ 与 $\varepsilon>0$，先取分段线性函数 $p$ 使
+$\norm{p-f}_\infty<\varepsilon/3$。在 $(a,b)$ 内选取一个不含 $p$ 的分点的闭区间，并在其内部取
+$c$。记 $p$ 在该区间的斜率为 $s$，并以 $D_p$ 表示由 $a,b$ 及 $p$ 的全部分点组成的有限集。选取
+\[
+  0<h<\frac{\varepsilon}{3},\qquad
+  0<\ell<\min\left\{\dist(c,D_p),
+                    \frac{h}{M+|s|+1}\right\},
+\]
+并定义三角齿
+\[
+  \tau(x)=h\max\left\{1-\frac{|x-c|}{\ell},0\right\},
+  \qquad g=p+\tau.
+\]
+于是 $\norm{g-f}_\infty<2\varepsilon/3$。在 $(c-\ell,c)$ 上，$g$ 的斜率为
+\[
+  s+\frac h\ell,
+  \qquad
+  \left|s+\frac h\ell\right|
+  \ge\frac h\ell-|s|>M.
+\]
+取该区间中两个不同点，差商的绝对值便大于 $M$，所以 $g\notin E_{a,b,M}$。故
+$E_{a,b,M}$ 没有内点；它闭，因而无处稠密。
+
+若连续函数在某个非退化区间上以常数 $L$ Lipschitz，则可在该区间内部取有理数 $a<b$，再取
+$M\in\N$ 使 $M\ge L$；该函数属于 $E_{a,b,M}$。所以这类函数包含于上述闭集的可数并。Baire 定理
+遂说明：在任何非退化区间上都不
+Lipschitz 的连续函数形成剩余集。这个结论不应被偷换成“处处不可微”；一点可微并不蕴含该点附近
+整段上的共同 Lipschitz 界。
+\end{example}
+
+完备化把“不完备”修补成“所有 Cauchy 信息都有归宿”，而且这个修补对一致连续映射是普适的。
+
+\begin{proposition}[完备化的泛性质]\label{proposition:1-4-1-4}
+每个度量空间 $(X,d)$ 都存在完备度量空间 $(\widehat X,\widehat d)$ 和等距映射
+$\iota:X\to\widehat X$，使 $\iota(X)$ 稠密。若 $Y$ 完备，$f:X\to Y$ 一致连续，则存在唯一的
+一致连续映射 $\widehat f:\widehat X\to Y$ 满足 $\widehat f\circ\iota=f$。
+\end{proposition}
+
+\begin{proof}
+令 $\mathcal C(X)$ 为 $X$ 中全部 Cauchy 序列的集合。在其上定义
+\[
+ (x_n)\sim(y_n)
+ \quad\Longleftrightarrow\quad
+ d(x_n,y_n)\longrightarrow0.
+\]
+三角不等式表明这是等价关系。若 $(x_n),(y_n)$ 均为 Cauchy 序列，则
+\[
+ |d(x_n,y_n)-d(x_m,y_m)|
+ \le d(x_n,x_m)+d(y_n,y_m),
+\]
+所以数列 $d(x_n,y_n)$ 收敛。令
+\[
+ \widehat X=\mathcal C(X)/{\sim},\qquad
+ \widehat d([x_n],[y_n])=\lim_{n\to\infty}d(x_n,y_n).
+\]
+若更换代表，三角不等式使右端之差趋于 $0$，故定义与代表无关。非负性、对称性和三角不等式
+由 $d$ 的对应性质取极限得到；$\widehat d([x_n],[y_n])=0$ 正是 $(x_n)\sim(y_n)$。
+因此 $\widehat d$ 是度量。
+
+把 $x\in X$ 送到常值序列的等价类，得到等距映射 $\iota$。若 $z=[x_n]$，则
+\[
+  \widehat d(\iota(x_n),z)=\lim_{m\to\infty}d(x_n,x_m)\longrightarrow0,
+\]
+因为给定 $\varepsilon>0$，Cauchy 性给出 $N$，使 $m,n\ge N$ 时
+$d(x_n,x_m)<\varepsilon$，从而对 $n\ge N$ 有
+$\widehat d(\iota(x_n),z)\le\varepsilon$。所以 $\iota(X)$ 稠密。
+
+下面在通常的 ZFC 背景下证明完备性，并把其中的可数选择指出来。设 $(z_k)$ 是 $\widehat X$ 中的
+Cauchy 序列。递归取严格递增的 $k_j$，使
+\[
+  k,\ell\ge k_j\quad\Longrightarrow\quad
+  \widehat d(z_k,z_\ell)<2^{-j}.
+\]
+由 $\iota(X)$ 稠密，再为每个 $j$ 取 $y_j\in X$，使
+\[
+ \widehat d(\iota(y_j),z_{k_j})<2^{-j}.
+\]
+后一项逐次选点使用可数选择。若 $\ell\ge j$，则
+\[
+ d(y_j,y_\ell)
+ \le 2^{-j}+\widehat d(z_{k_j},z_{k_\ell})+2^{-\ell}
+ <2^{1-j}+2^{-\ell}.
+\]
+因此 $(y_j)$ 是 $X$ 中的 Cauchy 序列，定义 $z=[y_j]\in\widehat X$。固定 $j$，让
+$\ell\to\infty$ 可得
+\[
+ \widehat d(\iota(y_j),z)\le 2^{1-j},
+ \qquad
+ \widehat d(z_{k_j},z)<3\cdot2^{-j}.
+\]
+故子序列 $z_{k_j}\to z$。再给定 $\varepsilon>0$，取 $j$ 使
+$3\cdot2^{-j}<\varepsilon/2$ 且 $2^{-j}<\varepsilon/2$。由 $k_j$ 的构造，
+\[
+  k\ge k_j\quad\Longrightarrow\quad
+  \widehat d(z_k,z_{k_j})<2^{-j}<\varepsilon/2.
+\]
+于是对 $k\ge k_j$，
+\[
+  \widehat d(z_k,z)
+  \le\widehat d(z_k,z_{k_j})+\widehat d(z_{k_j},z)<\varepsilon.
+\]
+故整个 $z_k\to z$，证明了
+$\widehat X$ 完备。若要求在不采用可数选择的集合论背景中构造完备化，可改用具有规范基的 Cauchy
+滤子；上面的等价类证明本身不应被误报为没有任何选择步骤。
+
+最后设 $f:X\to Y$ 一致连续且 $Y$ 完备。对 $[x_n]\in\widehat X$ 定义
+\[
+  \widehat f([x_n])=\lim_{n\to\infty}f(x_n).
+\]
+一致连续性把 Cauchy 序列送到 Cauchy 序列，所以极限存在。若 $(x_n)\sim(y_n)$，给定
+$\varepsilon>0$，取一致连续性所给的 $\delta>0$；充分大的 $n$ 满足
+$d(x_n,y_n)<\delta$，从而 $d_Y(f(x_n),f(y_n))<\varepsilon$。两列极限相同，故定义与代表无关。
+为核对 $\widehat f$ 的一致连续性，给定 $\varepsilon>0$，先取 $\delta>0$ 使
+$d(u,v)<\delta$ 蕴含 $d_Y(f(u),f(v))<\varepsilon/2$。若
+$\widehat d([x_n],[y_n])<\delta$，则充分大的 $n$ 满足 $d(x_n,y_n)<\delta$；取极限得到
+$d_Y(\widehat f([x_n]),\widehat f([y_n]))\le\varepsilon/2<\varepsilon$。
+对常值序列有 $\widehat f(\iota(x))=f(x)$。若 $g$ 是另一个连续延拓，则 $g$ 与
+$\widehat f$ 在稠密集 $\iota(X)$ 上相等；由 $Y$ 为 Hausdorff 空间，它们在 $\widehat X$ 上相等。
+\end{proof}
+
+范畴中的“小”与测度中的“小”是两套不同语言。第~2~章建立 Lebesgue 测度后会看到：稠密集可以
+测度为零，剩余集也可以测度为零；两者之间没有包含关系。Baire 定理只处理可数个稀薄集合，不能把
+“可数”悄悄换成“任意”。还要留意，完备性取决于所选度量，Baire 性却只取决于拓扑。
+这里的测度比较同样只是第~2~章预告；本小节的 Baire 证明没有使用尚未定义的 Lebesgue 测度。
+
+\begin{exercise}[局部紧空间的 Baire 性]
+证明每个局部紧 Hausdorff 空间都是 Baire 空间。提示：在任意非空开集内递归取闭包紧的非空开集，
+并使用紧空间中具有有限交性质的闭集族交非空。
+\end{exercise}
+
+\begin{exercise}[开子空间]
+设 $(X,d)$ 完备，证明每个开子集 $G\subset X$ 是 Baire 空间。不要把限制度量误认为完备度量；
+可在 $G$ 上构造与原拓扑相容的完备度量，或直接修改嵌套球证明，使闭球同时远离 $X\setminus G$。
+\end{exercise}
+
+\begin{exercise}[稠密的第一范畴集]
+证明 $\Q$ 在 $\R$ 中既稠密又是第一范畴集。测度为零与剩余零测集的构造留到第~2~章，因为此处尚未
+定义 Lebesgue 测度。
+\end{exercise}
+
+\begin{exercise}[折线扰动与典型粗糙性]
+在 $C([0,1])$ 中固定有理数 $a<b$ 与 $M\in\N$。证明上文的 $E_{a,b,M}$ 闭且没有内点；构造扰动时
+先以折线逼近给定函数，再插入高度任意小而斜率超过 $M$ 加原折线最大斜率的三角齿。据此补全
+\cref{ex:1-4-1-2}的 Baire 论证，并说明它为何只排除区间上的 Lipschitz 性。
+\end{exercise}
+
+\begin{exercise}[从序列完备到网完备]
+不查阅正文，重建\cref{proposition:1-4-1-2}的证明：从 Cauchy 网中递归取误差 $2^{-n}$ 的递增
+阈值序列，先求该序列的极限，再用 Cauchy 条件证明原网收敛于同一点。逐步指出有向性和依赖选择分别
+出现在哪里。
+\end{exercise}
+
+完备性保证极限构造不会在半途离开空间；为了让这些构造进入可测论证，还要知道何时全空间的拓扑信息能由
+一套可数测试统一编码。
+
+\subsection{可分性、Polish 空间与标准 Borel 结构}\label{subsec:1-4-2}
+\index{Polish 空间}
+\index{标准 Borel 空间}
+
+度量空间的局部结构可以由每点的一列小球描述，但概率论还需要全空间共享同一套可数问题。
+第一可数性只在每个点附近给出一列邻域；第二可数性则提供一套全局可数基。两者的差距在不可数离散
+空间中已经出现：每点只有一个最小邻域，却不可能用可数多个开集覆盖所有单点信息。
+
+在进入测度论以前，我们先把“可测”所需的集合语言固定下来。
+
+\begin{definition}[$\sigma$-代数、可测空间与可测映射]\label{def:1-4-2-measurable}
+设 $S$ 为集合。若 $\mathcal S\subset\Pcal(S)$ 包含 $\varnothing$，并且对补集和可数并封闭，则称
+$\mathcal S$ 为 $S$ 上的 $\sigma$-代数，$(S,\mathcal S)$ 称为可测空间。映射
+\[
+ f:(S,\mathcal S)\longrightarrow(T,\mathcal T)
+\]
+称为可测映射，若 $f^{-1}(A)\in\mathcal S$ 对每个 $A\in\mathcal T$ 成立。拓扑空间 $S$ 的
+Borel $\sigma$-代数 $\Borel(S)$ 是包含全部开集的最小 $\sigma$-代数。
+\end{definition}
+
+\begin{example}[有限观测的最小模型]\label{ex:1-4-2-measurable}
+令 $S=\{0,1,2\}$，
+\[
+  \mathcal S=\{\varnothing,S,\{0\},\{1,2\}\}.
+\]
+补集把 $\{0\}$ 与 $\{1,2\}$ 互换；任意并仍在这四个集合中，所以 $\mathcal S$ 是
+$\sigma$-代数。它能回答“输入是否为 $0$”，却不能区分 $1$ 与 $2$。令
+$q:S\to\{0,1\}$ 满足 $q(0)=1$、$q(1)=q(2)=0$，并给值域离散 $\sigma$-代数，则
+$q^{-1}(\{1\})=\{0\}$、$q^{-1}(\{0\})=\{1,2\}$，故 $q$ 可测。反之，若值域也是
+离散的 $S$，恒等映射
+\[
+ (S,\mathcal S)\longrightarrow(S,\Pcal(S))
+\]
+不可测，因为 $\{1\}$ 的原像不属于 $\mathcal S$。可测结构记录的是允许提出哪些是非问题，而不是
+底层集合有多少点。
+\end{example}
+
+\begin{definition}[可数性条件]\label{def:1-4-2-1}
+第一可数是指每一点都有可数邻域基，这一概念已在 \S\ref{subsec:1-1-1} 使用。空间称为
+\emph{第二可数}，若它有一套可数拓扑基；称为\emph{可分}，若它有可数稠密子集；称为
+\emph{\Lindelof{}}，若它的每个开覆盖都有可数子覆盖；称为 $\sigma$-紧，若它是可数个紧子集的并。
+\end{definition}
+
+\begin{proposition}[第二可数的基本后果]\label{proposition:1-4-2-1}
+第二可数空间可分且 \Lindelof{}；度量空间可分当且仅当第二可数。
+\end{proposition}
+
+\begin{proof}
+设 $\mathcal B=\{B_n:n\in\N\}$ 是 $X$ 的可数基。对每个非空 $B_n$ 选一点 $x_n\in B_n$。
+这一步在所给证明中使用可数选择。集合 $D=\{x_n:B_n\ne\varnothing\}$ 可数。任意非空开集
+$U$ 含某个非空基元素 $B_n$，因而含 $x_n$；所以 $D$ 稠密。
+
+若 $\mathcal U$ 是开覆盖，令
+\[
+ I=\{n:\text{存在 }U\in\mathcal U\text{ 使 }B_n\subset U\}.
+\]
+对每个 $n\in I$ 选择一个这样的 $U_n\in\mathcal U$；这也是一个可数选择步骤。给定 $x\in X$，
+先取 $U\in\mathcal U$ 使 $x\in U$，再由基的性质取 $B_n$ 使 $x\in B_n\subset U$。
+此时 $n\in I$ 且 $x\in B_n\subset U_n$，故 $(U_n)_{n\in I}$ 是可数子覆盖。
+
+现在设 $(X,d)$ 可分，取可数稠密集 $D=\{a_1,a_2,\ldots\}$。族
+\[
+ \mathcal V=\{B(a_n,r):n\in\N, r\in\Q, r>0\}
+\]
+可数。若 $x\in U$ 且 $U$ 开，取 $\varepsilon>0$ 使 $B(x,\varepsilon)\subset U$。由稠密性可取
+$a_n$ 使 $d(x,a_n)<\varepsilon/3$，再取有理数 $r$ 满足
+\[
+ d(x,a_n)<r<\varepsilon-d(x,a_n).
+\]
+于是 $x\in B(a_n,r)\subset B(x,\varepsilon)\subset U$，所以 $\mathcal V$ 是拓扑基。
+结合第一段，度量空间中可分与第二可数等价。
+\end{proof}
+
+\begin{example}[不可数离散空间]\label{ex:1-4-2-2}
+设 $I$ 不可数，并给它离散拓扑。离散度量
+\[
+ d(x,y)=\begin{cases}0,&x=y,\\1,&x\ne y\end{cases}
+\]
+是完备度量，每点的单元素族 $\{\{x\}\}$ 是邻域基，故 $I$ 第一可数。若 $D\subset I$ 稠密，则
+每个开集 $\{x\}$ 必与 $D$ 相交，从而 $D=I$；所以它不可分。若存在可数拓扑基，则每个 $x$ 都有
+基元素 $B_x$ 满足 $x\in B_x\subset\{x\}$，故 $B_x=\{x\}$；一套可数基不可能包含不可数多个
+不同单点。因此它也不第二可数。其 Borel $\sigma$-代数是 $\Pcal(I)$。
+\end{example}
+
+反方向的失败甚至可以发生在可数集合上。令
+\[
+ S=(\N\times\N)\cup\{\infty\}.
+\]
+每个 $(m,n)$ 是孤立点；对 $f\in\N^\N$，令
+\[
+ U_f=\{\infty\}\cup\{(m,n):n\ge f(m)\},
+\]
+并规定 $\infty$ 的邻域是所有包含某个 $U_f$ 的集合。因为
+$U_f\cap U_g=U_{\max(f,g)}$，这确实定义了拓扑。空间 $S$ 可数，因而可分。若
+$(N_k)_{k\ge1}$ 是 $\infty$ 处的候选可数邻域基，对每个 $k$ 取 $f_k$ 使
+$U_{f_k}\subset N_k$；在这一写法中，同时取得 $(f_k)$ 使用可数选择。若候选族真是邻域基，则
+$(U_{f_k})$ 仍是邻域基。定义 $g(k)=f_k(k)+1$。对每个 $k$，点
+$(k,f_k(k))$ 属于 $U_{f_k}$ 却不属于 $U_g$，故 $U_{f_k}\not\subset U_g$。于是没有一个候选族
+能成为邻域基：若 $(N_k)$ 真是邻域基，则对邻域 $U_g$ 应存在 $k$ 使
+\[
+  U_{f_k}\subset N_k\subset U_g,
+\]
+这与上式矛盾。因此 $S$ 不第一可数。可分推出第一可数的说法，即使不离开可数集合也会失败。
+
+局部紧与第二可数结合时，可以把空间装入一列逐渐加厚的紧集。这比仅仅写成可数个紧集的并更有用：
+后续构造可以在 $K_n$ 上完成，并把误差留在 $\interior{K_{n+1}}$ 内。
+
+\begin{proposition}[第二可数 LCH 空间的紧耗尽]\label{proposition:1-4-2-2}
+若 $X$ 是第二可数、局部紧的 Hausdorff 空间，则存在紧集列 $(K_n)$，使
+\[
+ K_n\subset\interior{K_{n+1}},\qquad X=\bigcup_{n=1}^{\infty}K_n.
+\]
+特别地，$X$ 是 $\sigma$-紧空间。
+\end{proposition}
+
+\begin{proof}
+空空间的结论取 $K_n=\varnothing$ 即得。以下设 $X\ne\varnothing$。由
+\cref{proposition:1-3-1-1}，对每个 $x\in O$（$O$ 开）都存在开集 $W$ 满足
+\[
+  x\in W\subset\overline W\subset O,
+  \qquad \overline W\text{ 紧}.
+\]
+固定一套可数基 $\mathcal B$，从中筛出
+\[
+ \mathcal V=\{B\in\mathcal B:\clos B\text{ 紧}\}.
+\]
+这是可数族。它仍是拓扑基：若 $x\in O$ 且 $O$ 开，先取开集 $W$ 使
+$x\in W\subset\clos W\subset O$ 且 $\clos W$ 紧，再取 $B\in\mathcal B$ 使
+$x\in B\subset W$；于是 $B\in\mathcal V$ 且 $B\subset O$。
+
+把 $\mathcal V$ 枚举为允许重复的 $(V_m)_{m\ge1}$。令 $K_1=\clos{V_1}$。假设 $K_n$ 已定义，
+则
+\[
+ L_n=K_n\cup\clos{V_1}\cup\cdots\cup\clos{V_{n+1}}
+\]
+是紧集。开覆盖 $(V_m)_{m\ge1}$ 覆盖 $L_n$，所以存在有限指标集 $F\subset\N$ 使
+$L_n\subset\bigcup_{m\in F}V_m$。把有限子集按其递增整数串作自然数编码，并取所有可行编码中的
+最小者 $F_n$；这样每一步由既定枚举唯一确定，不需逐次另选一个有限覆盖。令
+\[
+ K_{n+1}=\clos{\bigcup_{m\in F_n}V_m}.
+\]
+有限并 $\bigcup_{m\in F_n}\clos{V_m}$ 是紧闭集，并包含上述开集之闭包；故 $K_{n+1}$ 紧。
+又因
+\[
+ K_n\subset L_n\subset\bigcup_{m\in F_n}V_m
+      \subset\interior{K_{n+1}},
+\]
+所需的加厚关系成立。最后，对任意 $x\in X$，某个 $V_m$ 含 $x$。若 $m=1$，则
+$x\in K_1$；若 $m\ge2$，则 $\clos{V_m}\subset L_{m-1}\subset K_m$。所以
+$x\in\bigcup_nK_n$。
+\end{proof}
+
+\begin{definition}[Polish 空间]\label{def:1-4-2-2}
+若拓扑空间可分，并且其拓扑可由某个完备度量诱导，则称它为 \emph{Polish 空间}。
+定义要求存在兼容完备度量，而不是要求手头碰巧写下的每个兼容度量都完备。
+\end{definition}
+
+\begin{example}[常见的 Polish 空间]\label{ex:1-4-2-1}
+欧氏空间 $\R^n$ 完备，$\Q^n$ 可数且稠密。可数离散空间在离散度量下完备，并以自身作为可数稠密集。
+空间 $\ell^2$ 的完备性属于先修内容；所有只有有限个非零项、且每项属于 $\Q$（复情形取
+$\Q+i\Q$）的序列构成可数稠密集，因为任意平方可和序列先截去尾部，再逐坐标作有理逼近。
+
+$C([0,1],\R)$ 在上确界范数下完备。它的一个可数稠密子集是具有有理分点和有理节点值的分段线性函数族。
+为验证稠密性，给定 $f\in C([0,1],\R)$ 和 $\varepsilon>0$，由一致连续性取足够细的有理分割
+$0=t_0<\cdots<t_N=1$，使同一小区间内的函数值相差小于 $\varepsilon/3$；再取
+$q_j\in\Q$ 使 $|q_j-f(t_j)|<\varepsilon/3$。连接 $(t_j,q_j)$ 得到分段线性函数 $p$。
+若 $t\in[t_j,t_{j+1}]$，$p(t)$ 是 $q_j,q_{j+1}$ 的凸组合，因此
+\[
+ |p(t)-f(t)|
+ \le \max\{|q_j-f(t)|,|q_{j+1}-f(t)|\}<\frac{2\varepsilon}{3}.
+\]
+故该可数族稠密。
+复值空间 $C([0,1],\C)$ 的证明完全相同，只需把节点值 $q_j\in\Q$ 换成
+$q_j\in\Q+i\Q$；所得函数族仍可数。
+
+通常度量下的 $(0,1)$ 不完备，但它是 Polish 空间：上一小节的正切同胚把 $\R$ 的完备度量拉回
+$(0,1)$，得到一个与原拓扑相容的完备度量。
+\end{example}
+
+对紧 Hausdorff 空间，第二可数性、可度量性和存在可数分离观测族其实是同一件事。
+
+\begin{theorem}[紧 Hausdorff 空间的可度量判据]\label{theorem:1-4-2-3}
+设 $K$ 为紧 Hausdorff 空间。以下条件等价：
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item $K$ 可度量；
+  \item $K$ 第二可数；
+  \item 存在可数连续函数族 $\{f_n:K\to[0,1]\}$ 分离点；
+  \item $C(K,\C)$ 在上确界范数下可分。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+先证 \textup{(i)}$\Rightarrow$\textup{(ii)}。若 $d$ 是 $K$ 上的兼容度量，则对每个 $m\ge1$，
+由紧性可取有限 $1/m$-网 $F_m$。在这份证明中同时选取 $(F_m)$ 使用可数选择。
+$D=\bigcup_mF_m$ 可数且稠密；由\cref{proposition:1-4-2-1}，$K$ 第二可数。
+
+再证 \textup{(ii)}$\Rightarrow$\textup{(iii)}。紧 Hausdorff 空间正规。固定可数基
+$\{B_j\}$，并把它的所有有限并枚举为可数基 $\{C_j\}$。考虑全部满足
+$\clos{B_i}\subset C_j$ 的指标对 $(i,j)$。对每一对，由 Urysohn 引理
+取连续函数 $f_{ij}:K\to[0,1]$，使
+\[
+ f_{ij}=0\text{ 于 }\clos{B_i},\qquad
+ f_{ij}=1\text{ 于 }K\setminus C_j.
+\]
+这些指标对可数；逐对取函数是这份证明中的可数选择步骤。若 $x\ne y$，Hausdorff 性先给出不交开邻域
+$O_x\ni x$ 与 $O_y\ni y$。把\eqref{eq:1-3-normal-shrink}用于闭集 $\{x\}\subset O_x$，得到开集
+$O$ 使
+\[
+  x\in O\subset\overline O\subset O_x,
+  \qquad y\notin\overline O.
+\]
+再用同一收缩性质取开集 $V$ 使 $x\in V\subset\overline V\subset O$，并从原可数基中取
+$B_i$ 使 $x\in B_i\subset V$；于是
+$x\in B_i\subset\clos{B_i}\subset O$。紧集 $\clos{B_i}$ 可由有限多个包含于 $O$ 的基元素覆盖，
+其并是某个 $C_j$，于是
+\[
+ x\in B_i\subset\clos{B_i}\subset C_j\subset O.
+\]
+于是 $f_{ij}(x)=0$ 而 $f_{ij}(y)=1$，故所得可数族分离点。
+
+设 \textup{(iii)} 成立。定义
+\[
+ \Phi:K\longrightarrow[0,1]^\N,\qquad
+ \Phi(x)=(f_1(x),f_2(x),\ldots).
+\]
+它连续，并因函数族分离点而单射。紧空间到 Hausdorff 空间的连续单射是到其像的同胚。
+可数立方体由
+\[
+ d_\square(u,v)=\sum_{n=1}^{\infty}2^{-n}|u_n-v_n|
+\]
+度量化，故 $d_\square(\Phi(x),\Phi(y))$ 拉回为 $K$ 上的兼容度量。这证明
+\textup{(iii)}$\Rightarrow$\textup{(i)}。
+
+仍假设 \textup{(iii)}。取由 $1$、$f_n$、$\overline{f_n}$ 经有限次加法和乘法生成、系数属于
+$\Q+i\Q$ 的函数全体，记为 $A_0$。有限字符串的集合可数，所以 $A_0$ 可数。其一致闭包 $A$ 是
+含常数、对复共轭封闭且分离点的闭子代数。复 Stone--Weierstrass 定理给出
+$A=C(K,\C)$，所以 $A_0$ 是 $C(K,\C)$ 的可数稠密子集。这证明
+\textup{(iii)}$\Rightarrow$\textup{(iv)}。
+
+最后设 \textup{(iv)} 成立，取可数稠密族 $(g_n)$。给定 $x\ne y$，由 Urysohn 引理存在
+$h\in C(K,[0,1])$ 使 $h(x)=0,h(y)=1$。取 $n$ 使 $\norm{g_n-h}_\infty<1/3$，则
+\[
+ |g_n(x)-g_n(y)|
+ \ge |h(x)-h(y)|-2\norm{g_n-h}_\infty>\frac13.
+\]
+因此 $(g_n)$ 分离点。写 $u_n=\Re g_n$、$v_n=\Im g_n$。对任一非恒定的
+$w\in\{u_n,v_n:n\ge1\}$，紧性给出
+\[
+  m_w=\min_Kw<M_w=\max_Kw,
+  \qquad \widetilde w=\frac{w-m_w}{M_w-m_w}\in C(K,[0,1]).
+\]
+若 $g_n(x)\ne g_n(y)$，则 $u_n(x)\ne u_n(y)$ 或 $v_n(x)\ne v_n(y)$；相应函数非恒定，且其仿射缩放
+仍区分 $x,y$。因此这些可数多个 $\widetilde w$ 仍分离点，故
+\textup{(iv)}$\Rightarrow$\textup{(iii)}。四个条件等价。
+\end{proof}
+
+\begin{definition}[标准 Borel 空间]\label{def:1-4-2-3}
+若可测空间 $(S,\mathcal S)$ 与某个 Polish 空间 $P$ 的 Borel 可测空间
+$(P,\Borel(P))$ 可测同构，则称 $(S,\mathcal S)$ 为\emph{标准 Borel 空间}。可测同构是一个双射
+$h:S\to P$，并要求 $h$ 与 $h^{-1}$ 都可测。标准 Borel 结构只保留 $\sigma$-代数，不指定某个
+兼容拓扑、距离或紧性性质。
+\end{definition}
+
+\begin{example}[同一标准 Borel 结构上的不同拓扑]\label{ex:1-4-2-3}
+闭区间 $[0,1]$ 紧而 $\R$ 不紧，所以二者不同胚；但它们 Borel 同构。为写出同构，令
+\[
+ a_0=0,\quad a_n=2^{-n}\ (n\ge1),
+ \qquad
+ b_0=1,\quad b_n=1-3^{-n}\ (n\ge1).
+\]
+两条链互不相交。定义 $s:[0,1]\to(0,1)$：令
+$s(a_n)=a_{n+1}$、$s(b_n)=b_{n+1}$，其余点固定。第一条链的像是
+$\{a_n:n\ge1\}$，第二条链的像是 $\{b_n:n\ge1\}$，故 $s$ 是从 $[0,1]$ 到 $(0,1)$ 的双射；
+其逆在两条链上向前移动一格，其余点固定。
+
+$s$ 和 $s^{-1}$ 只在可数集
+$C=\{a_n,b_n:n\ge0\}$ 上偏离恒等映射。若 $O\subset(0,1)$ 开，则
+\[
+  s^{-1}(O)\mathbin\triangle O\subset C,
+\]
+故 $s^{-1}(O)=(O\setminus C)\cup(s^{-1}(O)\cap C)$ 是 $[0,1]$ 的 Borel 集。若
+$V\subset[0,1]$ 开，则
+\[
+  (s^{-1})^{-1}(V)=s(V),\qquad s(V)\mathbin\triangle V\subset C,
+\]
+故 $s(V)$ 是 $(0,1)$ 的 Borel 集。于是 $s$ 与 $s^{-1}$ 都 Borel 可测，$s$ 是 Borel
+同构。再与连续同胚
+\[
+ (0,1)\longrightarrow\R,\qquad
+ t\longmapsto\tan\!\bigl(\pi(t-\tfrac12)\bigr)
+\]
+复合，便得到 $[0,1]$ 与 $\R$ 的 Borel 同构。这个同构不能搬运紧性、距离或连续路径。
+\end{example}
+
+下面给出一个无需解析集理论的显式编码。证明较长，因为“可以编码”要同时回答三件事：编码是否单射，
+像是否是 Borel 集，以及解码是否可测。
+
+\begin{theorem}[标准 Borel 空间的显式区间编码]\label{theorem:1-4-2-4}
+每个 Polish 空间 $P$ 都 Borel 同构于 $[0,1]$ 的某个 Borel 子集。因而，每个标准 Borel 空间
+$(S,\mathcal S)$ 都与 $[0,1]$ 的某个 Borel 子集可测同构。
+\end{theorem}
+
+\begin{proof}
+若 $P=\varnothing$，取空集即可。以下设 $P\ne\varnothing$，固定兼容完备度量 $d$ 和稠密列
+$(a_n)_{n\ge1}$。令 $Y=[0,1]^\N$，并赋予乘积度量
+\[
+ d_Y(u,v)=\sum_{n=1}^{\infty}2^{-n}|u_n-v_n|.
+\]
+\begin{samepage}
+定义映射
+\[
+ \Phi:P\longrightarrow Y,
+ \qquad
+ \Phi(x)=\bigl(\min\{1,d(x,a_n)\}\bigr)_{n\ge1}.       \tag{1.4.2}
+\]
+\end{samepage}
+每个坐标连续，故 $\Phi$ 连续。若 $x\ne y$，置 $\delta=d(x,y)>0$，并取 $a_n$ 使
+\[
+ d(x,a_n)<\min\{\delta/3,1/3\}.
+\]
+则 $d(y,a_n)>2\delta/3$。无论 $d(y,a_n)$ 是否超过 $1$，第 $n$ 个截断距离坐标都严格大于
+第 $n$ 个 $x$ 坐标，所以 $\Phi(x)\ne\Phi(y)$。
+
+$\Phi^{-1}:\Phi(P)\to P$ 也连续。设 $\Phi(x_j)\to\Phi(x)$，给定 $\varepsilon>0$，取
+$r<\min\{\varepsilon/3,1/4\}$ 和 $a_n$ 使 $d(x,a_n)<r$。第 $n$ 个坐标收敛，所以充分大的 $j$ 满足
+\[
+ \min\{1,d(x_j,a_n)\}<2r<1.
+\]
+于是 $d(x_j,a_n)<2r$，从而 $d(x_j,x)<3r<\varepsilon$。因此 $\Phi$ 是到其像
+$A=\Phi(P)$ 的同胚：这里 $P$ 与 $A$ 都是度量空间，以上序列判据确实等价于逆映射连续。把 $d$
+经 $\Phi$ 搬到 $A$，得到与子空间拓扑相容的完备度量 $\rho$。
+
+我们证明 $A$ 是 $Y$ 中的 $G_\delta$ 集。为此先证明本情形所需的一个一般事实。设 $(Z,d_Z)$
+第二可数，$A_0\subset Z$ 可分，并且 $A_0$ 有一个与子空间拓扑相容的完备度量 $\rho_0$。
+固定 $Z$ 的可数基，枚举该基的所有有限并为 $(W_r)_{r\ge1}$。对 $m\ge1$，令 $G_m$ 为所有满足
+\[
+ \begin{split}
+ &W_r\cap A_0\ne\varnothing,\\
+ &\diam_{d_Z}(W_r)<2^{-m},\\
+ &\diam_{\rho_0}(W_r\cap A_0)<2^{-m}
+ \end{split}                                                    \tag{1.4.3}
+\]
+的 $W_r$ 之并。每个 $G_m$ 开。对 $a\in A_0$，取 $Z$ 中开集 $O$，使
+\[
+  a\in O\cap A_0\subset B_{\rho_0}(a,2^{-m-2}),
+\]
+这是因为 $\rho_0$ 与子空间拓扑相容。再从 $Z$ 的基中取 $B$，使
+\[
+  a\in B\subset O\cap B_{d_Z}(a,2^{-m-2}).
+\]
+于是
+\[
+  \diam_{d_Z}(B)<2^{-m-1}<2^{-m},\qquad
+  \diam_{\rho_0}(B\cap A_0)<2^{-m-1}<2^{-m}.
+\]
+该基元素本身是枚举中的一个有限并 $W_r$，故 $a\in G_m$。因此
+$A_0\subset\bigcap_mG_m$。
+
+反过来，设 $z\in\bigcap_mG_m$。固定 $A_0$ 的稠密列 $(c_j)$。在所有满足 (1.4.3) 且包含
+$z$ 的 $W_r$ 中取编号最小者 $W_{r(m)}$，再在
+$W_{r(m)}\cap A_0$ 中取稠密列里编号最小的点 $c_{j(m)}$。这两个最小编号使构造由既定枚举决定。
+因为 $z,c_{j(m)}\in W_{r(m)}$，
+\[
+ d_Z(c_{j(m)},z)<2^{-m},
+\]
+所以 $c_{j(m)}\to z$。固定 $M$。开集 $W_{r(M)}$ 含 $z$，故充分大的 $m$ 都满足
+$c_{j(m)}\in W_{r(M)}$。于是对充分大的 $m,n$，
+\[
+ \rho_0(c_{j(m)},c_{j(n)})<2^{-M}.
+\]
+因此 $(c_{j(m)})$ 是 $\rho_0$-Cauchy 序列。完备性给出某个 $a\in A_0$ 使它在 $\rho_0$ 下收敛；
+兼容性使它也在 $d_Z$ 下收敛于 $a$。度量空间中的极限唯一，故 $z=a\in A_0$。所以
+\[
+ A_0=\bigcap_{m=1}^{\infty}G_m.                                \tag{1.4.4}
+\]
+将此事实用于 $Z=Y$、$A_0=A$。可数乘积 $Y$ 第二可数，而 $A$ 与可分空间 $P$ 同胚，因而可分；
+所以 $A$ 是 $Y$ 的 Borel 子集。
+
+还需把可数立方体编码进区间。对 $t\in[0,1/2]$，取它唯一的、不最终恒为 $1$ 的二进展开
+\[
+ t=\sum_{k=1}^{\infty}b_k(t)2^{-k},\qquad b_k(t)\in\{0,1\}.
+\]
+对二进有理数，这一约定选取最终恒为 $0$ 的展开。其像恰为
+\[
+ E=\left\{b\in\{0,1\}^\N:
+ \sum_{k\ge1}b_k2^{-k}\le\frac12,
+ \quad \forall N\ \exists k\ge N\ (b_k=0)\right\}.           \tag{1.4.5}
+\]
+部分和只依赖有限坐标，因而连续；其余项一致不超过 $2^{-N}$，所以这些部分和一致收敛，极限仍连续。
+第二个条件写成
+$\bigcap_N\bigcup_{k\ge N}\{b:b_k=0\}$，故 $E$ 是 Borel 集。
+每个数位函数 $b_k$ 都 Borel 可测。按“二进有理数取最终为零的展开”这一约定，
+\[
+  \{t\in[0,1/2]:b_k(t)=1\}
+  =[0,1/2]\cap
+    \bigcup_{j=0}^{2^{k-1}-1}
+    \left[\frac{2j+1}{2^k},\frac{2j+2}{2^k}\right).
+\]
+右侧是有限个半开区间的并，因而是 Borel 集；值域离散，所以这已证明 $b_k$ Borel 可测。
+
+取显式双射
+\[
+ \pi:\N\times\N\longrightarrow\N,
+ \qquad
+ \pi(n,k)=\frac{(n+k-2)(n+k-1)}2+n.
+\]
+对 $x=(x_n)\in Y$，把 $x_n/2$ 的数位放入第 $n$ 行，并令
+\[
+ J(x)_{\pi(n,k)}=b_k(x_n/2).
+\]
+则 $J$ 的像为
+\[
+ D=\{c\in\{0,1\}^\N:(c_{\pi(n,k)})_{k\ge1}\in E
+       \text{ 对每个 }n\}.
+\]
+$D$ 是可数个 Borel 条件的交，因而 Borel。$J$ 的每个坐标 Borel 可测；其逆由
+\[
+ (J^{-1}c)_n=2\sum_{k=1}^{\infty}c_{\pi(n,k)}2^{-k}
+\]
+给出。对固定 $n$，前 $N$ 项之后的尾和一致不超过 $2^{1-N}$，故该坐标是连续函数列的一致极限，
+从而连续。于是 $J^{-1}$ 也 Borel 可测。因此 $J$ 是 $Y$ 与 $D$ 的
+Borel 同构。这里使用了可数乘积的 Borel $\sigma$-代数由各坐标投影生成：开柱组成可数拓扑基，
+所以坐标可测性足以推出映射到 $Y$ 的可测性。由 (1.4.4)，
+\[
+ J(A)=(J^{-1})^{-1}(A)
+\]
+是 $D$ 中的 Borel 集；因 $D$ 本身 Borel，它也是 $\{0,1\}^\N$ 中的 Borel 集。
+
+最后，Cantor 编码
+\[
+C:\{0,1\}^\N\longrightarrow[0,1],
+ \qquad C(c)=\sum_{j=1}^{\infty}2c_j3^{-j}
+\]
+连续且单射，其像是闭 Cantor 集。定义域由可数乘积紧性为紧空间，值域 Hausdorff，故 $C$ 是到其像
+的同胚。因此 $B=C(J(A))$ 是 $[0,1]$ 的 Borel 子集，而
+$C\circ J\circ\Phi:P\to B$ 是 Borel 同构。
+
+若 $(S,\mathcal S)$ 标准 Borel，按定义它与某个 Polish 空间 $P$ Borel 同构；再与刚构造的同构
+复合即可。
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.35cm and 2.0cm]
+  \node[book strong node] (pol) {Polish 拓扑\\可分且可完全度量};
+  \node[book node,below=of pol] (bor) {Borel $\sigma$-代数\\只保留可测集合};
+  \node[book warm node,right=of bor] (std) {标准 Borel\\可测同构类};
+  \node[book warning node,above=of std] (ex) {$[0,1]\not\cong_{\rm top}\R$\\$[0,1]\cong_{\rm Bor}\R$};
+  \draw[book accent arrow] (pol) -- node[left,book label]{由开集生成} (bor);
+  \draw[book arrow] (bor) -- node[below,book label]{忘掉具体拓扑} (std);
+  \draw[book dashed arrow] (std) -- node[right,book label]{一般不能恢复} (pol);
+  \draw[book arrow] (ex) -- (std);
+\end{tikzpicture}
+\caption{从 Polish 拓扑到标准 Borel 结构会丢失距离、紧性与连续性资料。虚线不是一个可逆过程。}
+\label{fig:1-4-2-polish-borel}
+\end{figure}
+
+\begin{remark}[编码的边界]
+\cref{theorem:1-4-2-4}只给出双向可测编码。它不保证编码是同胚，也不保持距离、紧集或连续路径。
+标准 Borel 值随机元的正则条件分布存在性将在第~5~章另行证明；本节的编码定理本身不能推出该结论，
+更不能对任意子 $\sigma$-代数无条件地产生正则版本。
+\end{remark}
+
+Polish 拓扑在后文还会为 Radon 概率的紧集逼近和 Prokhorov 紧性定理提供可数结构；标准 Borel 编码
+则会用于标准 Borel 值随机元、可测选择问题与 Kolmogorov 扩张。可测选择还需要关于集合图形或多值映射
+的额外假设；那些结论各有独立的测度论条件，不能从本小节的集合编码单独推出。
+本段出现的概率论名称均为后续章节的路线标记，本章不调用其定义或结论。
+
+\begin{remark}[不可数坐标的两种 $\sigma$-代数]
+在不可数指标集 $I$ 上，$\{0,1\}^I$ 的柱 $\sigma$-代数中，每个集合只由至多可数个坐标决定；
+\cref{rem:1-2-2-borel-cylinder}构造了一个不具有这一性质的开集。因此乘积拓扑的 Borel
+$\sigma$-代数可以严格大于坐标生成的柱 $\sigma$-代数。处理不可数时间的随机过程时，这两种结构
+必须分开。
+\end{remark}
+
+\begin{exercise}[可数乘积 Polish]
+设 $X_n$ 为 Polish 空间。为每个 $n$ 选取满足 $d_n\le1$ 的兼容完备度量 $d_n$，证明
+\[
+ d(x,y)=\sum_{n=1}^{\infty}2^{-n}d_n(x_n,y_n)
+\]
+是 $\prod_nX_n$ 上的兼容完备度量，并从各因子的可数稠密集构造乘积中的可数稠密集。
+\end{exercise}
+
+\begin{exercise}[紧耗尽的两处细节]
+重证\cref{proposition:1-4-2-2}，并分别说明：为何闭包紧的基元素仍构成基；为何只取
+$\clos{V_1}\cup\cdots\cup\clos{V_n}$ 不能自动保证 $K_n\subset\interior{K_{n+1}}$。
+\end{exercise}
+
+\begin{exercise}[数位编码]
+逐项核对 (1.4.5) 对规范二进展开的刻画，证明 $D$ 是 Borel 集，并验证 $J$ 与 $J^{-1}$ 的每个
+坐标函数均 Borel 可测。
+\end{exercise}
+
+\begin{exercise}[第一可数与可分的反例]
+对不可数离散空间和本小节的可数扇形 $S$，分别重证“第一可数但不可分”和“可分但不第一可数”。
+指出两例中哪一个可以由完备度量诱导拓扑。
+\end{exercise}
+
+可数基把许多存在性问题压缩成序列，但一列彼此相容的选择仍不会仅由“每一步非空”自动出现。下面把本章
+各类构造所用的选择原则逐一分开。
+
+\subsection{选择原则与可构造替代}\label{subsec:1-4-3}
+\index{选择公理}
+\index{依赖选择}
+\index{超滤子引理}
+
+“对每个邻域取一点”“逐次取一个更好的逼近”“取一个极大延拓”看起来都只是一个动词，集合论成本却
+不同。有限次选择可由普通递归完成；可数次相互独立的选择、后一步取决于前一步的选择，以及在不可数
+偏序中取极大元，是三种不同的动作。分析中的存在性证明若不区分它们，就很难看出哪些论证能在可分情形
+改写为序列算法，哪些论证真正需要极大化原则。
+
+\begin{example}[邻域网中的局部选点]\label{ex:1-4-3-1}
+设 $x\in\clos A$。朴素构造会对每个邻域 $U\in\mathcal N(x)$ 选一点
+$x_U\in A\cap U$；若邻域族很大，这要求同时作许多选择。可以把选择直接并入指标：令
+\[
+ D=\{(U,a):U\in\mathcal N(x),\ a\in A\cap U\},
+\]
+并规定 $(U,a)\preceq(V,b)$ 当且仅当 $V\subset U$。任意两个指标都有共同后继，因为
+$U\cap V$ 仍是 $x$ 的邻域，而且 $A\cap U\cap V\ne\varnothing$。定义网
+$y_{(U,a)}=a$；给定邻域 $W$，指标 $(W,c)$ 以后所有网值都在 $W$ 中，所以该网收敛于 $x$。
+这里没有为每个邻域预先指定一个代表。若改在可数邻域基 $(U_n)$ 中逐项取
+$a_n\in A\cap U_n$，给出的写法便使用可数选择。
+\end{example}
+
+另外两类“任选”将在本小节后半部逐项计算。其一，从乘积上的滤子出发，必须先把它扩张成超滤子，
+再在每个紧因子中取得坐标极限；若极限不唯一，还要同时从各坐标的极限集合中选点。其二，线性泛函
+沿子空间逐步延拓时，每个有限阶段可解并不自动给出一个全空间延拓；常用证明把所有相容的部分延拓
+放入偏序，再取极大元。这两个场景分别迫使我们区分超滤子引理与完整选择公理。
+
+\begin{definition}[选择函数与可数选择]\label{def:1-4-3-1}
+设 $(A_i)_{i\in I}$ 是非空集合族。函数 $f:I\to\bigcup_iA_i$ 若满足 $f(i)\in A_i$，称为该族的
+选择函数。断言每个这类集合族都有选择函数，称为\emph{选择公理}，记作 \textsf{AC}；当 $I$ 可数时，
+相应断言称为\emph{可数选择}，记作 \textsf{CC}。有限指标集上的选择可在 \textsf{ZF} 中由有限递归完成。
+\end{definition}
+
+\begin{definition}[依赖选择]\label{def:1-4-3-2}
+设 $E$ 非空，关系 $R\subset E\times E$ 满足：每个 $x\in E$ 都存在 $y\in E$ 使 $xRy$。
+\emph{依赖选择原则} \textsf{DC} 断言，对任意给定的 $x_0\in E$，存在序列
+\[
+ x_0Rx_1Rx_2R\cdots.
+\]
+它适合描述“下一步必须在上一步允许的集合中选取”的递归。
+\end{definition}
+
+\begin{definition}[证明所用原则的标签]\label{def:1-4-3-3}
+本书用 \textsf{ZF}、\textsf{CC}、\textsf{DC}、\textsf{UFL} 和 \textsf{AC} 分别表示：
+不使用选择公理、可数选择、依赖选择、超滤子引理以及完整选择公理。标签只描述写出的证明所采用的原则，
+不声称结论的集合论强度已经达到最优。我们只使用蕴含
+\[
+ \textsf{AC}\Longrightarrow\textsf{DC}\Longrightarrow\textsf{CC},
+ \qquad
+ \textsf{AC}\Longrightarrow\textsf{UFL},                       \tag{1.4.6}
+\]
+并不在 \textsf{DC} 与 \textsf{UFL} 之间添加箭头。
+\end{definition}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.2cm and 2.25cm]
+  \node[book strong node] (ac) {\textsf{AC}};
+  \node[book node,below left=of ac] (dc) {\textsf{DC}};
+  \node[book warm node,below right=of ac] (ufl) {\textsf{UFL/BPI}};
+  \node[book node,below=of dc] (cc) {\textsf{CC}};
+  \node[book node,below right=of cc] (zf) {\textsf{ZF}};
+  \draw[book accent arrow] (ac) -- (dc);
+  \draw[book accent arrow] (ac) -- (ufl);
+  \draw[book arrow] (dc) -- (cc);
+  \draw[book arrow] (cc) -- (zf);
+  \draw[book arrow] (ufl) -- (zf);
+  \node[book label,below=4pt of zf] {未画出的方向不在本书中使用};
+\end{tikzpicture}
+\caption{本章涉及的选择原则形成分叉关系，而不是五级直线。箭头表示蕴含。}
+\label{fig:1-4-3-choice-strength}
+\end{figure}
+
+Zorn 引理经常出现在“部分对象逐渐扩张”的证明中。真正需要核对的是：沿一条链取并以后，局部公理
+是否保留。
+
+\begin{proposition}[链并保持局部性质的 Zorn 模式]\label{proposition:1-4-3-1}
+设 $\mathscr P$ 是按“延拓”排序的部分结构族。若 $\mathscr P$ 非空，且每条非空链的并仍属于
+$\mathscr P$ 并为该链的上界，则 Zorn 引理给出极大部分结构；空链已有 $\mathscr P$ 中任一元素作为
+上界。对真滤子的扩张与部分坐标选择，链并
+分别保持滤子公理与函数相容性；由此分别得到超滤子和全坐标选择函数。
+\end{proposition}
+
+\begin{proof}
+抽象结论正是 Zorn 引理。我们把两个实例中的链并逐项写出。
+
+先固定集合 $X$ 上的真滤子 $\mathcal F_0$，令 $\mathscr P$ 为所有包含 $\mathcal F_0$ 的真滤子，
+按包含关系排序。它非空，因为 $\mathcal F_0\in\mathscr P$。若 $\varnothing\ne\mathscr C\subset\mathscr P$ 是链，令
+$\mathcal G=\bigcup_{\mathcal F\in\mathscr C}\mathcal F$。集合 $X$ 属于 $\mathcal G$，而
+$\varnothing$ 不属于链中任何真滤子，故不属于 $\mathcal G$。若 $A\in\mathcal G$ 且
+$A\subset B\subset X$，某个链成员含 $A$，因而也含 $B$。若 $A,B\in\mathcal G$，链的线性排序保证
+有同一个成员同时含 $A,B$，所以它也含 $A\cap B$。于是 $\mathcal G$ 是包含
+$\mathcal F_0$ 的真滤子，并为链的上界。Zorn 引理给出极大真滤子 $\mathcal U$，它按定义是超滤子。
+
+再设 $(A_i)_{i\in I}$ 是非空集合族。令 $\mathscr Q$ 为所有部分函数 $f$，其定义域
+$D_f\subset I$，并满足 $f(i)\in A_i$；按函数延拓排序。空函数说明 $\mathscr Q$ 非空。若
+$\varnothing\ne\mathscr C\subset\mathscr Q$ 是链，则 $g=\bigcup_{f\in\mathscr C}f$ 的定义域是
+$\bigcup_fD_f$。链中任意两个函数彼此延拓，因此在公共定义域上一致，故 $g$ 是函数；每个坐标值仍落在
+相应的 $A_i$ 中。所以 $g\in\mathscr Q$ 且为链的上界。Zorn 引理给出极大部分选择函数 $g$。
+若某个 $i\notin D_g$，由 $A_i\ne\varnothing$ 可取一个 $a\in A_i$，把 $(i,a)$ 加入 $g$ 便得到真延拓，
+与极大性矛盾。因此 $D_g=I$，$g$ 是选择函数。
+
+两段证明都调用 Zorn 引理，所以按本书约定标为 \textsf{AC}。第一个结论另可由较弱的超滤子引理直接给出，
+这不会改变上面这份 Zorn 证明所使用的原则。
+\end{proof}
+
+\begin{theorem}[超滤子引理与 Boolean 素理想定理]\label{theorem:1-4-3-3}
+下列两条原则等价：每个真滤子都能扩张为超滤子；每个非平凡 Boolean 代数都有素理想。该等价原则记为
+\textsf{UFL/BPI}。在通常的相对一致性意义下，它严格弱于 \textsf{AC}，且不能由 \textsf{ZF} 证明。
+\end{theorem}
+
+\begin{remark}
+这个定理关于等价性、不可证明性和相对强度的部分属于集合论元定理，本书不证明。分析中只在明确采用
+\textsf{UFL} 时使用“真滤子可扩张为超滤子”这一条。特别地，不能由某次证明用了 Zorn 引理便反推
+该结论与完整选择公理等价。
+\end{remark}
+
+\begin{example}[Tychonoff 定理的三种成本]\label{ex:1-4-3-2}
+有限个紧空间的乘积紧性可在 \textsf{ZF} 中由有限选择和开覆盖论证得到。可数个紧度量空间的乘积可用
+嵌套子序列的对角法证明；逐层提取子序列以及从每个非空因子取基点，在给出的数据没有规范选择时使用
+\textsf{CC}/\textsf{DC}。对任意族紧 Hausdorff 因子，超滤子在每个坐标的极限唯一，
+\textsf{UFL} 足以完成超滤子证明。对不要求 Hausdorff 的任意紧因子，常用的一般 Tychonoff 证明按
+\textsf{AC} 处理。因子类别是结论的一部分；“紧 Hausdorff”不能在证明结束时被省略成“一般紧”。
+
+这里把紧 Hausdorff 情形的链条写清楚。给定乘积上的真滤子，先用 \textsf{UFL} 把它扩张为超滤子
+$\mathcal U$。对每个坐标投影 $\pi_i$，像滤子 $(\pi_i)_*\mathcal U$ 仍是超滤子；紧性给它至少一个
+极限，而 Hausdorff 性使该极限唯一，记为 $x_i$。唯一确定的对象族在 \textsf{ZF} 中组成点
+$x=(x_i)$，无需再从非空集合族同时选代表。若
+$W=\bigcap_{j=1}^r\pi_{i_j}^{-1}(W_j)$ 是 $x$ 的基本邻域，则每个
+$\pi_{i_j}^{-1}(W_j)$ 属于 $\mathcal U$，有限交封闭性给 $W\in\mathcal U$；故
+$\mathcal U\to x$。若因子仅紧而不 Hausdorff，各坐标的极限集合可能有多个元素，从这些集合同时
+选出一个 $x_i$ 正是一般证明额外付出的选择成本。
+\end{example}
+
+可分性往往把不可数极大化改造成可数递归，但“每一步存在”仍不等于已经得到一整列相容对象。下面的命题
+分离了两件事：相容映射列一旦给定，在稠密并集上的粘合不需再作选择；下面写出的序列延拓还要逐次选择
+逼近点，使用 \textsf{CC} 和目标空间的完备性。构造相容映射列本身则可能需要 \textsf{DC}。
+
+\begin{proposition}[可分递归替代模式]\label{proposition:1-4-3-2}
+设 $X$ 为赋范空间，线性子空间
+$V_1\subset V_2\subset\cdots$ 的并 $V=\bigcup_nV_n$ 在 $X$ 中稠密。设 $Y$ 为 Banach 空间，
+并已给出线性映射 $T_n:V_n\to Y$，满足
+\[
+ T_{n+1}|_{V_n}=T_n,
+ \qquad \norm{T_n}\le M
+\]
+其中 $M$ 与 $n$ 无关。则存在唯一的有界线性映射 $T:X\to Y$ 延拓全部 $T_n$，且
+$\norm T\le M$。
+\end{proposition}
+
+\begin{proof}
+对 $v\in V$，取任意 $n$ 使 $v\in V_n$，定义 $T_0v=T_nv$。若 $v\in V_n\cap V_m$，不妨
+$n\le m$，相容性给出 $T_mv=T_nv$，所以 $T_0$ 定义良好。给定 $u,v\in V$，二者同属某个
+$V_N$，故线性性由 $T_N$ 得到；并且
+\[
+ \norm{T_0v}\le M\norm v.                                    \tag{1.4.7}
+\]
+
+固定 $x\in X$。对每个 $k\ge1$，集合 $V\cap B(x,2^{-k})$ 非空；在本证明的序列写法中用
+\textsf{CC} 逐项取 $v_k\in V\cap B(x,2^{-k})$，于是 $v_k\to x$。由 (1.4.7)，
+\[
+ \norm{T_0v_k-T_0v_\ell}\le M\norm{v_k-v_\ell},
+\]
+所以 $(T_0v_k)$ 在完备空间 $Y$ 中收敛。定义
+$Tx=\lim_kT_0v_k$。若 $w_k\to x$ 也是 $V$ 中的序列，则
+\[
+ \norm{T_0v_k-T_0w_k}\le M\norm{v_k-w_k}\longrightarrow0,
+\]
+故极限与逼近序列无关。若 $v_k\to x$、$w_k\to y$ 且 $v_k,w_k\in V$，则对标量
+$\lambda,\mu$ 有 $\lambda v_k+\mu w_k\to\lambda x+\mu y$，并且
+\[
+  T(\lambda x+\mu y)
+  =\lim_kT_0(\lambda v_k+\mu w_k)
+  =\lambda Tx+\mu Ty.
+\]
+此外，由 $\norm{T_0v_k}\le M\norm{v_k}$ 取极限得
+\[
+  \norm{Tx}\le M\norm x.
+\]
+所以 $T$ 线性且 $\norm T\le M$。当 $x\in V_n$ 时可取常值逼近 $v_k=x$，故
+$Tx=T_nx$，即 $T|_{V_n}=T_n$。
+若 $S$ 是另一个连续延拓，则 $S=T$ 于稠密集 $V$，连续性给出 $S=T$ 于 $X$。
+
+命题假设整列 $(T_n)$ 已经给定。若已知的只有“每个 $T_n$ 至少有一个合适的下一步延拓”，要得到相容
+整列还必须给出显式规则，或采用 \textsf{CC}/\textsf{DC}；上述完备性论证不能替代这一步。
+即使整列已经给定，上述逐点序列逼近的具体写法仍使用 \textsf{CC}；因此不能把“完备性给出极限”误读为
+整个延拓证明不含选择步骤。
+\end{proof}
+
+\begin{remark}[可分空间中的逐步延拓]\label{ex:1-4-3-3}
+一般赋范空间中，线性泛函的全空间延拓通常沿所有部分延拓应用 Zorn 引理。在可分空间中，可以先取稠密列
+$(x_n)$，令 $V_n$ 为初始子空间与 $x_1,\ldots,x_n$ 的线性张成，逐步作一维延拓，再用
+\cref{proposition:1-4-3-2}完成到闭包的延拓。假设每一步都有保持同一范数界的延拓
+$T_n:V_n\to\mathbb K$，还必须把它们取成相容链，即
+$T_{n+1}|_{V_n}=T_n$。一旦这样的一整列已经给定，且 $\norm{T_n}\le M$ 对所有 $n$ 成立，
+\cref{proposition:1-4-3-2}便给出 $\overline{\bigcup_nV_n}$ 上的唯一连续延拓；稠密性使这个闭包等于
+全空间。若只知道每个部分延拓至少存在一个合适的下一步延拓，从这些非空选择集取得一整条相容链仍是独立的
+递归步骤：除非有规范选取公式，否则这里使用 \textsf{DC}。因此，可分性把不可数偏序上的极大化化为
+可数个一维步骤、一次相容选择与一次完备化，而不是由完备性自动产生各步延拓。一维延拓公式及其范数保持
+见第~3~章。
+\end{remark}
+
+有限逼近还有一种尤其干净的结构：近似点已经显式给定，紧性只负责产生聚点，闭约束负责识别聚点。
+
+\begin{proposition}[有限近似的聚点识别原则]\label{proposition:1-4-3-4}
+设 $(K,d)$ 为紧度量空间，$C_m\subset K$ 为非空闭集，并给定序列 $(x_n)\subset K$，满足对每个
+固定的 $m$ 都有
+\[
+  d(x_n,C_m):=\inf_{z\in C_m}d(x_n,z)\longrightarrow0.
+\]
+把 $(x_n)$ 看成以 $\N$ 为指标的网，则它的每个聚点都属于 $\bigcap_mC_m$；特别地，
+$\bigcap_mC_m\ne\varnothing$。
+\end{proposition}
+
+\begin{proof}
+设 $x$ 是该网的聚点。按网聚点的刻画，存在一个收敛于 $x$ 的子网 $(x_{n_\beta})$。固定 $m$。
+距离函数
+\[
+ K\longrightarrow\R,\qquad y\longmapsto d(y,C_m)
+\]
+是 $1$-Lipschitz，因为对任意 $y,y'\in K$ 与 $z\in C_m$，
+\[
+  d(y,C_m)\le d(y,z)\le d(y,y')+d(y',z),
+\]
+对 $z$ 取下确界给
+$d(y,C_m)-d(y',C_m)\le d(y,y')$，交换 $y,y'$ 后得到
+\[
+  |d(y,C_m)-d(y',C_m)|\le d(y,y').
+\]
+故该距离函数连续。原网的函数值趋于 $0$，其任一子网也趋于 $0$；另一方面，连续性给出
+\[
+ d(x_{n_\beta},C_m)\longrightarrow d(x,C_m).
+\]
+故 $d(x,C_m)=0$。由于 $C_m$ 闭，$x\in C_m$。这对每个 $m$ 都成立，所以
+$x\in\bigcap_mC_m$。
+
+紧性保证网 $(x_n)$ 至少有一个聚点，因而交集非空。一旦紧性作为已知条件，识别聚点的这一段只用
+\textsf{ZF}。若改为逐层抽取收敛子列，递归提取会带入相应的可数选择成本。
+\end{proof}
+
+\begin{example}[逐项满足有限坐标约束]\label{ex:1-4-3-coordinate-constraints}
+在 $K=[0,1]^\N$ 上取乘积度量
+\[
+ d(x,y)=\sum_{m=1}^{\infty}2^{-m}|x_m-y_m|.
+\]
+固定 $a=(a_m)\in K$，令
+\[
+ C_m=\{x\in K:x_m=a_m\},
+ \qquad
+ (x_n)_m=\begin{cases}a_m,&m\le n,\\0,&m>n.
+ \end{cases}
+\]
+坐标投影连续，所以 $C_m$ 闭且非空。对固定 $m$，当 $n\ge m$ 时 $x_n\in C_m$，因而
+$d(x_n,C_m)=0$。\cref{proposition:1-4-3-4}说明每个聚点都属于所有 $C_m$；而
+$\bigcap_mC_m=\{a\}$，所以聚点只能是 $a$。事实上还有直接估计
+\[
+ d(x_n,a)=\sum_{m>n}2^{-m}|a_m|\le\sum_{m>n}2^{-m}=2^{-n},
+\]
+故 $x_n\to a$。
+
+$K$ 的紧性可以由紧 Hausdorff 因子的 Tychonoff 定理在 \textsf{UFL} 下得到，也可由可数个紧度量
+因子的对角法在相应的 \textsf{CC}/\textsf{DC} 背景下得到。候选点显式写出以后，有限约束的验证
+不再增加选择步骤。
+\end{example}
+
+这份区分在 Radon 概率族的紧性、有限原子逼近和 Kolmogorov 扩张中分别表现为：先产生候选测度、逐步
+相容化有限测试，以及从有限维一致性得到全局对象。在可分或标准 Borel 背景中，许多测试可压缩为可数
+递归，但这并不把存在性证明自动变成有效算法。
+
+本章出现的几种证明可以概括如下。表中的标签描述这里采用的写法，而不是相应定理的最弱公理强度。
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.31\textwidth}
+  >{\raggedright\arraybackslash}p{0.16\textwidth}X@{}}
+\toprule
+证明动作 & 所用原则 & 原因或可构造替代 \\
+\midrule
+Baire 证明逐层取嵌套球 & \textsf{DC} & 下一球必须包含于上一球与新的稠密开集之交 \\
+Cauchy 网取递增阈值 & \textsf{DC} & 新指标须同时后继于旧指标与新误差阈值 \\
+Cauchy 序列商的完备性证明 & \textsf{CC} & 为一列等价类逐项取稠密代表；规范 Cauchy 滤子可避免此写法 \\
+相容映射在稠密并集上延拓 & \textsf{CC} & 本文逐半径选择逼近序列，再用目标空间完备性取极限 \\
+局部 Urysohn--Tietze 二进递归 & \textsf{DC} & 下一层开集或残差逼近依赖上一层已经作出的选择 \\
+第二可数 LCH 的紧耗尽 & \textsf{ZF} & 固定可数基后取最小有限覆盖编码 \\
+紧 Hausdorff 的 $C(K)$ 可分性 & \textsf{CC}，随后 \textsf{ZF} & 先为可数个闭包对取分离函数；再枚举有理系数代数，并用 Stone--Weierstrass 取闭包 \\
+Polish 像的 $G_\delta$ 编码 & \textsf{ZF} & 固定可数基与稠密列后，每步取最小合格编码，不再任意选点 \\
+任意紧 Hausdorff 乘积 & \textsf{UFL} & 先扩张超滤子，再利用坐标极限的唯一性 \\
+一般紧空间的常用乘积证明 & \textsf{AC} & 采用完整选择或等价的极大化过程 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{exercise}[序列子列与网子网]
+在第一可数空间中证明：对一个\emph{序列} $(x_n)$，点 $x$ 是聚点当且仅当有子序列收敛于 $x$。
+然后说明“序列”不能替换为“任意网”。令
+$D=\Fin(\Pcal(\N))$ 按包含关系定向，并在单点空间中取常值网。证明不存在从 $\N$ 到 $D$ 的共尾
+参数映射。
+
+为使论证不借用“可数个有限集的并可数”，对 $A\ne B\subset\N$ 定义
+\[
+ A\prec B
+ \quad\Longleftrightarrow\quad
+ \min(A\mathbin{\triangle}B)\in B.
+\]
+任意两个不同集合的最小差异位置恰属于其中之一，所以二者恰有一个在前。传递性也可直接核对：若
+$A\prec B\prec C$，置
+$r=\min(A\mathbin\triangle B)$、$s=\min(B\mathbin\triangle C)$，则 $r=s$ 会同时给出
+$r\in B$ 与 $r\notin B$；若 $r<s$，最先区分 $A,C$ 的位置是 $r$ 且 $r\in C$；若 $s<r$，
+最先区分位置是 $s$ 且 $s\in C$。故两种情形都有 $A\prec C$，从而 $\prec$ 是
+$\Pcal(\N)$ 上的严格全序。若参数映射为 $\varphi$，把有限集 $\varphi(n)$ 依此全序写成
+$A_{n,0}\prec\cdots\prec A_{n,k_n-1}$。固定 $\N^2\leftrightarrow\N$ 的双射；若 $j$ 解码为
+$(n,r)$，令 $E_j=A_{n,r}$（当 $r<k_n$），否则令 $E_j=\varnothing$。这样序列 $(E_j)$ 逐项列出
+所有曾出现的子集，而且没有调用可数个有限集之并仍可数这一断言。构造
+$E=\{j:j\notin E_j\}$。则 $E$ 不在该序列中，故 $\{E\}\in D$ 不可能被参数映射的任何值包含，
+共尾性失败。常值序列虽收敛，却不是这个网的序列子网。
+\end{exercise}
+
+\begin{exercise}[可数乘积的对角法]
+把可数个非空紧度量空间的乘积紧性证明写成嵌套子序列的对角论证，并分别标明：从每个因子选基点、
+逐层选收敛子序列、取对角线各使用了什么原则。若因子及稠密集都带有固定枚举，指出哪些选择可以改为
+最小编号规则。
+\end{exercise}
+
+\begin{exercise}[有限交性质的两种网]
+设紧空间中的闭集族 $\mathcal C$ 具有有限交性质。比较两种构造：为每个有限子族
+$E\in\Fin(\mathcal C)$ 选一点 $x_E\in\bigcap E$；或以全部二元组
+\[
+ (E,x),\qquad E\in\Fin(\mathcal C),\quad x\in\bigcap E
+\]
+为指标并令网值为第二坐标。证明后一构造不需要预先给出全局选择函数，并完成由聚点得到
+$\bigcap_{C\in\mathcal C}C\ne\varnothing$ 的论证。
+\end{exercise}
+
+\begin{exercise}[闭约束的有限可解性]
+设 $(K,d)$ 为紧度量空间，$(C_m)_{m\ge1}$ 是一列闭集，并假设
+$\bigcap_{m=1}^nC_m\ne\varnothing$ 对每个 $n$ 成立。若已经给定
+$x_n\in\bigcap_{m=1}^nC_m$，用 \cref{proposition:1-4-3-4} 证明
+$\bigcap_{m\ge1}C_m\ne\varnothing$。再讨论只知道每个有限交非空而未给出 $x_n$ 时，按此序列证明
+需要怎样的选择原则；最后给出使用全部可行对 $(n,x)$ 作指标、从而不预选整列 $(x_n)$ 的网证明。
+\end{exercise}
+
+上文提到的 Radon 概率、有限原子逼近与 Kolmogorov 扩张均将在后续章节定义；它们在这里只是路线预告，
+不构成本章任何结论的依赖。本章从“有限批条件最终同时满足”出发，依次建立了网、滤子、紧性、乘积、函数空间紧性与可数骨架。
+第~2~章将转向测度。那里最基本的运算只允许可数并，因而会出现一种有意的张力：拓扑收敛可以由任意
+有向集表达，测度的连续性定理却仍以序列为核心。

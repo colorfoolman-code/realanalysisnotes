@@ -1,0 +1,1970 @@
+\section{Brownian motion 与随机微积分基础}\label{sec:06-04}
+
+\subsection{Gaussian 过程与 Brownian motion 的构造}\label{subsec:6-4-1}
+\index{Gaussian 过程}\index{Brownian motion}\index{Wiener 测度}
+
+把中心随机游走的时间加快 $n$ 倍、空间缩小 $\sqrt n$ 倍，折线路径的单步高度变成
+$n^{-1/2}$，而单位时间内方差仍为一。这个缩放暗示一个连续极限，却没有提供存在性证明。
+此处把缩放关系作为模型动机，而存在性问题将由有限维 Gaussian 分布和路径连续性判据直接解决。
+
+Brown 对花粉微粒的观察、Bachelier 的价格模型和 Einstein 的扩散计算都早于严格的路径测度。
+Wiener 从路径空间出发，Kolmogorov 则把相容有限维分布拼成过程。这里采用第二条路线：先由一个
+协方差核构造全部有限维 Gaussian 分布，再用连续性定理选择连续版本。扩张与连续化是两个不同步骤；
+只完成前一步，得到的仍只是所有函数构成的典范空间上的坐标过程。
+
+\begin{definition}[Gaussian 过程]\label{def:6-4-1-1}
+实值过程 $(X_t)_{t\in T}$ 称为 \emph{Gaussian 过程}，如果对任意
+$n\ge1$、$t_1,\ldots,t_n\in T$ 和 $a_1,\ldots,a_n\in\R$，线性组合
+$\sum_{j=1}^na_jX_{t_j}$ 都具有一维 Gaussian 分布；允许方差为零的退化 Gaussian 分布。
+其均值函数与协方差核分别为
+\[
+ m(t)=\E X_t,
+ \qquad K(s,t)=\Cov(X_s,X_t).
+\]
+\end{definition}
+
+对有限时刻组，向量 $(X_{t_1},\ldots,X_{t_n})$ 的特征函数为
+\begin{equation}\label{eq:6-4-1-gaussian-fdd-cf}
+ \E e^{i\sum_ju_jX_{t_j}}
+ =\exp\!\left(i\sum_ju_jm(t_j)
+ -\frac12\sum_{j,k}u_ju_kK(t_j,t_k)\right).
+\end{equation}
+这是第五章 Gaussian 特征函数计算对线性组合的应用。特征函数唯一性定理
+\ref{theorem:5-4-3-2} 因而说明：Gaussian 过程的均值和协方差唯一决定全部有限维分布。
+这项识别只对联合 Gaussian 族成立；对一般过程，相同的前两阶矩远不足以确定分布。
+
+\begin{example}[协方差核]\label{ex:6-4-1-1}
+对 $s,t\ge0$ 令 $K(s,t)=s\wedge t$。给定 $t_1,\ldots,t_n\ge0$ 与
+$a_1,\ldots,a_n\in\R$，Tonelli 定理给出
+\begin{align*}
+ \sum_{j,k=1}^na_ja_k(t_j\wedge t_k)
+ &=\sum_{j,k}a_ja_k\int_0^\infty
+   \1_{[0,t_j]}(u)\1_{[0,t_k]}(u)\dd u\\
+ &=\int_0^\infty\left(\sum_{j=1}^na_j\1_{[0,t_j]}(u)\right)^2\dd u
+ \ge0.
+\end{align*}
+所以每个有限矩阵 $(t_j\wedge t_k)_{j,k}$ 都半正定，可以作为 Gaussian 向量的协方差矩阵。
+\end{example}
+
+\begin{definition}[Brownian motion]\label{def:6-4-1-2}
+实过程 $(B_t)_{t\ge0}$ 称为\emph{标准 Brownian motion}，如果：
+\begin{enumerate}
+  \item $B_0=0$ a.s.；
+  \item 几乎每条路径 $t\mapsto B_t$ 连续；
+  \item 对任意 $0\le t_0<t_1<\cdots<t_n$，增量
+  $B_{t_k}-B_{t_{k-1}}$ 相互独立，且
+  \[
+    B_{t_k}-B_{t_{k-1}}\sim N(0,t_k-t_{k-1}).
+  \]
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Wiener 测度]\label{def:6-4-1-3}
+令
+\[
+ C_0([0,\infty))=\{\omega\in C([0,\infty)):\omega(0)=0\},
+\]
+并赋予局部一致收敛拓扑。在这个路径空间上，使坐标过程
+$e_t(\omega)=\omega(t)$ 成为标准 Brownian motion 的 Borel 概率测度称为 \emph{Wiener 测度}。
+这里下标 $0$ 表示路径从零出发，不表示在无穷远消失。
+\end{definition}
+
+例如，下式给出该拓扑的一个完备可分度量：
+\[
+ d(\omega,\eta)=\sum_{m=1}^\infty2^{-m}
+ \bigl(1\wedge\|\omega-\eta\|_{C[0,m]}\bigr).
+\]
+这个度量确实完备：若 $(\omega_n)$ 为 Cauchy 列，则对每个 $m$，限制
+$\omega_n|_{[0,m]}$ 在 Banach 空间 $C[0,m]$ 中为 Cauchy 列；所得极限在重叠区间上一致，因而拼成
+一条从零出发的连续路径。它也可分：先令 $m$ 遍历正整数，再取在 $[0,m]$ 上具有有理分点和有理
+函数值的折线，并在 $m$ 以后作常值延拓；这些路径构成可数集，而局部一致逼近与度量尾项
+$\sum_{k>m}2^{-k}$ 给出稠密性。因此 $C_0([0,\infty))$ 是 Polish 空间。对连续函数，上确界可以只在有理时刻取；逐个整数区间
+使用命题~\ref{proposition:6-1-3-4} 的论证可得
+\begin{equation}\label{eq:6-4-1-wiener-borel}
+ \Borel(C_0([0,\infty)))
+ =\sigma(e_q:q\in\Q_+).
+\end{equation}
+所以 Wiener 测度由 Brownian 的有限维分布唯一决定。
+
+\begin{proposition}[联合 Gaussian 中不相关即独立]\label{proposition:6-4-1-2}
+设 $Y=(Y_1,\ldots,Y_n)$ 是 Gaussian 向量。若把指标分成两块 $I,J$，并且
+$\Cov(Y_i,Y_j)=0$ 对所有 $i\in I,j\in J$ 成立，则子向量 $Y_I,Y_J$ 独立。
+特别地，均值零、协方差核为 $s\wedge t$ 的 Gaussian 过程具有独立平稳增量。
+\end{proposition}
+
+\begin{proof}
+把均值和协方差矩阵按 $I,J$ 分块。交叉协方差为零使矩阵为块对角矩阵，故
+式~\eqref{eq:6-4-1-gaussian-fdd-cf} 给出
+\[
+ \varphi_Y(u_I,u_J)
+ =\varphi_{Y_I}(u_I)\varphi_{Y_J}(u_J).
+\]
+右端是边缘分布乘积测度的特征函数。特征函数唯一性定理说明联合分布等于边缘分布的乘积，
+所以两个子向量独立。
+
+现在设 $X$ 是中心 Gaussian 过程，协方差为 $s\wedge t$。对 $0\le a<b\le c<d$，
+\begin{align*}
+ &\Cov(X_b-X_a,X_d-X_c)\\
+ &\quad=(b\wedge d)-(b\wedge c)-(a\wedge d)+(a\wedge c)
+ =b-b-a+a=0.
+\end{align*}
+任意有限个两两不交区间增量仍是一个联合 Gaussian 向量；上面的块论证逐个分块，给出共同独立性。
+此外
+\[
+ \Var(X_t-X_s)=t+s-2(s\wedge t)=|t-s|,
+\]
+故 $X_t-X_s\sim N(0,|t-s|)$。其分布只依赖时间差，因而增量平稳。
+\end{proof}
+
+\begin{theorem}[Brownian 存在性]\label{theorem:6-4-1-1}
+存在标准 Brownian motion，因而存在唯一 Wiener 测度。所得过程对每个
+$0<\gamma<1/2$ 都有局部 $\gamma$-\Holder{} 版本；只用四阶矩时已经足以得到连续版本，并可得到
+$0<\gamma<1/4$。
+\end{theorem}
+
+\begin{proof}
+第一步构造有限维分布。对每个有限集 $F=\{t_1,\ldots,t_n\}\subset[0,\infty)$，令
+$\mu_F$ 为中心 Gaussian 分布，其协方差矩阵为 $(t_j\wedge t_k)_{j,k}$。例
+\ref{ex:6-4-1-1} 保证该矩阵半正定，故这样的 Gaussian 分布存在。若 $F\subset G$，把
+$u\in\R^F$ 在 $G\setminus F$ 上补零，式~\eqref{eq:6-4-1-gaussian-fdd-cf} 说明
+$(\pi_F^G)_*\mu_G$ 与 $\mu_F$ 的特征函数相同。由唯一性定理，它们相等。因此
+$(\mu_F)$ 投影相容。Kolmogorov 扩张定理~\ref{theorem:6-1-2-1} 给出典范空间上的坐标过程
+$X=(X_t)_{t\ge0}$，其均值为零、协方差为 $s\wedge t$。
+
+第二步选择连续版本。若 $Z\sim N(0,1)$，记
+\[
+ I_k=\frac1{\sqrt{2\pi}}\int_{\R}x^ke^{-x^2/2}\dd x\qquad(k=0,2,4).
+\]
+在 $[-R,R]$ 上用 $xe^{-x^2/2}=-(e^{-x^2/2})'$ 分部积分，再令 $R\to\infty$，边界项
+$R^{k-1}e^{-R^2/2}$ 趋于零，故 $I_k=(k-1)I_{k-2}$。由 $I_0=1$ 得
+$\E Z^4=I_4=3I_2=3$。因此
+\[
+ \E|X_t-X_s|^4=3|t-s|^2.
+\]
+在每个 $[0,m]$ 上把 Kolmogorov--Chentsov 定理~\ref{theorem:6-1-3-1} 用于
+$\alpha=4$、参数维数 $1$、$1+\beta=2$，得到任意 $\gamma<1/4$ 的连续版本
+$X^{(m)}$。当 $m<\ell$ 时，两个版本在 $[0,m]$ 上互为版本；连续版本唯一性命题
+\ref{proposition:6-1-3-3} 说明它们在该区间不可分辨。先在每个整数区间的有理时刻协调，再对
+可数个 $m$ 取零集之并，便可把 $X^{(m)}$ 拼成 $[0,\infty)$ 上的连续版本 $B$。
+
+版本改变不改变有限维分布。命题~\ref{proposition:6-4-1-2} 因而说明 $B$ 有独立平稳增量，且
+$B_t-B_s\sim N(0,t-s)$ 对 $s<t$ 成立；协方差在 $t=0$ 为零，故 $B_0=0$ a.s.。所以 $B$
+满足定义~\ref{def:6-4-1-2}。
+
+若希望在同一个概率为一的事件上同时得到每个 $\gamma<1/2$，先取偶整数 $p>2$。Gaussian 缩放给出
+\[
+ \E|X_t-X_s|^p=(\E|Z|^p)|t-s|^{p/2}.
+\]
+在连续性定理中取 $\alpha=p$、$1+\beta=p/2$，可得到任意
+$\gamma<1/2-1/p$。对 $k\ge3$ 置 $\gamma_k=1/2-1/k$，并选偶整数 $p_k>k$；连续版本唯一性把所得
+局部 $\gamma_k$-\Holder{} 版本与刚构造的 $B$ 识别。在可数个 $k$ 与整数时间区间上取共同零集后，
+$B$ 在同一个概率为一的事件上对每个 $k$ 都局部 $\gamma_k$-\Holder{}。任给 $\gamma<1/2$，选
+$k$ 使 $\gamma<\gamma_k$；较高指数在每个紧时间区间上蕴含较低指数，故 $B$ 同时具有所述全部局部
+\Holder{} 正则性。端点 $1/2$ 不由这项估计得到。
+
+最后把每条连续路径之外的共同零集改成零路径。式~\eqref{eq:6-4-1-wiener-borel} 说明路径映射
+$\omega\mapsto B_\bullet(\omega)$ 可测，其分布就是 Wiener 测度。有限维分布唯一性与
+式~\eqref{eq:6-4-1-wiener-borel} 又说明这样的路径空间概率至多一个。
+\end{proof}
+
+\begin{example}[Brownian bridge]\label{ex:6-4-1-2}
+令 $B$ 为 Brownian motion，并在 $0\le t\le1$ 上定义
+\[
+ \beta_t=B_t-tB_1.
+\]
+每个有限向量 $(\beta_{t_1},\ldots,\beta_{t_n})$ 是 Brownian 有限向量的线性变换，故联合
+Gaussian 且均值为零。对 $0\le s,t\le1$，
+\begin{align*}
+ \Cov(\beta_s,\beta_t)
+ &=s\wedge t-t\Cov(B_s,B_1)-s\Cov(B_1,B_t)+st\Var(B_1)\\
+ &=s\wedge t-st.
+\end{align*}
+并且 $\beta_0=\beta_1=0$。这个过程称为 Brownian bridge；它在两个端点被钉住，因而不再具有
+Brownian 的独立增量。
+\end{example}
+
+\begin{example}[Brownian 缩放]\label{ex:6-4-1-3}
+固定 $c>0$，令 $Y_t=c^{-1/2}B_{ct}$。过程 $Y$ 连续、均值为零，并且
+\[
+ \Cov(Y_s,Y_t)=c^{-1}(cs\wedge ct)=s\wedge t.
+\]
+$Y$ 与 $B$ 都是 Gaussian 过程，所以均值和协方差相同蕴含全部有限维分布相同。二者又都取值于
+$C_0([0,\infty))$，而该空间的 Borel $\sigma$-代数由有理评价生成；故
+\[
+ (c^{-1/2}B_{ct})_{t\ge0}\overset d=(B_t)_{t\ge0}
+\]
+作为路径空间随机元成立。连续性在最后一步把有限维相等升级为过程分布相等。
+\end{example}
+
+\begin{example}[平稳 Ornstein--Uhlenbeck Gaussian 过程]
+\label{ex:6-4-1-ou-gaussian}
+固定 $\theta,\eta>0$，并在 $\R$ 上定义
+\[
+ K(s,t)=\frac{\eta^2}{2\theta}e^{-\theta|t-s|}.
+\]
+这个核半正定，因为
+\[
+ K(s,t)=\eta^2\int_{-\infty}^{s\wedge t}
+ e^{-\theta(s-u)}e^{-\theta(t-u)}\dd u,
+\]
+从而对任意有限数列 $(a_j,t_j)$，
+\[
+ \sum_{j,k}a_ja_kK(t_j,t_k)
+ =\eta^2\int_{-\infty}^{\infty}
+ \left(\sum_j a_je^{-\theta(t_j-u)}\1_{\{u\le t_j\}}\right)^2\dd u\ge0.
+\]
+Kolmogorov 扩张定理因而给出中心 Gaussian 过程 $X$，其协方差为 $K$。由
+$1-e^{-x}\le x$，
+\[
+ \E|X_t-X_s|^2
+ =\frac{\eta^2}{\theta}\bigl(1-e^{-\theta|t-s|}\bigr)
+ \le \eta^2|t-s|.
+\]
+若 $p>2$、$C_p=\E|Z|^p$ 且 $Z\sim N(0,1)$，则 Gaussian 尺度关系给出
+\[
+ \E|X_t-X_s|^p
+ =C_p\bigl(\E|X_t-X_s|^2\bigr)^{p/2}
+ \le C_p\eta^p|t-s|^{p/2}.
+\]
+在定理~\ref{theorem:6-1-3-1} 中取 $\alpha=p$、参数维数 $d=1$ 与
+$\beta=p/2-1>0$，便得到连续版本。由于均值为零且 $K(s,t)$ 只依赖 $|t-s|$，
+任意平移前后的有限维 Gaussian 向量具有相同均值与协方差，故该版本平稳。更具体地，对 $h>0$ 令
+\[
+ \varepsilon_{t,h}=X_{t+h}-e^{-\theta h}X_t.
+\]
+对每个 $s\le t$，有
+\[
+ \Cov(\varepsilon_{t,h},X_s)
+ =K(t+h,s)-e^{-\theta h}K(t,s)=0.
+\]
+联合 Gaussian 性与单调类论证说明 $\varepsilon_{t,h}$ 独立于
+$\sigma(X_s:s\le t)$，且
+\[
+ \varepsilon_{t,h}\sim
+ N\!\left(0,\frac{\eta^2}{2\theta}(1-e^{-2\theta h})\right).
+\]
+这就是平稳 Ornstein--Uhlenbeck 过程的 Gaussian 构造。例~\ref{ex:6-4-3-ou-sde}
+从随机微分方程得到同一协方差核，因而给出这个过程的另一种实现。
+\end{example}
+
+令 $\mathcal F_t^0=\sigma(B_s:0\le s\le t)$ 为 Brownian 的自然滤过。独立增量不仅与一个
+过去时刻独立，还与全部过去信息独立：先在有限坐标柱集上使用命题
+\ref{proposition:6-4-1-2}，再以 $\pi$--$\lambda$ 定理推广到 $\mathcal F_t^0$。
+
+\begin{proposition}[Markov 与鞅性质]\label{proposition:6-4-1-3}
+Brownian motion 关于其自然滤过是平方可积鞅。若
+\[
+ q_t(y)=(2\pi t)^{-1/2}e^{-y^2/(2t)},\qquad
+ P_tf(x)=\int_\R f(x+y)q_t(y)\dd y
+\]
+（$t>0$，且 $P_0f=f$），则对每个有界 Borel 函数 $f$ 及 $s,t\ge0$，
+\[
+ \E[f(B_{s+t})\mid\mathcal F_s^0]=P_tf(B_s)\quad\text{a.s.}
+\]
+\end{proposition}
+
+\begin{proof}
+$B_t\in L^2$ 且适应。增量 $B_{s+t}-B_s$ 独立于 $\mathcal F_s^0$、均值为零，所以
+\[
+ \E[B_{s+t}\mid\mathcal F_s^0]
+ =B_s+\E[B_{s+t}-B_s\mid\mathcal F_s^0]=B_s.
+\]
+这证明鞅性。
+
+令 $Z=B_{s+t}-B_s$。它独立于 $\mathcal F_s^0$，其分布的密度为 $q_t$。先对
+$f=\1_A$ 和 $C\in\mathcal F_s^0$ 计算
+\begin{align*}
+ \E[\1_C\1_A(B_s+Z)]
+ &=\E\left[\1_C\int_\R\1_A(B_s+y)q_t(y)\dd y\right]\\
+ &=\E[\1_C P_t\1_A(B_s)].
+\end{align*}
+第一式先在 $C$ 与 $B_s$ 的简单事件上由独立性得到，再由函数单调类推广；Tonelli 保证参数积分
+可测。对 $f$ 作简单逼近和正负分解，便得到全部有界 Borel 函数的条件等式。
+\end{proof}
+
+固定时刻的 Markov 性不回答“第一次命中以后”会发生什么。随机时刻的结论需要连续时间停时及其停止信息。
+
+\begin{definition}[连续时间停时与停止信息]\label{def:6-4-1-continuous-stopping}
+设 $(\mathcal F_t)_{t\ge0}$ 是滤过。取值于 $[0,\infty]$ 的随机变量 $\tau$ 若
+$\{\tau\le t\}\in\mathcal F_t$ 对每个 $t\ge0$ 成立，则称为连续时间停时。定义
+\[
+ \mathcal F_\infty=\sigma\!\left(\bigcup_{t\ge0}\mathcal F_t\right),
+\]
+以及
+\[
+ \mathcal F_\tau=
+ \{A\in\mathcal F_\infty:
+ A\cap\{\tau\le t\}\in\mathcal F_t\text{ 对每个 }t\ge0\}.
+\]
+\end{definition}
+
+补集和可数并的分配律说明 $\mathcal F_\tau$ 是 $\sigma$-代数。若 $\sigma\le\tau$，则
+$\mathcal F_\sigma\subset\mathcal F_\tau$，证明与引理~\ref{lemma:6-2-3-stopped-sigma} 相同，
+只需把整数 $n$ 换成实数 $t$。
+
+\begin{example}[Brownian 首次命中]
+先在路径不连续的共同零集上把 $B$ 改为零路径；这保持每个固定时刻的版本关系，也不改变下文的
+完备右连续化滤过。因而以下命中事件的路径连续性等式是逐点成立的，而不只是相差一个未必属于
+原始自然滤过的零集。
+固定 $a\in\R$，令
+\[
+ \tau_a=\inf\{t\ge0:B_t=a\},
+\]
+并约定空集下确界为 $\infty$。对 $t\ge0$，路径连续性给出
+\[
+ \{\tau_a\le t\}
+ =\left\{\inf_{q\in\Q\cap[0,t]}|B_q-a|=0\right\}.
+\]
+“$\subset$”由命中时刻附近的有理数逼近得到；反向若下确界为零，取相应有理序列，再从紧区间
+$[0,t]$ 中取收敛子列，连续性给出某个时刻的取值为 $a$。右端由可数多个自然滤过可测随机变量构成，
+所以 $\tau_a$ 是停时。$\mathcal F_{\tau_a}$ 保存的是命中发生时已经看见的整段路径信息，而不只是
+数值 $\tau_a$。
+\end{example}
+
+令 $\mathcal N$ 为 $\mathcal F_\infty^0=\sigma(\bigcup_{t\ge0}\mathcal F_t^0)$ 中所有概率零集的
+子集所成的族，并明确置
+\[
+ \mathcal F_t^B=\bigcap_{u>t}(\mathcal F_u^0\vee\mathcal N).
+\]
+这是自然滤过的完备右连续化。从上方逼近随机时刻时，右连续性保证极限信息与停止信息相容；
+完备化则允许在共同零集上修改连续版本。
+
+\begin{theorem}[Brownian 强 Markov 性]\label{theorem:6-4-1-strong-markov}
+设 $\tau<\infty$ a.s. 是关于 $(\mathcal F_t^B)$ 的停时。则
+\[
+ \widetilde B_t=B_{\tau+t}-B_\tau,\qquad t\ge0,
+\]
+是独立于 $\mathcal F_\tau^B$ 的标准 Brownian motion。
+\end{theorem}
+
+\begin{proof}
+先说明确定时刻的独立增量对右连续完备化仍成立。固定 $s$、
+$0<t_1<\cdots<t_m$ 和有界连续 $\Phi:\R^m\to\R$。若 $s_k\downarrow s$，则
+$A\in\mathcal F_s^B$ 属于每个 $\mathcal F_{s_k}^0\vee\mathcal N$。把未来向量从 $s_k$ 起算，原始
+独立增量与完备化不改变零集给出
+\[
+ \E\bigl[\1_A\Phi(B_{s_k+t_j}-B_{s_k}:1\le j\le m)\bigr]
+ =\Prob(A)c_\Phi,
+\]
+其中 $c_\Phi$ 是相同 Brownian 增量向量上的期望。路径连续性和 DCT 令 $k\to\infty$，得到同一
+等式从 $s$ 起成立。函数单调类再把 $\Phi$ 从有界连续函数推广到有界 Borel 函数。
+
+先假设 $\tau\le T$。令
+\[
+ \tau_n=2^{-n}\lceil2^n\tau\rceil.
+\]
+这是从上趋于 $\tau$ 的可数值停时，且 $\tau_n\le T+1$。由
+$\tau\le\tau_n$，有 $\mathcal F_\tau^B\subset\mathcal F_{\tau_n}^B$。固定
+$A\in\mathcal F_\tau^B$，按 $\tau_n=k2^{-n}$ 分片，并应用上段确定时刻的独立增量，得到
+\begin{align*}
+ &\E\bigl[\1_A\Phi(B_{\tau_n+t_j}-B_{\tau_n}:1\le j\le m)\bigr]\\
+ &\quad=\sum_k
+ \E\bigl[\1_{A\cap\{\tau_n=k2^{-n}\}}
+ \Phi(B_{k2^{-n}+t_j}-B_{k2^{-n}}:j)\bigr]\\
+ &\quad=\sum_k\Prob(A\cap\{\tau_n=k2^{-n}\})c_\Phi
+ =\Prob(A)c_\Phi.
+\end{align*}
+路径连续性使被积的未来向量 a.s. 收敛到从 $\tau$ 起算的向量；DCT 因而把等式传到极限。
+所以每个有限未来向量具有 Brownian 分布，并与 $\mathcal F_\tau^B$ 独立。
+
+若 $\tau$ 只假设 a.s. 有限，取 $\tau\wedge r$。对
+$A_r=A\cap\{\tau\le r\}$，由停止信息定义可核验
+$A_r\in\mathcal F_{\tau\wedge r}^B$。在 $A_r$ 上，从 $\tau\wedge r$ 起算的增量就是从 $\tau$
+起算的增量，故有
+\[
+ \E[\1_{A_r}\Phi(B_{\tau+t_j}-B_\tau:j)]
+ =\Prob(A_r)c_\Phi.
+\]
+令 $r\to\infty$ 并用 DCT，得到对 $A$ 的同一等式。
+
+最后，$\widetilde B$ 逐路径连续且从零出发。上述有限维结论说明它具有 Brownian 有限维分布；
+式~\eqref{eq:6-4-1-wiener-borel} 和柱事件单调类说明整个路径随机元独立于
+$\mathcal F_\tau^B$。因此它是独立于停止信息的 Brownian motion。
+\end{proof}
+
+特别地，在 $\tau_a<\infty$ 的事件上，命中 $a$ 后的位移从零重新开始。若要无条件套用上一定理，
+仍须先证明 $\tau_a<\infty$ a.s.，或先在 $\tau_a\wedge T$ 上工作；“首次命中”这个名字不自动保证
+命中发生。
+
+\begin{proposition}[连续时间可选抽样]\label{proposition:6-4-1-continuous-optional}
+设 $M$ 是关于一个满足通常条件的滤过的连续鞅，$\sigma\le\tau\le T<\infty$ 为停时。则
+\[
+ \E[M_\tau\mid\mathcal F_\sigma]=M_\sigma\quad\text{a.s.}
+\]
+若 $\tau$ 无界，只有在停止族 $\{M_{t\wedge\tau}:t\ge0\}$ 一致可积，或另有足以交换极限与
+期望的支配条件时，才可令 $T\to\infty$。
+\end{proposition}
+
+\begin{proof}
+在 $[0,T]$ 上取网格
+$D_n=\{k2^{-n}:0\le k2^{-n}<T\}\cup\{T\}$，并令
+$\rho_n$ 是 $D_n$ 中不小于停时 $\rho$ 的最小点。分别应用于 $\sigma,\tau$，得到
+$\sigma_n\le\tau_n$、$\sigma_n\downarrow\sigma$、$\tau_n\downarrow\tau$。沿有限网格抽样的
+序列 $(M_t)_{t\in D_n}$ 是离散鞅。离散有界可选抽样定理~\ref{theorem:6-2-3-2} 给出
+\[
+ \E[M_{\tau_n}\mid\mathcal F_{\sigma_n}]=M_{\sigma_n}.
+\]
+
+每个确定 $t\le T$ 都满足 $M_t=\E[M_T\mid\mathcal F_t]$。在同一有限网格上再对
+$\rho_n$ 与终点 $T$ 使用离散可选抽样，得到
+\[
+ M_{\rho_n}=\E[M_T\mid\mathcal F_{\rho_n}].
+\]
+固定 $Y=M_T\in L^1$ 时，所有条件期望 $\E[Y\mid\mathcal G]$ 组成一致可积族：对
+$A_K=\{|\E(Y\mid\mathcal G)|>K\}$，条件模长不等式及
+$\Prob(A_K)\le\E|Y|/K$ 给出
+\[
+ \E[|\E(Y\mid\mathcal G)|\1_{A_K}]
+ \le\E[|Y|\1_{\{|Y|>R\}}]+R\frac{\E|Y|}{K},
+\]
+先令 $R\to\infty$，再令 $K\to\infty$，所得界与 $\mathcal G$ 无关。因此
+$(M_{\sigma_n})$ 与 $(M_{\tau_n})$ 共同 UI。
+
+路径连续性给出 a.s. 收敛
+$M_{\sigma_n}\to M_\sigma$、$M_{\tau_n}\to M_\tau$；Vitali 定理把它们升级为 $L^1$ 收敛。
+若 $A\in\mathcal F_\sigma$，则 $A\in\mathcal F_{\sigma_n}$，所以网格条件等式给
+\[
+ \E[\1_AM_{\tau_n}]=\E[\1_AM_{\sigma_n}].
+\]
+令 $n\to\infty$，$L^1$ 收敛给
+$\E[\1_AM_\tau]=\E[\1_AM_\sigma]$。这对所有 $A\in\mathcal F_\sigma$ 成立，正是所需条件
+期望等式。这一极限过程使用的是停止值的 $L^1$ 收敛，因而不需要比较随 $n$ 变化的条件 $\sigma$-代数。
+\end{proof}
+
+连续并不意味着平滑。Brownian 的二进增量虽逐项趋零，绝对值之和却发散，平方和则保持有限。
+更棘手的是“处处不可微”：对每个固定 $t$ 证明不可微，只得到一族依赖 $t$ 的零集，不能对不可数个
+$t$ 取交。下面的锥形估计把所有可能的随机位置压缩成每层有限多个格子。
+
+\begin{theorem}[路径粗糙性（基础版）]\label{theorem:6-4-1-4}
+几乎必然，Brownian 路径在每个非退化时间区间上的总变差为 $+\infty$，并且在每个
+$t>0$ 都不可微；在 $t=0$ 也不存在有限右导数。
+\end{theorem}
+
+\begin{proof}
+先在 $[0,1]$ 上处理总变差。令
+\[
+ V_n=\sum_{k=0}^{2^n-1}
+ |B_{(k+1)2^{-n}}-B_{k2^{-n}}|.
+\]
+这些增量独立，且各自与 $2^{-n/2}Z$ 同分布，其中 $Z\sim N(0,1)$。记
+$m_1=\E|Z|=\sqrt{2/\pi}$。则
+\[
+ \E V_n=m_1\,2^{n/2},
+ \qquad
+ \Var(V_n)=2^n2^{-n}\Var(|Z|)=1-\frac2\pi.
+\]
+Chebyshev 不等式给出
+\[
+ \Prob\!\left(V_n\le\frac12\E V_n\right)
+ \le\frac{4\Var(V_n)}{(\E V_n)^2}
+ =C2^{-n}.
+\]
+右端可和，Borel--Cantelli I 因而说明 $V_n\to\infty$ a.s.。路径在 $[0,1]$ 上的总变差
+至少为每个 $V_n$，故为无穷。对每个有理端点区间 $[a,b]\subset[0,\infty)$ 作仿射二进
+分割，同一计算只把常数乘以 $b-a$。对可数多个有理区间取交后，每个非退化区间都包含其中一个，
+总变差的单调性给出第一项结论。
+
+下面处理不可微性。固定有理闭区间 $J=[a,b]\subset(0,\infty)$、整数 $r\ge1$。令
+$\delta_n=2^{-n}$，并在包含 $J$ 的二进格网上记
+\[
+ \Delta_{k,n}=B_{(k+1)\delta_n}-B_{k\delta_n}.
+\]
+若某个 $t\in J$ 满足锥形界
+\begin{equation}\label{eq:6-4-1-cone-bound}
+ |B_s-B_t|\le r|s-t|
+ \quad\text{只要 }|s-t|\le\eta
+\end{equation}
+对某个 $\eta>0$ 成立，则当 $n$ 充分大、$2\delta_n<\eta$ 时，取唯一的 $k$ 使
+$t\in[k\delta_n,(k+1)\delta_n)$。四个格点
+$(k-1)\delta_n,k\delta_n,(k+1)\delta_n,(k+2)\delta_n$ 到 $t$ 的距离都不超过
+$2\delta_n$。由三角不等式，包围该格的三个增量满足
+\begin{equation}\label{eq:6-4-1-three-small-increments}
+ |\Delta_{j,n}|\le4r\delta_n,
+ \qquad j=k-1,k,k+1.
+\end{equation}
+
+固定 $k$ 时，这三个变量独立且服从 $N(0,\delta_n)$。标准正态密度不超过
+$(2\pi)^{-1/2}$，所以
+\[
+ \Prob(|\Delta_{j,n}|\le4r\delta_n)
+ =\Prob(|Z|\le4r\sqrt{\delta_n})
+ \le C r\sqrt{\delta_n}.
+\]
+与区间 $J$ 相交的二进格至多 $C_J\delta_n^{-1}$ 个。对所有可能的 $k$ 取并，得到
+\begin{align*}
+ &\Prob\bigl(\text{某个与 $J$ 相交的格满足
+ \eqref{eq:6-4-1-three-small-increments}}\bigr)\\
+ &\qquad\le C_J\delta_n^{-1}(Cr\sqrt{\delta_n})^3
+ \le C_{J,r}2^{-n/2}.
+\end{align*}
+该概率关于 $n$ 可和。Borel--Cantelli I 说明几乎必然只有有限多层出现这样的格。然而
+式~\eqref{eq:6-4-1-cone-bound} 会由上面的确定性推导迫使每个充分细层都出现一个，故在概率一
+事件上不存在满足该锥形界的 $t\in J$。
+
+若路径在某点 $t\in J$ 有有限导数 $L$，由导数定义可取整数 $r>|L|+1$ 与 $\eta>0$，使
+式~\eqref{eq:6-4-1-cone-bound} 成立。对可数个 $r$ 和可数个有理区间 $J$ 取交，便排除了所有
+$t>0$；没有对随机不可数点逐点取零集。对 $t=0$，若存在有限右导数，同一锥形界在
+$[0,\eta]$ 成立，并迫使前三个二进增量都满足 $O(r\delta_n)$；其概率为
+$O_r(2^{-3n/2})$，仍可和。故有限右导数也不存在。
+\end{proof}
+
+可微性只给出以 $t$ 为中心的锥形界，不要求路径在 $t$ 的整个邻域上 Lipschitz。
+三个相邻增量把这条点态信息转化为可数的格点事件。总变差与不可微也是两个不同的结论：连续有限变差函数可能在某些点不可微，
+而无限变差本身不排除在其他点存在导数。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=9mm and 10mm]
+  \begin{scope}[xshift=0cm]
+    \draw[book line,-{Stealth[length=2mm]}] (0,0)--(4.2,0);
+    \draw[BookWarm,semithick]
+      plot coordinates {(0,0) (.45,.35) (.9,.05) (1.35,.65) (1.8,.3) (2.25,.8) (2.7,.45) (3.15,.95) (3.6,.7) (4.05,1.05)};
+    \draw[BookAccent,thick,smooth]
+      plot coordinates {(0,0) (.45,.22) (.9,.18) (1.35,.5) (1.8,.32) (2.25,.65) (2.7,.55) (3.15,.82) (3.6,.72) (4.05,.96)};
+    \node[book label] at (2,-.42) {扩散缩放下的折线};
+  \end{scope}
+  \node[book strong node] (kernel) at (6.0,.55) {半正定核\\$s\wedge t$};
+  \node[book strong node,right=of kernel] (extend) {Kolmogorov\\扩张};
+  \node[book warm node,right=of extend] (version) {矩估计\\连续版本};
+  \draw[book accent arrow] (kernel)--(extend);
+  \draw[book accent arrow] (extend)--(version);
+\end{tikzpicture}
+\caption{随机游走只提供动机；Brownian 的严格存在依次使用 Gaussian 核、有限维扩张和连续版本。}
+\label{fig:6-4-1-construction}
+\end{figure}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 不引用例~\ref{ex:6-4-1-1}，把 $t_1<\cdots<t_n$ 时的矩阵
+  $(t_i\wedge t_j)$ 写成一个下三角矩阵与其转置之积。
+  \item 对两个不交区间逐项计算 Brownian 增量的协方差，再用特征函数说明联合 Gaussian 的
+  零协方差为何给出独立，而一般变量不能这样推断。
+  \item 从有限维均值和协方差出发证明 Brownian scaling，并使用
+  式~\eqref{eq:6-4-1-wiener-borel} 完成路径空间分布的最后一步。
+  \item 核验 Brownian bridge 的协方差，并计算 $\Law(\beta_t)$ 及
+  $\Cov(\beta_s,\beta_t-\beta_s)$；据此说明它没有独立增量。
+\end{enumerate}
+\end{exercise}
+
+Brownian 路径的无限变差使经典 Riemann--Stieltjes 理论失去直接入口。\Ito{} 积分先在可预测阶梯过程上
+利用独立增量定义，再由 $L^2$ 完备性延拓到一般被积过程。
+
+
+\subsection{\Ito{} 积分、等距与二次变差}\label{subsec:6-4-2}
+\index{Ito@\Ito{} 积分}\index{可预测过程}\index{二次变差}
+
+若把 $\int_0^TB_t\dd B_t$ 当作普通 Riemann--Stieltjes 积分，左端点与右端点会给出不同答案。
+这不是选点技巧不够精致，而是 Brownian 路径没有有限变差。\Ito{} 的做法是改变问题：被积过程在每个
+小区间开始时必须已经可知，积分先作为平方可积随机变量定义。独立增量随后把不同小区间变成
+$L^2(\Omega)$ 中的正交方向。
+
+\begin{definition}[向量 Brownian motion 与 Hilbert--Schmidt 范数]
+\label{def:6-4-2-vector-brownian}
+相对于同一滤过 $(\mathcal F_t)$，连续适应过程
+$B=(B^1,\ldots,B^r)$ 称为 $\R^r$ 值 Brownian motion，如果 $B_0=0$，并且对
+$0\le s<t$，增量 $B_t-B_s$ 独立于 $\mathcal F_s$，其分布是均值为零、协方差矩阵为
+$(t-s)I_r$ 的 Gaussian 分布。于是各坐标是相互独立的一维 Brownian motion；向量随机积分
+始终相对于这一共同滤过，并按有限和
+\[
+ \left(\int_0^t\sigma_s\dd B_s\right)^i
+ =\sum_{a=1}^r\int_0^t\sigma_{ia}(s)\dd B_s^a
+\]
+逐行定义。对实 $d\times r$ 矩阵 $A=(a_{ij})$，记
+\[
+ \|A\|_{\mathrm{HS}}^2=\sum_{i=1}^d\sum_{j=1}^r|a_{ij}|^2
+ =\operatorname{tr}(AA^T).
+\]
+\end{definition}
+
+以下固定一个满足通常条件的滤过 $(\mathcal F_t)_{t\ge0}$，并假定 $B$ 相对于它是
+上述向量 Brownian motion；若没有加入额外信息，可以取前一小节构造的
+$(\mathcal F_t^B)_{t\ge0}$。本小节的可预测性、渐进可测性、适应性与停时均相对于
+$(\mathcal F_t)$ 而言。
+
+\begin{definition}[简单可预测过程及其积分]\label{def:6-4-2-1}
+在固定时域 $[0,T]$ 上，若
+\[
+ H_t=\sum_{k=0}^{n-1}H_k\1_{(t_k,t_{k+1}]}(t),
+ \qquad0=t_0<t_1<\cdots<t_n=T,
+\]
+其中每个 $H_k$ 有界且对 $\mathcal F_{t_k}$ 可测，则称 $H$ 为\emph{简单可预测过程}，并定义
+\[
+ \int_0^TH_t\dd B_t
+ :=\sum_{k=0}^{n-1}H_k(B_{t_{k+1}}-B_{t_k}).
+\]
+对 $0\le t\le T$，$\int_0^tH_s\dd B_s$ 用截断后的同一有限和定义。
+\end{definition}
+
+若换一个时间分割表示同一个 $H$，取两个分割的共同加细即可看到积分值不变。系数必须在左端点可测；
+它可以依赖过去，但不能查看即将相乘的未来增量。
+
+\begin{definition}[$L^2$ 可预测类]\label{def:6-4-2-2}
+令 $\mathcal P$ 是 $\Omega\times[0,T]$ 上由
+\[
+ A\times(s,t]\quad(A\in\mathcal F_s, 0\le s<t\le T),
+ \qquad A_0\times\{0\}\quad(A_0\in\mathcal F_0)
+\]
+生成的\emph{可预测 $\sigma$-代数}（predictable $\sigma$-algebra）。定义
+\[
+ L^2_{\mathrm{pred}}([0,T])
+ =L^2(\Omega\times[0,T],\mathcal P,\Prob\otimes\dd t),
+\]
+并记
+\[
+ \|H\|_{\mathcal H^2}^2=\E\int_0^T|H_t|^2\dd t.
+\]
+其中等价关系是 $\Prob\otimes\dd t$-a.e. 相等。
+\end{definition}
+
+有界简单可预测过程在该空间中稠密。事实上，生成 $\mathcal P$ 的矩形
+$A\times(s,t]$ 的指标函数本身就是简单可预测过程，而
+$A_0\times\{0\}$ 在 $\Prob\otimes\dd t$ 下为零；有限交、差和有限并经过时间端点共同加细后
+仍有这种表示。由可测简单函数逼近和截断，
+这些指标函数的有限线性组合在有限测度空间
+$(\Omega\times[0,T],\Prob\otimes\dd t)$ 的 $L^2$ 中稠密。这也说明完成对象及其等价关系已经明确，
+因而积分的完成域是具体的乘积测度 $L^2$ 空间。
+
+\begin{definition}[渐进可测过程与局部鞅]\label{def:6-4-2-progressive-local}
+适应过程 $X$ 称为\emph{渐进可测}（progressively measurable），如果对每个 $t\ge0$，限制
+$(\omega,s)\mapsto X_s(\omega)$（$0\le s\le t$）关于
+$\mathcal F_t\otimes\Borel([0,t])$ 可测。适应过程 $M$ 称为\emph{局部鞅}，如果存在停时
+$\tau_n\uparrow\infty$ a.s.，使每个停止过程
+$M^{\tau_n}_t=M_{t\wedge\tau_n}$ 是鞅。
+\end{definition}
+
+适应且路径连续的过程是渐进可测的：在 $[0,t]$ 上用左端点阶梯过程逼近，阶梯过程关于
+$\mathcal F_t\otimes\Borel([0,t])$ 可测，路径连续性给出逐点极限。适应且左连续的过程是
+可预测，同一逼近中的系数在每个区间左端以前已经可知。连续过程同时满足两项；左连续本身
+并不表示路径连续。
+
+\begin{remark}[渐进可测系数为何仍能进入 Brownian 积分]
+\label{remark:6-4-2-progressive-predictable}
+若 $H$ 渐进可测且满足
+\[
+ \E\int_0^T|H_s|^2\dd s<\infty,
+\]
+则把 $H$ 在负时间延为零，并令
+\[
+ H_t^{(n)}=n\int_{(t-1/n)^+}^{t}H_s\dd s.
+\]
+每条局部可积路径的过去平均关于 $t$ 连续；它在时刻 $t$ 只使用 $s\le t$ 的信息，所以
+$H^{(n)}$ 适应，从而可预测。把 $H$ 视为
+$L^2(\Omega\times\R)$ 元素，Minkowski 不等式给出
+\[
+ \|H^{(n)}-H\|_2
+ \le n\int_0^{1/n}\|H_{\bullet-u}-H_\bullet\|_2\dd u.
+\]
+第四章的 $L^2$ 平移连续性定理~\ref{theorem:4-4-1-1} 作用于时间变量，说明右端趋于零。
+于是某个子列 a.e. 收敛；其极限是
+可预测函数，并与 $H$ 在 $\Prob\otimes\dd t$ 意义下相等。因此渐进可测的平方可积
+等价类有可预测代表。后面 $H_t=\sigma(t,X_t)$ 的情形正通过这个平均化进入 \Ito{} 积分；
+只说“联合可测”不足以替代这一步。
+\end{remark}
+
+\begin{definition}[二次变差]\label{def:6-4-2-3}
+对连续过程 $X$、$[0,T]$ 的有限分割 $\pi$，定义
+\[
+ [X]^{\pi}_T=\sum_{[u,v]\in\pi}(X_v-X_u)^2.
+\]
+给定分割列 $\pi_n$ 且网格 $|\pi_n|\to0$，若
+$[X]^{\pi_n}_T$ 依概率趋于某随机变量 $[X]_T$，则称它为 $X$ 沿该分割列的二次变差。
+\end{definition}
+
+对一般连续函数，上述极限可能依赖分割列。定理~\ref{theorem:6-4-2-3} 与
+命题~\ref{proposition:6-4-2-4} 分别说明，Brownian motion 与 \Ito{} 积分对任意确定的网格趋零分割列都有同一极限。
+
+\begin{theorem}[\Ito{} 等距]\label{theorem:6-4-2-1}
+对每个实简单可预测过程 $H$，
+\[
+ \E\left|\int_0^TH_t\dd B_t\right|^2
+ =\E\int_0^T|H_t|^2\dd t.
+\]
+特别地，简单过程积分映射是从 $L^2_{\mathrm{pred}}([0,T])$ 的稠密子空间到
+$L^2(\Omega)$ 的线性等距。
+\end{theorem}
+
+\begin{proof}
+记 $\Delta B_k=B_{t_{k+1}}-B_{t_k}$、$\Delta t_k=t_{k+1}-t_k$。若 $j<k$，则
+$H_j\Delta B_jH_k$ 对 $\mathcal F_{t_k}$ 可测，而
+\[
+ \E[\Delta B_k\mid\mathcal F_{t_k}]=0.
+\]
+因此塔式性质给出
+\[
+ \E[H_j\Delta B_jH_k\Delta B_k]=0.
+\]
+对角项中，独立增量给出
+\[
+ \E[(\Delta B_k)^2\mid\mathcal F_{t_k}]=\Delta t_k,
+\]
+所以
+\[
+ \E[H_k^2(\Delta B_k)^2]=\E[H_k^2]\Delta t_k.
+\]
+展开有限和的平方，全部交叉项消失，得到
+\begin{align*}
+ \E\left|\sum_kH_k\Delta B_k\right|^2
+ &=\sum_k\E[H_k^2]\Delta t_k\\
+ &=\E\int_0^T|H_t|^2\dd t.
+\end{align*}
+这也证明若两个简单表示在乘积测度意义下相等，它们的积分在 $L^2(\Omega)$ 中相等。
+\end{proof}
+
+\begin{theorem}[\Ito{} 积分的完成]\label{theorem:6-4-2-2}
+简单过程积分唯一延拓为线性等距
+\[
+ I:L^2_{\mathrm{pred}}([0,T])\longrightarrow L^2(\Omega).
+\]
+对 $H\in L^2_{\mathrm{pred}}([0,T])$ 定义
+\[
+ M_t=I(H\1_{(0,t]})=\int_0^tH_s\dd B_s.
+\]
+则 $M$ 有连续版本；取该版本后，$M$ 是从零出发的平方可积鞅。
+\end{theorem}
+
+\begin{proof}
+$L^2(\Omega)$ 完备，定理~\ref{theorem:6-4-2-1} 的等距把稠密子空间上的积分唯一延拓到完成。
+对固定 $t$，取简单 $H^{(n)}\to H$ 于 $L^2_{\mathrm{pred}}$，则
+$I_t(H^{(n)})\to I_t(H)$ 于 $L^2$；每个前者对 $\mathcal F_t$ 可测，故 $M_t$ 也可测。
+
+若 $s<t$，简单过程的增量积分对 $\mathcal F_s$ 条件均值为零，证明与等距中交叉项的计算相同。
+条件期望是 $L^2$ 收缩，令简单逼近趋于 $H$ 得
+\[
+ \E[M_t-M_s\mid\mathcal F_s]=0.
+\]
+所以 $(M_t)$ 在每个固定时刻族上是平方可积鞅。
+
+还需同时选择连续版本。简单过程的积分过程逐路径连续。对简单 $G$，在任意有限时间网格上把离散
+Doob $L^2$ 不等式~\ref{theorem:6-2-2-2} 用于鞅 $I_t(G)$，得到
+\[
+ \E\max_{t\in D}|I_t(G)|^2\le4\E|I_T(G)|^2.
+\]
+让有限网格递增到 $[0,T]$ 的一个可数稠密集；连续性与单调收敛定理给出
+\begin{equation}\label{eq:6-4-2-continuous-doob}
+ \E\sup_{t\le T}|I_t(G)|^2
+ \le4\E\int_0^T|G_s|^2\dd s.
+\end{equation}
+因此若 $H^{(n)}$ 是 $H$ 的简单逼近，则
+\[
+ \E\sup_{t\le T}|I_t(H^{(n)}-H^{(m)})|^2
+ \le4\|H^{(n)}-H^{(m)}\|_{\mathcal H^2}^2.
+\]
+所以积分过程在 Banach 值空间 $L^2(\Omega;C[0,T])$ 中为 Cauchy 列。其极限 $\widetilde M$
+有连续路径；对每个 $t$，上确界范数收敛蕴含
+$I_t(H^{(n)})\to\widetilde M_t$ 于 $L^2$，而端点等距又给极限 $M_t$，故
+$\widetilde M_t=M_t$ a.s.。因此 $\widetilde M$ 是一个在全部时刻同时相容的连续版本。
+
+最后，连续版本在有理时刻满足鞅条件；取有理数从右逼近任意 $s<t$，用路径连续性、
+式~\eqref{eq:6-4-2-continuous-doob} 给出的 $L^2$ 控制及条件期望收缩，把等式传到任意实时间。
+\end{proof}
+
+\begin{example}[确定被积函数]\label{ex:6-4-2-1}
+若 $h\in L^2[0,T]$ 是确定函数，取确定简单函数 $h_n\to h$ 于 $L^2$。每个
+$\int h_n\dd B$ 是 Brownian 增量的有限线性组合，因而中心 Gaussian，方差为
+$\int h_n^2\dd t$。\Ito{} 等距给出积分在 $L^2$ 中收敛；对特征函数使用
+$|e^{ix}-e^{iy}|\le|x-y|$，可把 Gaussian 特征函数传到极限，得到
+\[
+ \int_0^Th(t)\dd B_t\sim N\!\left(0,\int_0^Th(t)^2\dd t\right).
+\]
+取 $h=\1_{(a,b]}$ 时，定义恢复 $B_b-B_a$。
+\end{example}
+
+平方可积完成仍要求 $\E\int H^2<\infty$。SDE 中常见的被积过程只在每条路径上局部平方可积；
+在逐层截断能量之前，先证明积分与停止相容。
+
+\begin{lemma}[\Ito{} 积分的停止恒等式]\label{lemma:6-4-2-stopping-integral}
+设 $G\in L^2_{\mathrm{pred}}([0,T])$，
+$M_t=\int_0^tG_s\dd B_s$，且 $\tau\le T$ 是停时。则对每个 $0\le t\le T$，
+\[
+ \int_0^tG_s\1_{\{s\le\tau\}}\dd B_s=M_{t\wedge\tau}
+ \quad\text{a.s.}
+\]
+\end{lemma}
+
+\begin{proof}
+先令
+\[
+ \tau_n=2^{-n}\lceil2^n\tau\rceil\wedge T,
+\]
+并把 $T$ 加入相应网格；则 $\tau_n$ 是有限值停时且 $\tau_n\downarrow\tau$。若 $G$ 是简单
+可预测过程，把它的确定跳点与该网格共同加细。对任一相邻区间 $(r_k,r_{k+1}]$，
+\[
+ \{r_{k+1}\le\tau_n\}
+ =\{\tau_n\le r_k\}^{\,c}\in\mathcal F_{r_k},
+\]
+其中等式使用了 $\tau_n$ 在共同网格的相邻端点之间不取值。因此
+$G_s\1_{\{s\le\tau_n\}}$ 仍是简单可预测过程；逐项展开定义中的有限和便得到
+\[
+ \int_0^tG_s\1_{\{s\le\tau_n\}}\dd B_s=M_{t\wedge\tau_n}.
+\]
+
+对一般 $G$，取简单 $G^{(m)}\to G$ 于 $L^2_{\mathrm{pred}}([0,T])$。\Ito{} 等距控制上式左边的
+极限，而连续 Doob 估计~\eqref{eq:6-4-2-continuous-doob} 给出
+\[
+ \E\sup_{t\le T}\left|
+ \int_0^t(G_s^{(m)}-G_s)\dd B_s\right|^2
+ \le4\|G^{(m)}-G\|_{\mathcal H^2}^2\longrightarrow0.
+\]
+所以停止于 $\tau_n$ 的右边也在 $L^2$ 中收敛，有限值停时的恒等式对一般 $G$ 成立。
+
+最后令 $n\to\infty$。DCT 给
+$G\1_{\{s\le\tau_n\}}\to G\1_{\{s\le\tau\}}$ 于
+$L^2(\Prob\otimes\dd s)$，故左边由 \Ito{} 等距收敛。另一方面，$M$ 连续，且
+$\E\sup_{t\le T}|M_t|^2<\infty$，所以
+$M_{t\wedge\tau_n}\to M_{t\wedge\tau}$ 于 $L^2$。取极限即得结论。
+\end{proof}
+
+\begin{proposition}[局部平方可积被积过程]\label{proposition:6-4-2-localization}
+设 $H$ 可预测，且对每个 $T<\infty$，
+\[
+ \int_0^T|H_s|^2\dd s<\infty\quad\text{a.s.}
+\]
+令
+\[
+ \tau_n=\inf\left\{t\ge0:\int_0^t|H_s|^2\dd s\ge n\right\}\wedge n.
+\]
+则 $\tau_n$ 是停时、$\tau_n\uparrow\infty$ a.s.，且
+$H\1_{(0,\tau_n]}$ 在每个有限时域属于 $L^2_{\mathrm{pred}}$。这些停止积分在重叠时域上一致，
+可以拼成连续局部鞅
+\[
+ \int_0^tH_s\dd B_s.
+\]
+\end{proposition}
+
+\begin{proof}
+能量过程 $A_t=\int_0^t|H_s|^2\dd s$ 适应、连续且非降；适应性由对
+$\Omega\times[0,t]$ 的可测积分得到。因此
+\[
+ \{\tau_n\le t\}=
+ \begin{cases}
+   \{A_t\ge n\},&t<n,\\
+   \Omega,&t\ge n,
+ \end{cases}
+\]
+属于 $\mathcal F_t$，所以 $\tau_n$ 是停时。路径局部有限性说明对每个固定 $T$，最终有
+$A_T<n$ 且 $n>T$，从而 $\tau_n>T$；故 $\tau_n\uparrow\infty$ a.s.（必要时把它替换为
+$\min_{k\ge n}\tau_k$ 的单调版本，原定义本身也因阈值和截断同时增加而非降）。
+
+过程 $t\mapsto\1_{[0,\tau_n]}(t)$ 左连续且适应，因而可预测；它与
+$\1_{(0,\tau_n]}$ 只在 $t=0$ 不同，代表同一个
+$L^2(\Prob\otimes\dd t)$ 等价类。连续性还给出
+\[
+ \int_0^T|H_s|^2\1_{\{s\le\tau_n\}}\dd s\le n
+\]
+对所有 $T$ 成立，故停止后的被积过程属于 $L^2_{\mathrm{pred}}$。记
+\[
+ M^{(n)}_t=\int_0^tH_s\1_{\{s\le\tau_n\}}\dd B_s.
+\]
+若 $m\ge n$，对平方可积的被积过程
+$H\1_{\{s\le\tau_m\}}$ 在任意固定 $[0,T]$ 上应用
+引理~\ref{lemma:6-4-2-stopping-integral} 于停时 $\tau_n\wedge T$，得到对 $t\le T$，
+\[
+ M^{(m)}_{t\wedge\tau_n}
+ =\int_0^tH_s\1_{\{s\le\tau_m\}}\1_{\{s\le\tau_n\}}\dd B_s
+ =M^{(n)}_t.
+\]
+上式先对每个固定 $t$ 几乎必然成立。对可数个
+$t\in\Q_+$ 与可数个整数对 $m\ge n$ 取共同的概率一事件，再用所有 $M^{(n)}$ 的连续性，得到一个对
+所有 $m\ge n$ 与所有 $t\ge0$ 同时成立的共同零集。在该零集上将各层都定义为零路径。
+所以各层在 $\tau_n$ 以前逐路径相容，可以逐层拼接。第 $n$ 层停止过程是平方可积鞅，故拼接过程以
+$(\tau_n)$ 为局部化列，是连续局部鞅。
+\end{proof}
+
+\begin{example}[局部化回收 $H_t=B_t$]
+Brownian 路径在紧时间区间上连续，故
+$\int_0^TB_s^2\dd s<\infty$ a.s.，命题~\ref{proposition:6-4-2-localization} 已经定义
+$\int_0^tB_s\dd B_s$。事实上
+\[
+ \E\int_0^TB_s^2\dd s=\int_0^Ts\dd s=\frac{T^2}{2}<\infty,
+\]
+所以它在每个有限时域还属于未局部化的 $L^2$ 理论。
+\end{example}
+
+\begin{theorem}[Brownian 二次变差]\label{theorem:6-4-2-3}
+对 $[0,T]$ 的任意确定分割列 $\pi_n$，若 $|\pi_n|\to0$，则
+\[
+ \sum_{[u,v]\in\pi_n}(B_v-B_u)^2\longrightarrow T
+ \quad\text{于 }L^2.
+\]
+沿二进分割，收敛还 a.s. 成立。
+\end{theorem}
+
+\begin{proof}
+写 $\Delta t=v-u$、$\Delta B=B_v-B_u$。各分割区间上的增量独立，并且
+$\Delta B\sim N(0,\Delta t)$。由 $\E Z^4=3$，
+\[
+ \E(\Delta B)^2=\Delta t,
+ \qquad
+ \Var((\Delta B)^2)=3(\Delta t)^2-(\Delta t)^2=2(\Delta t)^2.
+\]
+故平方增量和的均值为 $T$，方差为
+\[
+ 2\sum_{[u,v]\in\pi_n}(v-u)^2
+ \le2T|\pi_n|\longrightarrow0.
+\]
+这就是 $L^2$ 收敛。
+
+若 $\pi_n$ 是二进分割，则方差等于 $2T^2 2^{-n}$。对每个
+$m\ge1$，Chebyshev 不等式说明事件
+$\{|[B]^{\pi_n}_T-T|>1/m\}$ 的概率关于 $n$ 可和。先对 $n$ 用 Borel--Cantelli，再对可数个
+$m$ 取交，得到 a.s. 收敛。
+\end{proof}
+
+若某条连续路径在 $[0,T]$ 上总变差有限，则沿网格趋零的分割
+\[
+ \sum(\Delta B)^2
+ \le\left(\max|\Delta B|\right)\sum|\Delta B|\longrightarrow0,
+\]
+因为一致连续性使最大增量趋零。二进二次变差却 a.s. 趋于 $T>0$，所以有限变差路径构成零概率
+事件。这从二次变差再次回收了定理~\ref{theorem:6-4-1-4} 的总变差结论。
+
+\begin{example}[左端、右端与 Stratonovich 和]\label{ex:6-4-2-2}
+令 $\pi=\{0=t_0<\cdots<t_n=T\}$。代数恒等式
+\[
+ B_{t_{k+1}}^2-B_{t_k}^2
+ =2B_{t_k}\Delta B_k+(\Delta B_k)^2
+\]
+给出
+\[
+ \sum_kB_{t_k}\Delta B_k
+ =\frac12\left(B_T^2-\sum_k(\Delta B_k)^2\right).
+\]
+左端阶梯过程 $H_t^\pi=B_{t_k}$（$t_k<t\le t_{k+1}$）可预测，并且
+\[
+ \E\int_0^T|H_t^\pi-B_t|^2\dd t
+ =\sum_k\int_{t_k}^{t_{k+1}}(t-t_k)\dd t
+ \le\frac T2|\pi|.
+\]
+所以左端和于 $L^2$ 趋于 $\int_0^TB_t\dd B_t$。结合 Brownian 二次变差，
+\[
+ \int_0^TB_t\dd B_t=\frac12(B_T^2-T).
+\]
+右端和满足
+\[
+ \sum_kB_{t_{k+1}}\Delta B_k
+ =\sum_kB_{t_k}\Delta B_k+\sum_k(\Delta B_k)^2
+ \longrightarrow\frac12(B_T^2+T).
+\]
+两者的平均，也就是对称端点的 Stratonovich 和，趋于 $B_T^2/2$。三个答案之差正是二次变差，
+所以 \Ito{} 积分不是逐路径选点无关的 Riemann--Stieltjes 积分。
+\end{example}
+
+\begin{example}[非适应被积过程]\label{ex:6-4-2-3}
+在分割 $\pi$ 上事后选择
+\[
+ H_k=\sgn(B_{t_{k+1}}-B_{t_k}).
+\]
+则形式和为
+\[
+ \sum_kH_k(B_{t_{k+1}}-B_{t_k})=\sum_k|B_{t_{k+1}}-B_{t_k}|.
+\]
+$H_k$ 依赖区间右端的未来增量，通常不对 $\mathcal F_{t_k}$ 可测。对 $n$ 等分割，形式和的
+期望为
+\[
+ n\E|N(0,T/n)|=\sqrt{\frac{2Tn}{\pi}}\longrightarrow\infty.
+\]
+这不是 \Ito{} 等距的反例，而是一个不在定义域中的“预知未来”策略；可预测性正是排除这种事后选符号。
+\end{example}
+
+\Ito{} 积分自身也有二次变差。以下论证先处理简单被积过程，再用 \Ito{} 等距完成逼近。
+
+\begin{proposition}[\Ito{} 积分的二次变差]\label{proposition:6-4-2-4}
+若 $H\in L^2_{\mathrm{pred}}([0,T])$ 且
+$M_t=\int_0^tH_s\dd B_s$，则对任意确定分割列 $|\pi_n|\to0$，
+\[
+ \sum_{[u,v]\in\pi_n}(M_v-M_u)^2
+ \longrightarrow\int_0^TH_s^2\dd s
+ \quad\text{依概率}.
+\]
+局部平方可积情形在每个局部化停时之前满足同一结论。
+\end{proposition}
+
+\begin{proof}
+先设 $H$ 为有界简单可预测过程。若分割细化了 $H$ 的确定跳点，在每个常系数区间内有
+$\Delta M=H_k\Delta B$。把细分割记为 $0=r_0<\cdots<r_N=T$，并令 $h_\ell$ 表示
+$H$ 在 $(r_\ell,r_{\ell+1}]$ 上的系数。因为所有粗分割端点已被加入，$h_\ell$ 对
+$\mathcal F_{r_\ell}$ 可测。置
+\[
+ Z_\ell=h_\ell^2\bigl((B_{r_{\ell+1}}-B_{r_\ell})^2-(r_{\ell+1}-r_\ell)\bigr).
+\]
+Gaussian 二阶与四阶矩给出
+\[
+ \E[Z_\ell\mid\mathcal F_{r_\ell}]=0,
+ \qquad
+ \E[Z_\ell^2\mid\mathcal F_{r_\ell}]
+ =2h_\ell^4(r_{\ell+1}-r_\ell)^2.
+\]
+若 $\ell<j$，则 $Z_\ell$ 对 $\mathcal F_{r_j}$ 可测，因而
+$\E(Z_\ell Z_j)=0$。于是
+\begin{align*}
+ &\E\left|
+ \sum_{\ell=0}^{N-1}(M_{r_{\ell+1}}-M_{r_\ell})^2
+ -\int_0^TH_s^2\dd s
+ \right|^2\\
+ &\quad=\sum_{\ell=0}^{N-1}\E Z_\ell^2
+ \le2\|H\|_\infty^4\sum_{\ell=0}^{N-1}(r_{\ell+1}-r_\ell)^2
+ \le2\|H\|_\infty^4T|\pi|\longrightarrow0.
+\end{align*}
+
+对一般确定分割，至多有有限个区间跨越 $H$ 的确定跳点。若在区间 $[u,v]$ 中加入跳点
+$c$，则平方和的改变量精确为
+\begin{align*}
+ &(M_c-M_u)^2+(M_v-M_c)^2-(M_v-M_u)^2\\
+ &\qquad=-2(M_c-M_u)(M_v-M_c).
+\end{align*}
+当原分割的网格趋零时，$u,c,v$ 之间的距离同时趋零；$M$ 的连续性使右端几乎必然趋零。
+对有限个跳点求和，得到加入全部跳点前后的差趋零。因此简单过程结论对任意网格趋零的确定分割成立。
+
+现在取简单过程 $H^{(m)}\to H$ 于 $L^2_{\mathrm{pred}}$，并记
+$M^{(m)}=\int H^{(m)}\dd B$、$R^{(m)}=M-M^{(m)}$。对任意确定分割，鞅增量正交与 \Ito{} 等距给
+\[
+ \E\sum_{[u,v]\in\pi}(R_v^{(m)}-R_u^{(m)})^2
+ =\E\int_0^T|H_s-H_s^{(m)}|^2\dd s.
+\]
+所以右侧趋零时，Markov 不等式给出差过程平方增量和对所有分割一致地依概率趋零。路径上的
+Cauchy--Schwarz 不等式又给
+\begin{align*}
+ &\left|\sum(\Delta M)^2-\sum(\Delta M^{(m)})^2\right|\\
+ &\quad\le
+ 2\left(\sum(\Delta M^{(m)})^2\right)^{1/2}
+   \left(\sum(\Delta R^{(m)})^2\right)^{1/2}
+ +\sum(\Delta R^{(m)})^2.
+\end{align*}
+对固定 $m$，第一因子的平方和随网格变细收敛，因而构成紧族；再令 $m\to\infty$，上式右端
+一致地依概率变小。目标能量也满足
+\[
+ \E\int_0^T|H_s^2-(H_s^{(m)})^2|\dd s
+ \le\|H-H^{(m)}\|_{\mathcal H^2}
+    (\|H\|_{\mathcal H^2}+\|H^{(m)}\|_{\mathcal H^2})\to0.
+\]
+先固定 $m$ 令分割细化，再令 $m\to\infty$，得到所需依概率收敛。
+
+局部情形把以上论证用于 $H\1_{(0,\tau_m]}$；对任意固定有限时刻，事件
+$\{\tau_m>T\}$ 的概率趋于一，故停止结论推出未停止过程的局部结论。
+\end{proof}
+
+\begin{proposition}[协变差与多维 \Ito{} 积分]\label{proposition:6-4-2-5}
+沿同一分割以 polarization 定义
+\[
+ [M,N]_t=\frac14\bigl([M+N]_t-[M-N]_t\bigr).
+\]
+若 $B=(B^1,\ldots,B^r)$ 是定义~\ref{def:6-4-2-vector-brownian} 的
+$\R^r$ 值 Brownian motion，且 $H,K$ 都关于它的共同滤过可预测，
+\[
+ M_t=\int_0^tH_s\dd B_s^i,
+ \qquad N_t=\int_0^tK_s\dd B_s^j,
+\]
+其中两个被积过程均平方可积，则
+\[
+ [M,N]_t=\delta_{ij}\int_0^tH_sK_s\dd s
+\]
+沿任意确定网格趋零分割列依概率成立。
+\end{proposition}
+
+\begin{proof}
+若 $i=j$，则 $M\pm N=\int(H\pm K)\dd B^i$。命题
+\ref{proposition:6-4-2-4} 与恒等式
+$(H+K)^2-(H-K)^2=4HK$ 立即给出结论。
+
+若 $i\ne j$，先取简单被积过程。在共同确定分割上，交叉和的每项含
+$\Delta B^i\Delta B^j$。把分割加细到两个简单过程的确定跳点后，记相应系数为
+$H_\ell,K_\ell$。若 $\ell<m$，对 $\mathcal F_{t_m}$ 条件化可消去第 $m$ 项；对角项则由共同滤过下
+向量 Brownian 增量的条件分布得到
+\[
+ \E\left|\sum_\ell H_\ell K_\ell
+       \Delta B_\ell^i\Delta B_\ell^j\right|^2
+ =\sum_\ell\E(H_\ell^2K_\ell^2)(\Delta t_\ell)^2
+ \le\|H\|_\infty^2\|K\|_\infty^2\,t|\pi|.
+\]
+故交叉和在 $L^2$ 中趋零。
+
+对一般被积过程，取共同简单逼近 $H^{(m)},K^{(m)}$。例如
+\begin{align*}
+ \left|\sum\Delta M\,\Delta N-\sum\Delta M^{(m)}\,\Delta N^{(m)}\right|
+ &\le
+ \left(\sum(\Delta(M-M^{(m)}))^2\right)^{1/2}
+ \left(\sum(\Delta N)^2\right)^{1/2}\\
+ &\quad+
+ \left(\sum(\Delta M^{(m)})^2\right)^{1/2}
+ \left(\sum(\Delta(N-N^{(m)}))^2\right)^{1/2}.
+\end{align*}
+命题~\ref{proposition:6-4-2-4} 与 \Ito{} 等距说明误差因子可先随 $m\to\infty$ 一致地依概率变小，
+其余因子构成紧族；因此简单情形的极限传到一般情形。于是不同噪声分量的协变差为零。
+\end{proof}
+
+例如二维 Brownian 的离散乘积恒等式为
+\[
+ B_T^1B_T^2
+ =\sum_kB_{t_k}^1\Delta B_k^2
+  +\sum_kB_{t_k}^2\Delta B_k^1
+  +\sum_k\Delta B_k^1\Delta B_k^2.
+\]
+最后一项依概率趋零，前两项分别趋于相应 \Ito{} 积分，所以
+\[
+ B_T^1B_T^2
+ =\int_0^TB_s^1\dd B_s^2+\int_0^TB_s^2\dd B_s^1.
+\]
+同一噪声分量则会留下 $\dd t$。这正是多维 \Ito{} 公式中
+$\operatorname{tr}(\sigma\sigma^TD^2f)$ 的来源。
+
+\begin{remark}[指数鞅与终端密度]
+固定 $\theta\in\R$，令
+\[
+ Z_t=\exp\!\left(\theta B_t-\frac12\theta^2t\right)
+\]。
+对 $0\le s\le t$，Brownian 增量的独立性和 Gaussian 矩母函数给出
+\begin{align*}
+ \E[Z_t\mid\mathcal F_s]
+ &=Z_s\,\E\!\left[
+   \exp\!\left(\theta(B_t-B_s)-\frac12\theta^2(t-s)\right)
+   \middle|\mathcal F_s\right]\\
+ &=Z_s.
+\end{align*}
+因而 $Z$ 是均值为 $1$ 的正鞅，$Z_T$ 可用作终端时刻的概率密度。在新测度下识别 Brownian 漂移需要
+Girsanov 定理及相应的可积性条件。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=10mm and 12mm]
+  \draw[book line,-{Stealth[length=2mm]}] (0,0)--(5.2,0) node[right,book label]{$t$};
+  \draw[BookAccent,thick]
+    (0,.45)--(1,.45)--(1,1.05)--(2.2,1.05)--(2.2,.7)--(3.5,.7)--(3.5,1.3)--(4.8,1.3);
+  \foreach \x in {0,1,2.2,3.5,4.8}{\draw[BookInk!45] (\x,-.12)--(\x,.12);}
+  \node[book label] at (2.5,1.65) {左端已知的 $H_k$};
+  \node[book strong node] (orth) at (7.1,1.0) {$H_k\Delta B_k$\\在 $L^2$ 中正交};
+  \node[book warm node,below=of orth] (sum) {$\displaystyle\sum\|H_k\Delta B_k\|_2^2$
+    \\$=\E\int H^2\dd t$};
+  \node[book strong node,right=of orth] (qv) {$\displaystyle\sum(\Delta B)^2$
+    \\$\longrightarrow T$};
+  \draw[book accent arrow] (4.8,1.0)--(orth);
+  \draw[book arrow] (orth)--(sum);
+  \draw[book accent arrow] (orth)--(qv);
+\end{tikzpicture}
+\caption{可预测阶梯过程把 Brownian 增量配成正交和；平方范数形成 \Ito{} 等距，增量平方形成时间。}
+\label{fig:6-4-2-isometry-qv}
+\end{figure}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 对两个时间区间的简单可预测过程完整展开平方，标出每个交叉项所条件化的
+  $\sigma$-代数，并重证 \Ito{} 等距。
+  \item 由 $\int_0^TB_s\dd B_s=(B_T^2-T)/2$ 与 Gaussian 四阶矩计算
+  $\E(\int_0^TB_s\dd B_s)^2$，再与 \Ito{} 等距比较。
+  \item 对二进分割逐项计算 Brownian 二次变差的均值、方差和可和尾界，完成 a.s. 收敛证明。
+  \item 比较左端、右端和对称端点和；若改用中点
+  $B_{(t_k+t_{k+1})/2}$，先把每段拆成两个独立半增量再计算极限。
+\end{enumerate}
+\end{exercise}
+
+Brownian 增量的一阶量形成随机积分，二阶量形成时间积分。普通链式法则遗漏的正是后者；下一小节
+的 Taylor 展开保留这个二阶项，由此建立 SDE、生成元和热方程之间的联系。
+
+
+\subsection{\Ito{} 公式、随机微分方程与热方程应用}\label{subsec:6-4-3}
+\index{Ito@\Ito{} 公式}\index{随机微分方程}\index{Feynman--Kac 公式}
+
+对有限变差路径，二阶 Taylor 项沿细分分割消失。Brownian 增量的典型大小是
+$\sqrt{\Delta t}$，所以一阶随机项不能按绝对值求和，而二阶项的和却留下确定的时间量。这是
+\Ito{} 公式中额外二阶导数的全部来源，也是扩散生成元与普通一阶链式法则不同的原因。
+
+\begin{definition}[\Ito{} 过程]\label{def:6-4-3-1}
+设 $B$ 是 $\R^r$ 值 Brownian motion。连续适应过程 $X$ 若可写成
+\[
+ X_t=X_0+\int_0^tb_s\dd s+\int_0^t\sigma_s\dd B_s,
+\]
+其中 $X_t\in\R^d$，$b$ 为 $\R^d$ 值渐进可测过程，$\sigma$ 为 $d\times r$ 矩阵值
+可预测过程，并且对每个 $T<\infty$，
+\[
+ \int_0^T|b_s|\dd s<\infty,
+ \qquad
+ \int_0^T\|\sigma_s\|_{\mathrm{HS}}^2\dd s<\infty
+ \quad\text{a.s.},
+\]
+则称 $X$ 为 \Ito{} 过程。
+\end{definition}
+
+这里的 Lebesgue 积分逐路径定义；矩阵值被积过程的随机积分按
+命题~\ref{proposition:6-4-2-localization} 逐列积分后拼成。
+
+\begin{definition}[随机微分方程]\label{def:6-4-3-2}
+符号
+\[
+ \dd X_t=b(t,X_t)\dd t+\sigma(t,X_t)\dd B_t,
+ \qquad X_0=\xi,
+\]
+表示积分方程
+\[
+ X_t=\xi+\int_0^tb(s,X_s)\dd s
+          +\int_0^t\sigma(s,X_s)\dd B_s.
+\]
+在给定概率空间、滤过和 Brownian motion 上，对该 Brownian 适应并满足积分方程的连续过程
+称为\emph{强解}。路径唯一性是指任意两个使用同一初值和同一 Brownian motion 的强解不可分辨，
+而不只是每个固定时刻分别 a.s. 相等。
+\end{definition}
+
+\begin{definition}[扩散生成元]\label{def:6-4-3-3}
+对时间齐次系数 $b:\R^d\to\R^d$、
+$\sigma:\R^d\to\R^{d\times r}$ 及 $f\in C^2(\R^d)$，定义形式生成元
+\[
+ Lf(x)=b(x)\cdot\nabla f(x)
+ +\frac12\operatorname{tr}\!\bigl(\sigma(x)\sigma(x)^TD^2f(x)\bigr).
+\]
+\end{definition}
+
+\begin{theorem}[\Ito{} 公式]\label{theorem:6-4-3-1}
+设 $X$ 是定义~\ref{def:6-4-3-1} 的 $\R^d$ 值连续 \Ito{} 过程，
+$f\in C^{1,2}([0,\infty)\times\R^d)$。则存在一个概率一事件，使在该事件上对每个 $t\ge0$ 同时有
+\begin{align*}
+ f(t,X_t)=f(0,X_0)
+ &+\int_0^t\left(\partial_sf(s,X_s)+b_s\cdot\nabla f(s,X_s)\right)\dd s\\
+ &+\frac12\int_0^t
+ \operatorname{tr}\!\left(\sigma_s\sigma_s^TD^2f(s,X_s)\right)\dd s\\
+ &+\int_0^t\nabla f(s,X_s)\sigma_s\dd B_s.
+\end{align*}
+等价的微分记号是
+\[
+ \dd f(t,X_t)=
+ \left(\partial_tf+b\cdot\nabla f+\tfrac12
+ \operatorname{tr}(\sigma\sigma^TD^2f)\right)\dd t
+ +\nabla f\,\sigma\dd B_t,
+\]
+其中所有导数都在 $(t,X_t)$ 评价。
+\end{theorem}
+
+\begin{proof}
+先证明有界情形：固定 $T<\infty$，并假设在 $[0,T]$ 上
+$|X_t|$、$\int_0^t|b_s|\dd s$ 与
+$\int_0^t\|\sigma_s\|_{\mathrm{HS}}^2\dd s$ 都有确定上界。于是 $(t,X_t)$ 留在某个紧集。
+证明末段将明确定义局部化停时，并用已经证明的停止积分恒等式把一般情形约化到这里。
+
+记 $X=A+M$，其中
+\[
+ A_t=X_0+\int_0^tb_s\dd s,
+ \qquad M_t=\int_0^t\sigma_s\dd B_s.
+\]
+连续有限变差过程 $A$ 沿任意网格趋零分割满足
+\[
+ \sum|\Delta A|^2
+ \le\max|\Delta A|\operatorname{Var}(A;[0,T])\longrightarrow0.
+\]
+同一 Cauchy--Schwarz 估计及命题~\ref{proposition:6-4-2-4} 说明
+$\sum\Delta A^i\Delta M^j\to0$ 依概率。按向量积分的定义，
+\[
+ M_t^i=\sum_{a=1}^r\int_0^t\sigma_{ia}(s)\dd B_s^a,
+\]
+而离散交叉和的有限双线性展开与命题~\ref{proposition:6-4-2-5} 给出
+\[
+ [M^i,M^j]_t
+ =\sum_{a,b=1}^r
+ \left[\int_0^\cdot\sigma_{ia}(s)\dd B_s^a,
+       \int_0^\cdot\sigma_{jb}(s)\dd B_s^b\right]_t
+ =\sum_{a=1}^r\int_0^t\sigma_{ia}(s)\sigma_{ja}(s)\dd s.
+\]
+所以
+\begin{equation}\label{eq:6-4-3-ito-process-covariation}
+ [X^i,X^j]_t=[M^i,M^j]_t
+ =\int_0^t(\sigma_s\sigma_s^T)_{ij}\dd s.
+\end{equation}
+
+取确定分割 $\pi_n=\{0=t_0<\cdots<t_{N_n}=t\}$，$|\pi_n|\to0$。把一个增量拆成时间变化和
+空间变化：
+\begin{align*}
+ &f(t_{k+1},X_{t_{k+1}})-f(t_k,X_{t_k})\\
+ &\quad=
+ \bigl[f(t_{k+1},X_{t_{k+1}})-f(t_k,X_{t_{k+1}})\bigr]
+ +\bigl[f(t_k,X_{t_{k+1}})-f(t_k,X_{t_k})\bigr].
+\end{align*}
+由 $\partial_tf$ 在相关紧集上一致连续、$X$ 连续，第一项求和趋于
+$\int_0^t\partial_sf(s,X_s)\dd s$。
+
+对第二项作二阶空间 Taylor 展开：
+\begin{align*}
+ f(t_k,X_{t_{k+1}})-f(t_k,X_{t_k})
+ &=\nabla f(t_k,X_{t_k})\cdot\Delta X_k\\
+ &\quad+\frac12\sum_{i,j}\partial_{ij}f(t_k,X_{t_k})
+      \Delta X_k^i\Delta X_k^j+R_{k,n}.
+\end{align*}
+$D^2f$ 在紧集上一致连续，所以存在模量 $\omega(\delta)\downarrow0$，使
+\[
+ |R_{k,n}|\le\omega\!\left(\max_k|\Delta X_k|\right)|\Delta X_k|^2.
+\]
+路径连续性给 $\max_k|\Delta X_k|\to0$ a.s.，而
+$\sum_k|\Delta X_k|^2$ 由
+\eqref{eq:6-4-3-ito-process-covariation} 依概率趋于
+$\int_0^t\|\sigma_s\|_{\mathrm{HS}}^2\dd s$，因而构成紧族。故
+$\sum_kR_{k,n}\to0$ 依概率。
+
+一阶和中的有限变差部分为
+\[
+ \sum_k\nabla f(t_k,X_{t_k})\cdot\int_{t_k}^{t_{k+1}}b_s\dd s
+ \longrightarrow\int_0^t\nabla f(s,X_s)\cdot b_s\dd s.
+\]
+这是左端阶梯函数对连续函数 $s\mapsto\nabla f(s,X_s)$ 的一致逼近，再乘可积函数 $|b_s|$
+后的 DCT。一阶随机部分的被积过程
+\[
+ \sum_k\nabla f(t_k,X_{t_k})\sigma_s\1_{(t_k,t_{k+1}]}(s)
+\]
+在局部 $L^2_{\mathrm{pred}}$ 中趋于 $\nabla f(s,X_s)\sigma_s$；原因同样是左端阶梯函数一致收敛，
+并由停止后的 $\int\|\sigma\|^2$ 支配。\Ito{} 等距于是把其积分和传到
+$\int_0^t\nabla f(s,X_s)\sigma_s\dd B_s$。
+
+二阶和需要一个带权的协变差版本。若有界可预测权函数 $w$ 在确定粗分割的每一块上为常数，
+则把细分割加入粗分割端点后，命题~\ref{proposition:6-4-2-5} 逐块给出下式；加入有限个端点
+前后的差是有限个跨端点增量的乘积，由 $M$ 的连续性依概率趋零。因此
+\[
+ \sum_k w_{t_k}\Delta M_k^i\Delta M_k^j
+ \longrightarrow
+ \int_0^t w_s(\sigma_s\sigma_s^T)_{ij}\dd s
+ \quad\text{依概率}.
+\]
+对连续有界适应权函数 $w$，令 $w^{(m)}$ 是确定粗分割上的左端阶梯逼近。路径连续性给
+$\|w^{(m)}-w\|_{\infty,[0,t]}\to0$ a.s.，而对任意细分割
+\[
+ \left|\sum_k(w_{t_k}-w^{(m)}_{t_k})\Delta M_k^i\Delta M_k^j\right|
+ \le \|w-w^{(m)}\|_{\infty,[0,t]}
+ \left(\sum_k|\Delta M_k^i|^2\right)^{1/2}
+ \left(\sum_k|\Delta M_k^j|^2\right)^{1/2}.
+\]
+两个平方增量和由命题~\ref{proposition:6-4-2-4} 构成紧族；相应时间积分之差则由
+\[
+ \left|\int_0^t(w_s-w_s^{(m)})(\sigma_s\sigma_s^T)_{ij}\dd s\right|
+ \le \|w-w^{(m)}\|_{\infty,[0,t]}
+      \int_0^t\|\sigma_s\|_{\mathrm{HS}}^2\dd s
+\]
+趋于零。因此先令细分割网格趋零、再令 $m\to\infty$，带权结论对
+$w_s=\partial_{ij}f(s,X_s)$ 成立。
+含有限变差增量的带权项仍然消失：停止后权函数由常数 $C$ 控制，而
+\begin{align*}
+ \left|\sum_kw_k\Delta A_k^i\Delta A_k^j\right|
+ &\le C\left(\sum_k|\Delta A_k^i|^2\right)^{1/2}
+          \left(\sum_k|\Delta A_k^j|^2\right)^{1/2},\\
+ \left|\sum_kw_k\Delta A_k^i\Delta M_k^j\right|
+ &\le C\left(\sum_k|\Delta A_k^i|^2\right)^{1/2}
+          \left(\sum_k|\Delta M_k^j|^2\right)^{1/2}.
+\end{align*}
+第一类平方和趋零，$\sum|\Delta M^j|^2$ 构成紧族，故两行右端都依概率趋零。因此
+\[
+ \sum_k\partial_{ij}f(t_k,X_{t_k})\Delta X_k^i\Delta X_k^j
+ \longrightarrow
+ \int_0^t\partial_{ij}f(s,X_s)(\sigma_s\sigma_s^T)_{ij}\dd s
+\]
+依概率成立。对有限个 $i,j$ 求和，正是迹项。
+
+上述有限项之和依概率收敛到陈述中的右端；而对每个 $n$，Taylor 恒等式求和后的该和恒等于固定的
+$f(t,X_t)-f(0,X_0)$。常值随机变量列若依概率收敛到另一个随机变量，则二者 a.s. 相等：对任意
+$\varepsilon>0$，二者之差大于 $\varepsilon$ 的概率必为零。因此停止后的 \Ito{} 公式成立。
+
+最后令
+\[
+ \rho_m=\inf\left\{t:|X_t|+\int_0^t|b_s|\dd s
+ +\int_0^t\|\sigma_s\|_{\mathrm{HS}}^2\dd s\ge m\right\}\wedge m.
+\]
+大括号中的过程连续、适应且非负，因此
+$\{\rho_m\le t\}$ 可由它在 $[0,t]$ 上的有理时刻上确界写出，故 $\rho_m$ 是停时。
+阈值与末端截断都随 $m$ 增加，所以 $(\rho_m)$ 非降；连续性和局部可积性又给
+$\rho_m\uparrow\infty$ a.s.。把前面的证明用于停止后的漂移
+$b_s\1_{\{s\le\rho_m\}}$、扩散系数
+$\sigma_s\1_{\{s\le\rho_m\}}$ 以及一个覆盖
+$[0,m]\times\overline B(0,m)$ 的紧集，得到公式到 $t\wedge\rho_m$。对每个固定 $t$，在
+$\{\rho_m>t\}$ 上这就是未停止公式；这些事件递增到概率一。故一般 $C^{1,2}$ 与局部可积系数的
+结论对每个固定 $t$ 成立。再对可数集 $t\in\Q_+$ 取零集之并。等式左端连续；右端的两个
+Lebesgue 积分由局部可积性对上限连续，随机积分取定理~\ref{theorem:6-4-2-2} 与命题
+\ref{proposition:6-4-2-localization} 构造的连续版本。因此有理时刻的等式由连续性推广到所有实时刻，得到
+定理声明中的共同概率一事件。
+\end{proof}
+
+\begin{example}[平方与指数]\label{ex:6-4-3-1}
+对 $f(x)=x^2$，\Ito{} 公式给出
+\[
+ B_t^2=2\int_0^tB_s\dd B_s+t,
+\]
+故 $B_t^2-t$ 是平方可积鞅。这与例~\ref{ex:6-4-2-2} 的左端和计算完全一致。
+
+固定 $\theta\in\R$ 并令
+\[
+ Z_t=\exp\!\left(\theta B_t-\frac12\theta^2t\right).
+\]
+对 $f(t,x)=e^{\theta x-\theta^2t/2}$ 应用 \Ito{} 公式，漂移项
+$(-\theta^2/2+\theta^2/2)f$ 抵消，得到
+\[
+ Z_t=1+\theta\int_0^tZ_s\dd B_s.
+\]
+又由 Gaussian 矩母函数
+$\E Z_s^2=e^{\theta^2s}$，所以
+$\E\int_0^T\theta^2Z_s^2\dd s<\infty$。随机积分是真平方可积鞅，故 $(Z_t)$ 是均值为一的
+指数鞅，而不只是局部鞅。
+\end{example}
+
+\begin{example}[几何 Brownian motion]\label{ex:6-4-3-2}
+设 $X_0$ 为给定初值，$\mu,\sigma\in\R$。令
+\[
+ X_t=X_0\exp\!\left((\mu-\tfrac12\sigma^2)t+\sigma B_t\right).
+\]
+对指数函数应用 \Ito{} 公式，得到
+\[
+ \dd X_t=\mu X_t\dd t+\sigma X_t\dd B_t.
+\]
+反过来，若 $X_0>0$ 且 $X$ 是该方程的正解，对 $\log X_t$ 局部化应用 \Ito{} 公式，
+\[
+ \dd\log X_t=(\mu-\tfrac12\sigma^2)\dd t+\sigma\dd B_t,
+\]
+积分后恢复同一表达式。修正项 $-\sigma^2/2$ 来自二次变差；按普通链式法则会漏掉它。
+\end{example}
+
+\begin{example}[Ornstein--Uhlenbeck SDE 的显式解]
+\label{ex:6-4-3-ou-sde}
+设 $\theta,\eta>0$，$X_0\in L^2(\mathcal F_0)$，且 $B$ 相对于给定滤过为 Brownian motion；因而 $X_0$ 与 Brownian 的未来增量独立。考虑
+\[
+ \dd X_t=-\theta X_t\dd t+\eta\dd B_t.
+\]
+对 $Y_t=e^{\theta t}X_t$ 使用 \Ito{} 公式；由于确定因子 $e^{\theta t}$ 有零二次变差，
+\[
+ \dd Y_t=\eta e^{\theta t}\dd B_t.
+\]
+因而
+\begin{equation}\label{eq:6-4-3-ou-solution}
+ X_t=e^{-\theta t}X_0
+ +\eta\int_0^te^{-\theta(t-s)}\dd B_s.
+\end{equation}
+右端的确定被积函数属于 $L^2[0,t]$，所以式中 \Ito{} 积分已由
+例~\ref{ex:6-4-2-1} 定义。这个随机积分是中心 Gaussian，方差为
+\[
+ \eta^2\int_0^te^{-2\theta(t-s)}\dd s
+ =\frac{\eta^2}{2\theta}(1-e^{-2\theta t}).
+\]
+特别地，若 $X_0\sim N(0,\eta^2/(2\theta))$ 并与 $B$ 独立，则式
+\eqref{eq:6-4-3-ou-solution} 表明每个有限向量
+$(X_{t_1},\ldots,X_{t_n})$ 都是 $X_0$ 与有限个确定 \Ito{} 积分组成的联合 Gaussian 向量的线性变换。
+此外，对 $s\le t$，
+\[
+ X_t=e^{-\theta(t-s)}X_s
+ +\eta\int_s^te^{-\theta(t-r)}\dd B_r,
+\]
+而最后的积分独立于题设给定的 $\mathcal F_s$ 且均值为零。因此
+$\Var(X_t)=\eta^2/(2\theta)$，并且
+\[
+ \Cov(X_s,X_t)=e^{-\theta(t-s)}\Var(X_s)
+ =\frac{\eta^2}{2\theta}e^{-\theta(t-s)}.
+\]
+因此这个强解与例~\ref{ex:6-4-1-ou-gaussian} 的平稳 Gaussian 构造具有相同有限维分布。
+若 $X_0=x$ 为确定值，则
+\[
+ \E X_t=e^{-\theta t}x,\qquad
+ \Var(X_t)=\frac{\eta^2}{2\theta}(1-e^{-2\theta t}),
+\]
+这显示该分布向平稳 Gaussian 分布回复。
+\end{example}
+
+定义~\ref{def:6-4-3-3} 的生成元现在有了严格含义。对时间齐次 \Ito{} 过程，公式给出
+\[
+ f(X_t)-f(X_0)-\int_0^tLf(X_s)\dd s
+ =\int_0^t\nabla f(X_s)\sigma(X_s)\dd B_s.
+\]
+右端总是局部鞅；若例如
+$\E\int_0^T\|\sigma(X_s)^T\nabla f(X_s)\|^2\dd s<\infty$，则它在 $[0,T]$ 上是真鞅。
+因而，要把右端的局部鞅提升为真鞅，还需要相应的可积性。
+
+\begin{theorem}[Lipschitz SDE 的强存在唯一性]\label{theorem:6-4-3-2}
+设 Borel 函数
+$b:[0,\infty)\times\R^d\to\R^d$、
+$\sigma:[0,\infty)\times\R^d\to\R^{d\times r}$ 在每个有限时域 $[0,T]$ 上满足
+\[
+ |b(t,x)-b(t,y)|+\|\sigma(t,x)-\sigma(t,y)\|_{\mathrm{HS}}
+ \le L_T|x-y|,
+\]
+以及
+\[
+ |b(t,x)|^2+\|\sigma(t,x)\|_{\mathrm{HS}}^2
+ \le C_T(1+|x|^2).
+\]
+若 $X_0\in L^2$ 对 $\mathcal F_0$ 可测，$B$ 相对于给定的满足通常条件的滤过是 Brownian motion，
+则 SDE 有路径唯一的连续适应强解，并且
+\[
+ \E\sup_{t\le T}|X_t|^2
+ \le C_T'(1+\E|X_0|^2).
+\]
+\end{theorem}
+
+\begin{proof}
+令 $S_T^2=L^2(\Omega;C([0,T];\R^d))$，范数为
+$\|X\|_{S_T^2}^2=\E\sup_{t\le T}|X_t|^2$，并只取连续适应元素。它是一个闭子空间，
+因而完备：$C([0,T];\R^d)$-值 $L^2$ 极限仍有连续路径，而对每个固定 $t$，评价映射连续且
+$L^2(\mathcal F_t)$ 是 $L^2(\mathcal F)$ 的闭子空间，所以适应性也在极限下保持。对
+$X\in S_T^2$ 定义
+\[
+ (\Phi X)_t=X_0+\int_0^tb(s,X_s)\dd s
+ +\int_0^t\sigma(s,X_s)\dd B_s.
+\]
+连续适应的 $X$ 渐进可测，Borel 复合仍渐进可测。随机系数的可预测代表由
+评注~\ref{remark:6-4-2-progressive-predictable} 给出；线性增长保证所需 $L^2$ 条件。因此
+$\Phi$ 定义良好。
+
+对 $0<\delta\le T$，Cauchy--Schwarz、连续 Doob $L^2$ 不等式
+\eqref{eq:6-4-2-continuous-doob} 和 \Ito{} 等距给出
+\begin{align*}
+ \|\Phi X-\Phi Y\|_{S_\delta^2}^2
+ &\le2\delta\E\int_0^\delta|b(s,X_s)-b(s,Y_s)|^2\dd s\\
+ &\quad+8\E\int_0^\delta
+ \|\sigma(s,X_s)-\sigma(s,Y_s)\|_{\mathrm{HS}}^2\dd s\\
+ &\le(2L_T^2\delta^2+8L_T^2\delta)\|X-Y\|_{S_\delta^2}^2.
+\end{align*}
+取 $\delta$ 足够小，使括号中的常数小于一，$\Phi$ 是压缩映射。线性增长与同一估计给
+\[
+ \|\Phi X\|_{S_\delta^2}^2
+ \le C\bigl(1+\E|X_0|^2+\delta\|X\|_{S_\delta^2}^2\bigr)<\infty,
+\]
+故 $\Phi$ 确实把该空间映入自身。Banach 不动点定理产生 $[0,\delta]$ 上唯一强解。
+
+以 $X_\delta$ 为新初值，在 $[\delta,2\delta]$ 上把积分下限改为 $\delta$ 并重复同一构造；
+$X_\delta\in L^2(\mathcal F_\delta)$，而 $(B_{\delta+t}-B_\delta)_{t\ge0}$ 相对于移位滤过仍是
+Brownian motion。有限次拼接覆盖固定的 $[0,T]$，各段端点相同且路径连续。再在
+$[T,T+1]$、$[T+1,T+2]$ 等有限时段递归使用相应的局部常数，便得到 $[0,\infty)$ 上的强解。
+
+为给出不依赖分段、也不预先假设任意候选解属于 $S_T^2$ 的路径唯一性，设 $X,Y$ 是两个连续强解，
+并对整数 $n\ge1$ 令
+\[
+ \tau_n=\inf\{t\in[0,T]:|X_t|+|Y_t|\ge n\}\wedge T,
+\]
+其中空集的下确界取 $T$。当 $t<T$ 时，路径连续性给
+\[
+ \{\tau_n\le t\}
+ =\left\{\sup_{q\in\Q\cap[0,t]}(|X_q|+|Y_q|)\ge n\right\}\in\mathcal F_t,
+\]
+而 $t\ge T$ 时该事件为 $\Omega$，所以 $\tau_n$ 是停时。在 $\tau_n$ 以前两个解的系数
+平方可积；由随机积分停止恒等式，
+\begin{align*}
+ X_{t\wedge\tau_n}-Y_{t\wedge\tau_n}
+ &=\int_0^t\1_{\{s\le\tau_n\}}
+   \bigl(b(s,X_s)-b(s,Y_s)\bigr)\dd s\\
+ &\quad+\int_0^t\1_{\{s\le\tau_n\}}
+   \bigl(\sigma(s,X_s)-\sigma(s,Y_s)\bigr)\dd B_s .
+\end{align*}
+记
+\[
+ F_n(t)=\E\sup_{r\le t}|X_{r\wedge\tau_n}-Y_{r\wedge\tau_n}|^2.
+\]
+停止后各项可积，Cauchy--Schwarz、Doob--\Ito{} 估计与 Lipschitz 条件逐项给出
+\[
+ F_n(t)\le C_T\int_0^tF_n(s)\dd s.
+\]
+令 $G_n(t)=\int_0^tF_n(s)\dd s$，则 $G_n'(t)\le C_TG_n(t)$ a.e. 且 $G_n(0)=0$；
+对 $e^{-C_Tt}G_n(t)$ 积分得到 $G_n=0$，继而 $F_n=0$。对每个样本点，$X,Y$ 在
+$[0,T]$ 上连续有界，故 $\tau_n=T$ 对所有充分大的 $n$ 成立。对可数个 $n$ 的概率一事件取交后，
+得到 $\sup_{t\le T}|X_t-Y_t|=0$ a.s.；$T$ 任意整数，故两解不可分辨。
+
+最后对单个解使用
+$|x+y+z|^2\le3(|x|^2+|y|^2+|z|^2)$、Cauchy--Schwarz、Doob--\Ito{} 估计和线性增长，得到
+\[
+ F_X(t):=\E\sup_{s\le t}|X_s|^2
+ \le C_T(1+\E|X_0|^2)+C_T\int_0^tF_X(s)\dd s.
+\]
+同一指数乘子论证给出所述矩界。
+\end{proof}
+
+\begin{example}[缺少 Lipschitz／增长时的两种失败]\label{ex:6-4-3-4}
+先令噪声系数为零。方程
+\[
+ \dd X_t=2\sqrt{X_t^+}\dd t,
+ \qquad X_0=0
+\]
+有零解；对每个 $c\ge0$，还有等待解
+\[
+ X_t^{(c)}=
+ \begin{cases}
+ 0,&t\le c,\\
+ (t-c)^2,&t>c.
+ \end{cases}
+\]
+它在 $t>c$ 时满足
+$(X_t^{(c)})'=2(t-c)=2\sqrt{X_t^{(c)}}$，在 $t=c$ 两侧导数都为零。
+系数具有线性增长，却在原点不 Lipschitz，所以路径唯一性失败。
+
+另一方面，
+\[
+ \dd X_t=X_t^2\dd t,
+ \qquad X_0=x_0>0
+\]
+的显式解是
+$X_t=x_0/(1-x_0t)$，只存在到 $t=1/x_0$。系数局部 Lipschitz，却没有全局线性增长；局部唯一性
+没有阻止爆炸。两个例子分别只撤去一项核心假设。
+\end{example}
+
+\begin{proposition}[Dynkin 公式]\label{proposition:6-4-3-3}
+设 $X$ 是从 $X_0=x$ 出发、在全部有限时域上有定义的时间齐次 SDE
+\[
+ \dd X_s=b(X_s)\dd s+\sigma(X_s)\dd B_s
+\]
+的强解，$L$ 如定义~\ref{def:6-4-3-3}，$f\in C^2(\R^d)$，$\tau$ 为停时。若
+\[
+ \E_x\int_0^{t\wedge\tau}|Lf(X_s)|\dd s<\infty
+\]
+且
+\[
+ N_s=\int_0^{s\wedge\tau}\nabla f(X_r)\sigma(X_r)\dd B_r,
+ \qquad 0\le s\le t,
+\]
+是真鞅，则
+\[
+ \E_x f(X_{t\wedge\tau})
+ =f(x)+\E_x\int_0^{t\wedge\tau}Lf(X_s)\dd s.
+\]
+\end{proposition}
+
+\begin{proof}
+把 \Ito{} 公式应用到停止过程，得到
+\[
+ f(X_{t\wedge\tau})=f(x)+\int_0^{t\wedge\tau}Lf(X_s)\dd s+N_t.
+\]
+第一项的绝对可积性由假设给出，停止随机积分 $N$ 是真鞅且从零出发，故
+$\E N_t=0$。对等式取期望即得结论。若这些条件只在紧集退出前成立，应先取
+$\tau\wedge\tau_m$ 局部化，再用 DCT、MCT 或 UI 中适用的一项放开 $m$。因此随机积分项取期望为零的根据是真鞅性，
+而非局部鞅性。
+\end{proof}
+
+\begin{example}[调和函数与退出分布]\label{ex:6-4-3-3}
+令 $W$ 是 $\R^d$ 值 Brownian motion，$D\subset\R^d$ 为有界开集，固定 $x\in D$，并令
+$B_t^x=x+W_t$ 及
+\[
+ \tau_D=\inf\{t\ge0:B_t^x\notin D\}.
+\]
+这是停时。事实上，连续性与 $[0,t]$ 的紧致性给出
+\[
+ \{\tau_D\le t\}
+ =\left\{\inf_{q\in\Q\cap[0,t]}
+   \operatorname{dist}(B_q^x,D^c)=0\right\}\in\mathcal F_t^B.
+\]
+取嵌套开集耗尽
+\[
+ D_m=\{y\in D:|y|<m,\ \operatorname{dist}(y,D^c)>1/m\},
+ \qquad D_m\uparrow D,
+\]
+则 $\overline{D_m}\subset D$ 为紧集。相应退出时刻
+$\tau_{D_m}$ 递增到 $\tau_D$：若极限严格小于 $\tau_D$，则路径在一个稍长的紧时间段上的像是
+$D$ 的紧子集，因而最终全部落在某个 $D_m$ 中，这与退出时刻的定义矛盾。
+
+若 $u\in C^2(D)\cap C(\overline D)$ 且 $\Delta u=0$，在 $\tau_{D_m}$ 前应用 \Ito{} 公式。
+$\nabla u$ 在 $\overline{D_m}$ 上有界，所以随机积分平方可积，得到
+$u(B_{t\wedge\tau_{D_m}}^x)$ 是真鞅。令 $m\to\infty$，路径连续性与
+$|u|\le\|u\|_{C(\overline D)}$ 给
+\[
+ u(B_{t\wedge\tau_{D_m}}^x)\longrightarrow u(B_{t\wedge\tau_D}^x)
+ \quad\text{a.s. 且于 }L^1.
+\]
+固定 $0\le s\le t$。对每个 $m$ 的鞅等式取条件期望，再用条件期望的 $L^1$ 收缩性把上式传到
+极限，得到
+\[
+ \E_x[u(B_{t\wedge\tau_D}^x)\mid\mathcal F_s^B]
+ =u(B_{s\wedge\tau_D}^x).
+\]
+因此 $u(B_{t\wedge\tau_D}^x)$ 是有界真鞅，而不只是逐时刻期望相同的过程。
+
+取 $R$ 使 $D\subset[-R,R]^d$。由于
+\[
+ \Prob_x(\tau_D>n)
+ \le\Prob(|x_1+W_n^1|\le R)
+ \le\frac{2R}{\sqrt{2\pi n}}\longrightarrow0,
+\]
+所以 $\tau_D<\infty$ a.s.。连续路径在退出时落在 $\partial D$。连续时间可选抽样命题
+\ref{proposition:6-4-1-continuous-optional} 的有界情形可用于
+$t\wedge\tau_D$；再由 DCT 放开 $t$，给出
+\[
+ u(x)=\E_xu(B_{\tau_D}^x).
+\]
+因此边界值通过 Brownian 退出分布恢复。函数 $u$ 的有界性使停止鞅族一致可积，从而保证放开时间截断后期望恒等式仍成立。
+
+在一维区间 $D=(a,b)$ 中取调和函数 $u(x)=(x-a)/(b-a)$，便得到
+\[
+ \Prob_x(B_{\tau_D}^x=b)=\frac{x-a}{b-a},
+ \qquad a<x<b.
+\]
+\end{example}
+
+\begin{theorem}[热方程与 Feynman--Kac 基础式]\label{theorem:6-4-3-4}
+令 $B=(B^1,\ldots,B^d)$ 的各坐标是独立的一维 Brownian motion，并定义
+\[
+ P_tg(x)=\E[g(x+B_t)],\qquad t\ge0.
+\]
+若 $g\in C_b^2(\R^d)$ 且其一、二阶导数有界，则
+$u(t,x)=P_tg(x)$ 满足
+\[
+ \partial_tu=\frac12\Delta u,\qquad u(0,x)=g(x).
+\]
+对一般 $g\in C_b(\R^d)$，$P_tg$ 在 $t>0$ 时仍是光滑经典解，且
+$P_tg(x)\to g(x)$ 对每个 $x$ 成立；若 $g\in C_0(\R^d)$，则还成立
+\[
+ \|P_tg-g\|_\infty\longrightarrow0\qquad(t\downarrow0).
+\]
+一般 $C_b$ 数据不保证这一范数收敛。
+
+进一步，设 $V\in C_b(\R^d)$、$g\in C_0(\R^d)$。令从 $x$ 出发的 Brownian motion 仍记为
+$B$，并置
+\begin{equation}\label{eq:6-4-3-fk-expectation}
+ u(t,x)=\E_x\!\left[
+ \exp\!\left(-\int_0^tV(B_s)\dd s\right)g(B_t)\right].
+\end{equation}
+则 $u\in C([0,\infty);C_0(\R^d))$，并且它是 Volterra 方程
+\begin{equation}\label{eq:6-4-3-fk-duhamel}
+ u(t)=P_tg-\int_0^tP_{t-s}\bigl(Vu(s)\bigr)\dd s
+\end{equation}
+在 $C([0,\infty);C_0(\R^d))$ 中的唯一温和解（mild solution）。若仅假设
+$g\in C_b(\R^d)$，式~\eqref{eq:6-4-3-fk-expectation} 与
+\eqref{eq:6-4-3-fk-duhamel} 仍逐点成立，并且 $u(t,x)\to g(x)$；这里不声称
+$C_b$ 范数下的强连续性。
+
+若进一步 $g,V\in C_b^2(\R^d)$ 且它们的一、二阶导数均有界，则
+\eqref{eq:6-4-3-fk-expectation} 是经典解
+\[
+ \partial_tu=\frac12\Delta u-Vu,\qquad u(0,x)=g(x).
+\]
+\end{theorem}
+
+\begin{proof}
+记
+\[
+ q_t(z)=(2\pi t)^{-d/2}\exp\!\left(-\frac{|z|^2}{2t}\right),
+ \qquad t>0.
+\]
+独立坐标的联合密度给出
+\begin{equation}\label{eq:6-4-3-brownian-heat-kernel}
+ P_tg(x)=\int_{\R^d}q_t(z)g(x+z)\dd z
+       =\int_{\R^d}q_t(x-y)g(y)\dd y.
+\end{equation}
+直接求导得到
+\[
+ \partial_tq_t(z)
+ =q_t(z)\left(-\frac d{2t}+\frac{|z|^2}{2t^2}\right)
+ =\frac12\Delta q_t(z).
+\]
+对每个固定 $t>0$，$q_t$ 的任意阶空间导数以及 $\partial_tq_t$ 都属于 $L^1(\R^d)$。
+因此有界的 $g$ 可在式~\eqref{eq:6-4-3-brownian-heat-kernel} 中与核求导交换；这说明
+$P_tg$ 在 $t>0$ 光滑，并满足 $\partial_tP_tg=\frac12\Delta P_tg$。
+
+写 $B_t\overset{d}=\sqrt t\,Z$，其中 $Z$ 是标准 $d$ 维 Gaussian 向量。对固定 $x$，
+$g(x+\sqrt t\,Z)\to g(x)$ a.s.，并且绝对值不超过 $\|g\|_\infty$，故 DCT 给出
+$P_tg(x)\to g(x)$。若 $g\in C_0$，则 $(q_t)_{t>0}$ 是近似恒等，定理
+\ref{theorem:4-4-2-1} 给出一致范数收敛；同一个卷积表示也说明 $P_tg\in C_0$。
+
+当 $g\in C_b^2$ 且所列导数有界时，还可把差商移到 $g$ 上，得到
+\[
+ \partial_iP_tg=P_t(\partial_i g),\qquad
+ \partial_{ij}P_tg=P_t(\partial_{ij}g).
+\]
+对 $g(x+B_s)$ 应用 \Ito{} 公式。由于 $\nabla g$ 有界，
+$\int_0^t\nabla g(x+B_s)\dd B_s$ 是平方可积真鞅，故
+\begin{equation}\label{eq:6-4-3-heat-dynkin}
+ P_tg(x)-g(x)=\frac12\int_0^tP_s(\Delta g)(x)\dd s.
+\end{equation}
+在式~\eqref{eq:6-4-3-heat-dynkin} 中令 $t$ 作差商并用 DCT，便得到零时刻的右导数；
+正时间的结论也已由核求导得到。这完成热方程的第一层结论。
+
+范数收敛不能从 $C_0$ 无条件扩大到 $C_b$。事实上，对 $t>0$ 和 $h\in\R^d$，
+\[
+ \|P_tg(\,\cdot+h)-P_tg\|_\infty
+ \le\|g\|_\infty\|q_t(\,\cdot-h)-q_t\|_1.
+\]
+$L^1$ 平移连续性说明 $P_tg$ 一致连续。若某个 $t_n\downarrow0$ 满足
+$\|P_{t_n}g-g\|_\infty\to0$，则 $g$ 是一致连续函数的一致极限，因而一致连续。但在一维中
+$g(x)=\sin(x^2)$ 不一致连续：令
+\[
+ x_n=\sqrt{2\pi n+\frac\pi2},\qquad
+ y_n=\sqrt{2\pi n+\frac{3\pi}2},
+\]
+则 $|x_n-y_n|\to0$，而 $g(x_n)=1$、$g(y_n)=-1$。所以一般 $C_b$ 上不存在所述强连续性。
+
+下面证明 Feynman--Kac 部分。记 $K=\|V\|_\infty$。对每条连续路径，微积分基本定理给出
+\begin{equation}\label{eq:6-4-3-path-exponential-identity}
+ \exp\!\left(-\int_0^tV(B_r)\dd r\right)
+ =1-\int_0^tV(B_s)
+ \exp\!\left(-\int_s^tV(B_r)\dd r\right)\dd s.
+\end{equation}
+两边乘以 $g(B_t)$。被积函数的绝对值不超过
+$K e^{Kt}\|g\|_\infty$，故 Fubini 可用。再对 $\mathcal F_s$ 条件化；Brownian 的 Markov 性给
+\[
+ \E_x\!\left[
+ e^{-\int_s^tV(B_r)\dd r}g(B_t)\,\middle|\,\mathcal F_s
+ \right]
+ =u(t-s,B_s).
+\]
+确切地，置 $W_q=B_{s+q}-B_s$（$0\le q\le t-s$）。向量 Brownian 的独立增量先说明
+$W$ 的任意有限个有理时刻评价与 $\mathcal F_s$ 独立；连续路径空间的 Borel
+$\sigma$-代数由这些评价生成，函数单调类定理因而说明整个连续路径 $W$ 独立于
+$\mathcal F_s$ 且具有 $d$ 维 Wiener 分布。路径泛函
+\[
+ \Psi_y(w)=
+ \exp\!\left(-\int_0^{t-s}V(y+w_q)\dd q\right)g(y+w_{t-s})
+\]
+关于 $(y,w)\in\R^d\times C_0([0,t-s];\R^d)$ Borel 可测：时间积分是连续
+Riemann 和的逐点极限。它还满足
+$|\Psi_y(w)|\le e^{K(t-s)}\|g\|_\infty$。独立随机元的条件积分公式于是给
+\[
+ \E_x[\Psi_{B_s}(W)\mid\mathcal F_s]
+ =\int\Psi_{B_s}(w)\,\mathsf W(\dd w)
+ =u(t-s,B_s),
+\]
+其中 $\mathsf W$ 是相应的 Wiener 测度。这就严格给出上式。
+于是
+\[
+ u(t)=P_tg-\int_0^tP_s\bigl(Vu(t-s)\bigr)\dd s.
+\]
+代换 $r=t-s$ 就得到式~\eqref{eq:6-4-3-fk-duhamel}。因此概率表示在不假定时间导数或二阶空间导数存在时，
+已经给出温和方程。
+
+现在假设 $g\in C_0$。在任意固定 $T>0$ 上，从 $u_0(t)=P_tg$ 开始递归定义
+\[
+ u_{n+1}(t)=-\int_0^tP_{t-s}\bigl(Vu_n(s)\bigr)\dd s.
+\]
+热半群把 $C_0$ 映入自身并在其上强连续，且乘法算子
+$f\mapsto Vf$ 把 $C_0$ 映入自身。归纳可知
+$u_n\in C([0,T];C_0)$。又由 $\|P_t\|_{\infty\to\infty}\le1$，
+\begin{equation}\label{eq:6-4-3-dyson-bound}
+ \|u_n(t)\|_\infty
+ \le\|g\|_\infty\frac{(Kt)^n}{n!},
+ \qquad 0\le t\le T.
+\end{equation}
+因此 $\sum_{n\ge0}u_n$ 在 $C([0,T];C_0)$ 中绝对一致收敛；逐项代入可知其和满足
+\eqref{eq:6-4-3-fk-duhamel}。
+
+若 $v,w\in C([0,T];C_0)$ 都满足该方程，令
+$D(t)=\sup_{s\le t}\|v(s)-w(s)\|_\infty$，则
+\[
+ D(t)\le K\int_0^tD(s)\dd s.
+\]
+对右端反复迭代，得到
+$D(t)\le D(T)(Kt)^n/n!$ 对每个 $n$ 成立；令 $n\to\infty$ 得 $D(t)=0$。
+故温和解唯一。同一迭代也适用于任意两个在 $[0,T]\times\R^d$ 上一致有界的逐点解，
+因为此时 $D(T)<\infty$，而论证没有使用范数连续性。概率表示已经满足 Duhamel 方程，
+所以等于上述级数，因而属于
+$C([0,T];C_0)$。$T$ 任意，结论在全部有限时域成立。若 $g$ 只属于 $C_b$，前面的条件期望计算
+仍成立；概率表示关于 $x$ 连续且有界，而初值的逐点收敛由
+\[
+ |u(t,x)-g(x)|
+ \le e^{Kt}P_t\!\left(|g-g(x)|\right)(x)
+    +(e^{Kt}-1)|g(x)|
+\]
+和 $P_t(|g-g(x)|)(x)\to0$ 得到。
+
+最后假设 $g,V\in C_b^2$ 且所列导数有界。写
+\[
+ A_t(x)=\int_0^tV(x+B_s)\dd s,\quad
+ A_{t,i}(x)=\int_0^t\partial_iV(x+B_s)\dd s,\quad
+ A_{t,ij}(x)=\int_0^t\partial_{ij}V(x+B_s)\dd s.
+\]
+这些量在有限时域上一致有界。对式~\eqref{eq:6-4-3-fk-expectation} 的空间差商使用 DCT，
+得到
+\begin{align*}
+ \partial_i u(t,x)
+ &=\E\!\left[e^{-A_t(x)}
+   \bigl(\partial_i g(x+B_t)-g(x+B_t)A_{t,i}(x)\bigr)\right],\\
+ \partial_{ij}u(t,x)
+ &=\E\!\left[e^{-A_t(x)}
+ \begin{aligned}[t]
+ \bigl(&\partial_{ij}g(x+B_t)
+       -\partial_i g(x+B_t)A_{t,j}(x)
+       -\partial_j g(x+B_t)A_{t,i}(x)\\
+      &-g(x+B_t)A_{t,ij}(x)
+       +g(x+B_t)A_{t,i}(x)A_{t,j}(x)\bigr)
+ \end{aligned}\right].
+\end{align*}
+这些公式及 DCT 表明 $u(t,\cdot)\in C_b^2$，并且 $u$ 及其前两阶空间导数在
+$(t,x)$ 上连续。
+
+令 $h(t)=Vu(t)$。乘积法则说明 $h(t,\cdot)\in C_b^2$，其前两阶导数在每个有限时域上一致有界。
+因此可在 Duhamel 方程中把空间导数移过 $P_{t-s}$，并写成
+\[
+ \Delta P_{t-s}h(s)=P_{t-s}\Delta h(s).
+\]
+对时间求导时，积分上端贡献 $h(t)$，其余部分由上述一致界支配。于是
+\begin{align*}
+ \partial_tu(t)
+ &=\frac12\Delta P_tg-h(t)
+   -\frac12\int_0^tP_{t-s}\Delta h(s)\dd s\\
+ &=\frac12\Delta u(t)-V u(t).
+\end{align*}
+初值由前面已经证明的逐点收敛给出。由此完成经典层级的升级，也完成全部结论。
+\end{proof}
+
+\begin{remark}[复指数、Fourier 与生成元]\label{remark:6-4-3-fourier}
+固定 $\xi\in\R^d$。分别把 \Ito{} 公式用于
+$\cos(\xi\cdot x)$ 与 $\sin(\xi\cdot x)$，再把两条实公式合写，得到
+\[
+ P_tf_\xi(x)=e^{-t|\xi|^2/2}f_\xi(x),
+ \qquad
+ Lf_\xi=-\frac12|\xi|^2f_\xi,
+ \qquad f_\xi(x)=e^{i\xi\cdot x}.
+\]
+这里的 $L$ 是 Brownian 生成元 $\frac12\Delta$。同一个符号可由鞅再核对一次：对实部和虚部分别
+应用 \Ito{} 公式，
+\[
+ M_t=\exp\!\left(i\xi\cdot B_t+\frac12|\xi|^2t\right)
+\]
+的漂移项为零。对每个 $T<\infty$，$|M_t|\le e^{|\xi|^2T/2}$，所以它在 $[0,T]$ 上是真鞅，
+不是只由形式微分得到的局部鞅。取期望便有
+$\E e^{i\xi\cdot B_t}=e^{-t|\xi|^2/2}$。
+
+这项计算说明 Brownian 平均在指数测试函数上乘以 Gaussian 因子，也就是热半群的 Fourier 乘子关系。
+式中的复指数可通过实部和虚部分别验证。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[node distance=10mm and 14mm]
+  \node[book strong node] (tay) {二阶 Taylor\\沿分割求和};
+  \node[book warm node,above right=of tay] (first) {一阶随机项\\$\nabla f\,\sigma\Delta B$};
+  \node[book warm node,below right=of tay] (second) {二阶随机项\\
+    $\frac12D^2f:(\Delta B)(\Delta B)^T$};
+  \node[book strong node,right=of first] (mart) {\Ito{} 积分\\局部鞅};
+  \node[book strong node,right=of second] (time) {协变差\\时间积分};
+  \node[book warm node,right=22mm of mart,yshift=-10mm] (gen) {生成元
+    $L$\\Dynkin 公式};
+  \node[book strong node,right=of gen] (pde) {热方程\\Feynman--Kac};
+  \draw[book accent arrow] (tay)--(first);
+  \draw[book accent arrow] (tay)--(second);
+  \draw[book arrow] (first)--(mart);
+  \draw[book arrow] (second)--(time);
+  \draw[book accent arrow] (mart)--(gen);
+  \draw[book accent arrow] (time)--(gen);
+  \draw[book accent arrow] (gen)--(pde);
+\end{tikzpicture}
+}
+\caption{一阶 Brownian 增量进入随机积分，二阶增量经协变差留下时间项；二者在生成元中汇合，
+再通向 Dynkin 公式与抛物方程。高阶 Taylor 余项的消失由 \Ito{} 公式证明中的局部估计保证。}
+\label{fig:6-4-3-ito-tree}
+\end{figure}
+
+\begin{remark}[主要结论的适用范围]\label{remark:6-4-3-boundaries}
+符号 $\dd X_t=b\,\dd t+\sigma\,\dd B_t$ 始终表示定义~\ref{def:6-4-3-2} 的积分方程，不能按普通
+微分代数约分。局部 Lipschitz 系数只在爆炸前提供局部解；例~\ref{ex:6-4-3-4} 说明增长条件为何
+另有职责。停止 \Ito{} 公式只有在随机积分升级为真鞅后才能取期望，命题
+\ref{proposition:6-4-3-3} 已把这一条件写进陈述。最后，Feynman--Kac 的概率表示、$C_0$ 温和解
+与经典 PDE 解是三个不同层级；定理~\ref{theorem:6-4-3-4} 分别给出从概率表示到后两个层级所需的假设。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 不直接引用例~\ref{ex:6-4-3-1}，分别用 \Ito{} 等距与 Gaussian 矩母函数证明
+  $B_t^2-t$ 和
+  $\exp(\theta B_t-\theta^2t/2)$ 在每个有限时域上是真鞅；指出哪一步排除了“仅为局部鞅”。
+  \item 设 $\lambda>0$、$\sigma\in\R$。把
+  $Y_t=e^{\lambda t}X_t$ 代入 \Ito{} 公式，求解
+  $\dd X_t=-\lambda X_t\dd t+\sigma\dd B_t$，并计算 $\E X_t$ 与 $\Var(X_t)$。
+  \item 对 $a<x<b$，用 $u(y)=(y-a)/(b-a)$ 和连续时间可选抽样重证
+  $\Prob_x(B_{\tau_{(a,b)}}=b)=(x-a)/(b-a)$；证明中须先说明退出时刻几乎必然有限。
+  \item 设 $X,Y$ 是同一 Brownian motion 驱动、初值相同的全局 Lipschitz SDE 解。
+  从积分方程出发推导
+  $\E\sup_{s\le t}|X_s-Y_s|^2\le C\int_0^t
+  \E\sup_{r\le s}|X_r-Y_r|^2\dd s$，再完成 \Gronwall{} 论证。
+  \item 逐段验证例~\ref{ex:6-4-3-4} 的等待解，并求出爆炸解的最大存在区间；
+  对照定理~\ref{theorem:6-4-3-2}，分别指出两个方程缺少哪一项假设。
+\end{enumerate}
+\end{exercise}
+
+本节建立了 Brownian 驱动、全局 Lipschitz 系数下的基础随机微积分。一般半鞅积分、
+弱解与分布唯一性、非 Lipschitz 扩散以及更广的 Feynman--Kac 正则性需要额外理论。在当前框架中，指数测试函数已给出
+\[
+ \E e^{i\xi\cdot B_t}=e^{-t|\xi|^2/2},
+ \qquad
+ P_tf_\xi=e^{-t|\xi|^2/2}f_\xi;
+\]
+这两个等式以特征函数和半群两种语言表示同一 Gaussian 因子。

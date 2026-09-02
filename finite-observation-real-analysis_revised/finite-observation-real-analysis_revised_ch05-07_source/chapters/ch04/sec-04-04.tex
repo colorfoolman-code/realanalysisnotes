@@ -1,0 +1,1526 @@
+\section{卷积、近似恒等与半群}\label{sec:04-04}
+
+\subsection{平移连续、卷积与 Young 不等式}\label{subsec:4-4-1}
+\index{平移连续}\index{卷积}\index{Young 不等式}
+
+两个函数相乘时比较的是同一点的取值。卷积换了一个问题：把其中一个函数平移以后，两者在所有位置
+上的重叠总量是多少？平移量改变，重叠量便形成一个新函数。这个操作既可看成移动平均，也可看成
+积空间中的质量经加法映射汇合；后一种看法解释了为什么卷积天然带有结合律。
+
+卷积同时出现于 Fourier 分析中的平移不变运算与测度的质量叠加。下面先从函数积分与测度推前定义
+卷积；它与独立随机变量之和及 Fourier 乘法的关系将在相应章节说明。
+
+先从一个完全显式的例子开始。
+\begin{example}[两个区间的重叠长度]\label{ex:4-4-1-1}
+令 $f=g=\1_{[0,1]}$。固定 $x$ 时，乘积
+$f(x-y)g(y)$ 恰在 $y\in[0,1]\cap[x-1,x]$ 上等于一，因此
+\begin{equation}\label{eq:indicator-convolution}
+ (f*g)(x)=m\bigl([0,1]\cap[x-1,x]\bigr)
+ =\begin{cases}
+ x,&0\le x\le1,\\
+ 2-x,&1<x\le2,\\
+ 0,&\text{其他}.
+ \end{cases}
+\end{equation}
+矩形的两条竖边经过卷积变成三角形的两条斜边。该计算同时显示总质量保持为一，而卷积的峰值可由
+两个因子的适当范数控制。
+\end{example}
+
+\begin{definition}[平移]\label{def:4-4-1-1}
+对 $h\in\R^n$，定义
+\[
+  \tau_hf(x)=f(x-h).
+\]
+Lebesgue 测度的平移不变性给出 $\|\tau_hf\|_p=\|f\|_p$，其中
+$1\le p\le\infty$。
+\end{definition}
+
+\begin{definition}[函数卷积]\label{def:4-4-1-2}
+若右端绝对收敛，定义
+\[
+ (f*g)(x)=\int_{\R^n}f(x-y)g(y)\dd y.
+\]
+若两个函数只给出 a.e. 等价类，卷积首先也是 a.e. 意义的对象；除非另有连续代表或额外正则性，
+不把上式理解为每一点都收敛的公式。
+\end{definition}
+
+以后对 Lebesgue 可测函数使用 Tonelli 或 Fubini 时，先固定与其 a.e. 相等的 Borel 代表。
+于是 $(x,y)\mapsto f(x-y)g(y)$ 是
+$\Borel(\R^n)\otimes\Borel(\R^n)$-可测函数；所得卷积的 a.e. 等价类与代表选择无关。
+这一步避免把两个完成化等价类的形式乘积直接当成已经给定的乘积可测函数。
+
+\begin{definition}[测度卷积]\label{def:4-4-1-3}
+设 $\mu,\nu$ 是 $\R^n$ 上有限 Borel 测度，$S(x,y)=x+y$。定义
+\[
+ \mu*\nu=S_*(\mu\otimes\nu).
+\]
+也就是说，对 Borel 集 $E$，
+$ (\mu*\nu)(E)=\iint\1_E(x+y)\dd\mu(x)\dd\nu(y)$。
+\end{definition}
+
+\begin{example}[Dirac 测度与平移]\label{ex:4-4-1-2}
+Dirac 测度把定义中的“平移”原样保留下来：
+\[
+ \delta_0*\mu=\mu,\qquad \delta_h*(f\,m)=(\tau_hf)\,m.
+\]
+第一式由 $0+x=x$ 得到；第二式对 Borel 集 $E$ 计算
+$\int\1_E(h+y)f(y)\dd y=\int_Ef(x-h)\dd x$。所以 $\delta_0$ 是有限测度卷积的单位元，
+却不是 $L^1$ 函数。因此 $L^1$ 函数的卷积代数没有单位元。
+\end{example}
+
+平移等距并不自动给出 $h\to0$ 时的连续性。若只在一个固定函数上观察，连续性成立；若同时在
+$L^p$ 单位球上观察，它会失败。
+
+\begin{theorem}[$L^p$ 平移连续]\label{theorem:4-4-1-1}
+若 $1\le p<\infty$ 且 $f\in L^p(\R^n)$，则
+\[
+ \|\tau_hf-f\|_p\longrightarrow0\qquad(h\to0).
+\]
+\end{theorem}
+
+\begin{proof}
+先设 $f\in C_c(\R^n)$，并取紧集 $K$ 包含
+$\supp f+B(0,1)$。当 $|h|<1$ 时，$\tau_hf-f$ 支撑于 $K$。函数 $f$ 在 $K$ 的一个紧邻域上
+一致连续，故
+\[
+ \sup_x|f(x-h)-f(x)|\longrightarrow0.
+\]
+于是
+\[
+ \|\tau_hf-f\|_p^p
+ \le m(K)\sup_x|f(x-h)-f(x)|^p\longrightarrow0.
+\]
+
+对一般 $f\in L^p$，给定 $\varepsilon>0$，由定理
+\ref{theorem:3-3-3-1} 取 $g\in C_c(\R^n)$ 使 $\|f-g\|_p<\varepsilon$。平移等距性给出
+\[
+ \|\tau_hf-f\|_p
+ \le \|\tau_h(f-g)\|_p+\|\tau_hg-g\|_p+\|g-f\|_p
+ <2\varepsilon+\|\tau_hg-g\|_p.
+\]
+令 $h\to0$，再令 $\varepsilon\downarrow0$，即得结论。
+\end{proof}
+
+这个结论在 $p=\infty$ 处断裂。Heaviside 函数
+$H=\1_{(0,\infty)}$ 满足 $\|\tau_hH-H\|_\infty=1$ 对每个 $h\ne0$ 成立。即使
+$p<\infty$，定理说的也只是对每个固定 $f$ 的强收敛，而不是算子范数收敛。给定 $h\ne0$，取半径
+小于 $|h|/3$ 的球 $E$，则 $E$ 与 $E+h$ 不交，从而
+\[
+ \|\tau_h\1_E-\1_E\|_p=2^{1/p}\|\1_E\|_p.
+\]
+因此 $\|\tau_h-I\|_{L^p\to L^p}\ge2^{1/p}$。逐向量连续和单位球上一致连续是两种不同要求。
+
+卷积估计需要积分型 Minkowski 不等式；下面从标量积分与 $L^p$ 对偶性证明其所需形式。
+
+\begin{lemma}[积分型 Minkowski 不等式]\label{lemma:4-4-1-minkowski-integral}
+设 $1\le p\le\infty$，$F:\R^n\times\R^n\to\C$ 联合可测，并且
+$y\mapsto\|F(\cdot,y)\|_p$ 可积。则 $\int F(\cdot,y)\dd y$ 对 a.e. $x$ 绝对存在，属于
+$L^p$，并满足
+\[
+ \left\|\int F(\cdot,y)\dd y\right\|_p
+ \le\int\|F(\cdot,y)\|_p\dd y.
+\]
+同一结论对非负 $F$ 的扩展实值积分成立。
+\end{lemma}
+
+\begin{proof}
+对 $p=1$，Tonelli 定理给出
+\[
+ \int\left|\int F(x,y)\dd y\right|\dd x
+ \le\iint|F(x,y)|\dd y\dd x
+ =\int\|F(\cdot,y)\|_1\dd y.
+\]
+对 $p=\infty$，令 $a(y)=\|F(\cdot,y)\|_\infty$。可测集
+$N=\{(x,y):|F(x,y)|>a(y)\}$ 的每个 $y$-截面都是零测集，故 Tonelli 定理给出
+$(m\otimes m)(N)=0$。由 Fubini 定理，对 a.e. $x$ 有 $|F(x,y)|\le a(y)$ 对 a.e. $y$ 成立，
+于是
+\[
+ \left|\int F(x,y)\dd y\right|\le\int a(y)\dd y.
+\]
+取本性上确界便得结论。
+
+设 $1<p<\infty$，共轭指数为 $q$。先假设 $F$ 有界并支撑在一个有限测度矩形中。由
+定理~\ref{theorem:3-3-3-3} 的 $L^p$ 对偶表示和 Fubini 定理，
+\begin{align*}
+ \left\|\int F(\cdot,y)\dd y\right\|_p
+ &=\sup_{\|\varphi\|_q\le1}
+ \left|\int\!\int F(x,y)\overline{\varphi(x)}\dd y\dd x\right|\\
+ &\le\sup_{\|\varphi\|_q\le1}
+ \int\|F(\cdot,y)\|_p\|\varphi\|_q\dd y
+ \le\int\|F(\cdot,y)\|_p\dd y.
+\end{align*}
+一般情形令
+$F_N=F\1_{B(0,N)\times B(0,N)}\1_{\{|F|\le N\}}$。把上述估计用于
+$|F_N|$，并以 Fatou 引理和单调收敛定理令 $N\to\infty$，便得到
+$x\mapsto\int|F(x,y)|\dd y$ 属于 $L^p$ 及所需估计。复值积分随后由绝对存在性定义。
+\end{proof}
+
+\begin{theorem}[Young 不等式：基础型]\label{theorem:4-4-1-2}
+若 $f\in L^1(\R^n)$、$g\in L^p(\R^n)$，其中 $1\le p\le\infty$，则
+$f*g$ 对 a.e. $x$ 绝对存在，属于 $L^p$，并且
+\[
+ \|f*g\|_p\le\|f\|_1\|g\|_p.
+\]
+\end{theorem}
+
+\begin{proof}
+换元后可写
+\[
+ |f*g(x)|\le\int|f(y)|\,|g(x-y)|\dd y.
+\]
+对 $F(x,y)=|f(y)|\,|g(x-y)|$ 应用引理
+\ref{lemma:4-4-1-minkowski-integral}，再用平移等距性，得到
+\[
+ \|f*g\|_p
+ \le\int|f(y)|\,\|\tau_yg\|_p\dd y
+ =\|f\|_1\|g\|_p.
+\]
+同一引理同时保证右侧定义卷积的绝对积分在 a.e. $x$ 有限。
+\end{proof}
+
+\begin{proposition}[卷积代数]\label{proposition:4-4-1-3}
+$L^1(\R^n)$ 在卷积下是交换 Banach 代数：
+\[
+ f*g=g*f,\qquad (f*g)*h=f*(g*h),\qquad
+ \|f*g\|_1\le\|f\|_1\|g\|_1.
+\]
+此外，$\tau_h(f*g)=(\tau_hf)*g=f*(\tau_hg)$，只要相应卷积有意义。
+\end{proposition}
+
+\begin{proof}
+范数估计是定理~\ref{theorem:4-4-1-2} 的 $p=1$ 情形。交换律由 $z=x-y$ 换元：
+\[
+ \int f(x-y)g(y)\dd y=\int g(x-z)f(z)\dd z.
+\]
+对结合律，Tonelli 定理给出
+\[
+ \iiint |f(x-y-z)g(y)h(z)|\dd y\dd z\dd x
+ =\|f\|_1\|g\|_1\|h\|_1<\infty.
+\]
+因而可用 Fubini 交换 $y,z$ 的积分并作线性换元，得到
+$((f*g)*h)(x)=(f*(g*h))(x)$ 对 a.e. $x$ 成立。平移协变性直接由定义中的变量替换得到。
+$L^1$ 已由定理~\ref{theorem:3-3-2-3} 证明完备，故这是 Banach 代数。
+\end{proof}
+
+有限测度的卷积也交换并结合。这里不需要写三重积分的形式符号：对有界非负 Borel 函数 $\varphi$，
+推前积分公式给出
+\[
+ \int\varphi\dd((\mu*\nu)*\sigma)
+ =\iiint\varphi(x+y+z)\dd\mu(x)\dd\nu(y)\dd\sigma(z),
+\]
+Tonelli 定理说明另一个括号给出同一数值。若 $\mu=fm$、$\nu=gm$，则对非负 Borel
+$\varphi$ 再用 Tonelli 和换元可得
+\[
+ \int\varphi\dd(\mu*\nu)
+ =\int\varphi(z)(f*g)(z)\dd z,
+\]
+所以测度卷积的密度正是函数卷积。
+
+\begin{proposition}[Young 不等式：一般指数]\label{proposition:4-4-1-4}
+设 $1\le p,q,r\le\infty$，且
+\[
+ \frac1p+\frac1q\ge1,\qquad
+ 1+\frac1r=\frac1p+\frac1q.
+\]
+若 $f\in L^p$、$g\in L^q$，则 $f*g\in L^r$ 且
+$\|f*g\|_r\le\|f\|_p\|g\|_q$。
+\end{proposition}
+
+\begin{proof}
+若 $r=\infty$，则 $q=p'$，逐点 \Holder{} 不等式给出
+$|f*g(x)|\le\|f\|_p\|g\|_q$。若 $p=1$ 或 $q=1$，结论由基础型 Young 不等式及交换律得到。
+
+以下设 $p,q,r<\infty$；由指数关系 $r\ge p,q$。先对非负、有界且紧支撑的 $f,g$ 计算。对固定
+$x$，把被积函数分解为
+\[
+ |f(y)g(x-y)|
+ =\bigl(|f(y)|^p|g(x-y)|^q\bigr)^{1/r}
+ |f(y)|^{1-p/r}|g(x-y)|^{1-q/r}.
+\]
+三个 \Holder{} 指数的倒数分别为
+\[
+ \frac1r,\qquad \frac{1-p/r}{p},\qquad
+ \frac{1-q/r}{q};
+\]
+它们之和等于一；若某个倒数为零，就把相应的恒等于一的因子删去。因此广义 \Holder{} 不等式给出
+\[
+ |f*g(x)|^r
+ \le \|f\|_p^{r-p}\|g\|_q^{r-q}
+ \int |f(y)|^p|g(x-y)|^q\dd y.
+\]
+对 $x$ 积分并用 Tonelli 定理及平移不变性，得到
+\[
+ \|f*g\|_r^r
+ \le \|f\|_p^{r-p}\|g\|_q^{r-q}
+ \|f\|_p^p\|g\|_q^q
+ =\|f\|_p^r\|g\|_q^r.
+\]
+取 $r$ 次方根得到所需估计。
+
+对一般 $f\in L^p$、$g\in L^q$，令
+\[
+ f_N=|f|\1_{B(0,N)}\1_{\{|f|\leq N\}},\qquad
+ g_N=|g|\1_{B(0,N)}\1_{\{|g|\leq N\}}.
+\]
+则 $f_N\uparrow|f|$、$g_N\uparrow|g|$ a.e.，而已证估计给出
+\[
+ \|f_N*g_N\|_r^r
+ \leq\|f_N\|_p^r\|g_N\|_q^r
+ \leq\|f\|_p^r\|g\|_q^r.
+\]
+对每个 $x$，被积函数 $f_N(y)g_N(x-y)$ 随 $N$ 单调增加；单调收敛定理因而给出
+\[
+ (f_N*g_N)(x)\uparrow
+ h(x):=\int_{\R^n}|f(y)|\,|g(x-y)|\dd y\in[0,\infty].
+\]
+再对 $x$ 使用单调收敛定理，得到
+\[
+ \|h\|_r^r=\lim_{N\to\infty}\|f_N*g_N\|_r^r
+ \leq\|f\|_p^r\|g\|_q^r<\infty.
+\]
+所以 $h(x)<\infty$ 对 a.e. $x$ 成立；这些点上原卷积绝对存在且
+$|f*g(x)|\leq h(x)$。于是
+$\|f*g\|_r\leq\|h\|_r\leq\|f\|_p\|g\|_q$，完成一般情形。
+\end{proof}
+
+\begin{example}[Gaussian 测度在卷积下封闭]\label{ex:4-4-1-3}
+一维中令
+\[
+ \gamma_{m,\sigma^2}(x)=\frac1{\sqrt{2\pi\sigma^2}}
+ \exp\!\left[-\frac{(x-m)^2}{2\sigma^2}\right],\qquad\sigma>0.
+\]
+在卷积积分中完成平方：若 $v=\sigma_1^2+\sigma_2^2$，则
+\begin{align*}
+ &\frac{(x-y-m_1)^2}{2\sigma_1^2}
+ +\frac{(y-m_2)^2}{2\sigma_2^2}\\
+ &\quad=
+ \frac{(x-m_1-m_2)^2}{2v}
+ +\frac{v}{2\sigma_1^2\sigma_2^2}
+ \left(y-m_2-\frac{\sigma_2^2}{v}(x-m_1-m_2)\right)^2.
+\end{align*}
+余下的 Gaussian 积分等于
+$\sqrt{2\pi\sigma_1^2\sigma_2^2/v}$，故
+\[
+ \gamma_{m_1,\sigma_1^2}*\gamma_{m_2,\sigma_2^2}
+ =\gamma_{m_1+m_2,\,\sigma_1^2+\sigma_2^2}.
+\]
+多维正定协方差的结论也可逐项核对如下。令
+\[
+ \gamma_{m,\Sigma}(x)
+ =(2\pi)^{-n/2}(\det\Sigma)^{-1/2}
+ \exp\!\left[-\frac12(x-m)^T\Sigma^{-1}(x-m)\right],
+\]
+并置 $z=x-m_1-m_2$、$w=y-m_2$ 及
+$K=\Sigma_1^{-1}+\Sigma_2^{-1}$。则
+\[
+ \begin{aligned}
+ &(z-w)^T\Sigma_1^{-1}(z-w)+w^T\Sigma_2^{-1}w\\
+ &\quad=z^T(\Sigma_1+\Sigma_2)^{-1}z
+ +(w-K^{-1}\Sigma_1^{-1}z)^TK
+   (w-K^{-1}\Sigma_1^{-1}z).
+ \end{aligned}
+\]
+因此
+\[
+ \begin{aligned}
+ (\gamma_{m_1,\Sigma_1}*\gamma_{m_2,\Sigma_2})(x)
+ &=\frac{e^{-z^T(\Sigma_1+\Sigma_2)^{-1}z/2}}
+ {(2\pi)^n(\det\Sigma_1\det\Sigma_2)^{1/2}}
+ \int_{\R^n}e^{-(w-K^{-1}\Sigma_1^{-1}z)^TK
+ (w-K^{-1}\Sigma_1^{-1}z)/2}\,\dd w\\
+ &=\frac{e^{-z^T(\Sigma_1+\Sigma_2)^{-1}z/2}}
+ {(2\pi)^{n/2}\det(\Sigma_1+\Sigma_2)^{1/2}}
+ =\gamma_{m_1+m_2,\,\Sigma_1+\Sigma_2}(x),
+ \end{aligned}
+\]
+其中用了
+\[
+ \int_{\R^n}e^{-v^TKv/2}\,\dd v
+ =(2\pi)^{n/2}(\det K)^{-1/2},
+ \qquad
+ \det K\det\Sigma_1\det\Sigma_2=\det(\Sigma_1+\Sigma_2).
+\]
+第一个积分恒等式由正交对角化
+$K=U^T\operatorname{diag}(\lambda_1,\ldots,\lambda_n)U$、正交换元以及 $n$ 个一维
+Gaussian 积分相乘得到；第二个恒等式来自
+$K=\Sigma_1^{-1}(\Sigma_1+\Sigma_2)\Sigma_2^{-1}$ 后对行列式取积。
+若协方差退化，密度公式已经不存在。
+这时在 $\R^n$ 上取标准 Gaussian 测度 $\gamma_n$，并选择线性映射
+$A_i:\R^n\to\R^n$ 使 $A_iA_i^T=\Sigma_i$，把相应测度写成
+$(m_i+A_i\,\cdot)_*\gamma_n$。两份测度的卷积是积测度
+$\gamma_n\otimes\gamma_n$ 经
+$(u,v)\mapsto m_1+m_2+A_1u+A_2v$ 推前，仍给出协方差
+$A_1A_1^T+A_2A_2^T$ 的 Gaussian 测度。推前表述同时涵盖退化情形，无需假设相应测度具有
+Lebesgue 密度。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[->,BookInk!70] (-0.2,0)--(7.4,0) node[right] {$y$};
+  \draw[BookAccent,thick] plot[smooth] coordinates
+    {(0.2,0.05) (0.8,0.25) (1.4,1.0) (2.0,1.55) (2.6,0.95) (3.2,0.2) (3.7,0.04)};
+  \draw[BookWarm,thick,dashed] plot[smooth] coordinates
+    {(2.8,0.05) (3.4,0.32) (4.0,1.15) (4.6,1.45) (5.2,0.8) (5.8,0.18) (6.4,0.04)};
+  \fill[BookAccent!12] (3.0,0)--plot[smooth] coordinates
+    {(3.0,0.12) (3.3,0.24) (3.6,0.55) (3.9,0.98) (4.2,1.30) (4.5,1.42)}--(4.5,0)--cycle;
+  \node[BookAccent] at (1.6,1.9) {$f(y)$};
+  \node[BookWarm] at (5.4,1.75) {$g(x-y)$};
+  \node[book strong node,text width=3.3cm] at (3.6,-1.0)
+    {平移量 $x$ 改变重叠区域；\\重叠的加权面积形成 $(f*g)(x)$};
+  \begin{scope}[xshift=8.3cm]
+    \node[book node] (prod) at (0,1.25) {$\mu\otimes\nu$};
+    \node[book strong node] (sum) at (3.15,1.25) {$\mu*\nu$};
+    \draw[book accent arrow] (prod)--node[above,book label]
+      {$S(x,y)=x+y$}(sum);
+    \draw[BookInk!45,thin] (-.9,-.25) grid[xstep=.38,ystep=.28] (.9,.65);
+    \foreach \x/\y in {-.65/.05,-.25/.4,.15/.1,.55/.48,.7/.18,-.45/.55}
+      \fill[BookWarm] (\x,\y) circle (1.5pt);
+    \draw[BookAccent,thick] (2.35,-.1).. controls (2.75,.45) and
+      (3.45,.62)..(3.9,.12);
+    \node[book label,align=center] at (1.55,-.85)
+      {积空间中的质量沿\\等和方向汇入一维};
+  \end{scope}
+\end{tikzpicture}
+\caption{左：卷积把相对位移下的全部重叠积分为一个数值。右：测度卷积是
+$\mu\otimes\nu$ 经加法映射的推前。图形说明两种来源，但不能替代 Fubini、Tonelli 与 Young
+不等式对积分存在性和换序的证明。}
+\label{fig:4-4-1-convolution-overlap}
+\end{figure}
+
+\begin{remark}[与概率卷积的关系]
+总质量一的有限测度在卷积下仍有总质量一。第 5 章定义随机向量和独立性后，$\mu*\nu$ 将解释为
+两个独立随机向量之和的分布。这里的测度定义已经给出了这一解释所需的乘积测度与加法推前结构。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 直接从区间交集重新推导式~\eqref{eq:indicator-convolution}，并验证其积分等于一。
+  \item 证明若有限测度 $\mu,\nu$ 分别有密度 $f,g$，则 $\mu*\nu$ 有密度 $f*g$。
+  \item 证明 $L^1$ 卷积的结合律，并指出绝对可积性在哪一步使用。
+  \item 构造 $h_k\to0$ 与 $f_k\in L^p$、$\|f_k\|_p=1$，使
+        $\|\tau_{h_k}f_k-f_k\|_p$ 不趋于零。
+\end{enumerate}
+\end{exercise}
+
+卷积核若总质量为一并逐渐集中到原点，移动平均应当回到原函数。下一小节把这一现象从标准
+mollifier 中抽离出来，并比较热核与 Poisson 核的不同时间尺度。
+
+
+\subsection{近似恒等、Poisson 核与热核}\label{subsec:4-4-2}
+\index{近似恒等}\index{热核}\index{Poisson 核}
+
+“核越来越尖”并不是数学条件：尖峰可能具有错误的总质量，可能在远处留下不消失的尾部，也可能因
+正负振荡而放大误差。近似恒等的定义相应要求保存常数、统一控制总变差，并使总变差集中到原点。
+
+Poisson 核最初用于调和边值问题，热核则描述扩散方程；二者也是 Fourier 乘子与 Markov 演化的
+基本模型。本小节用实分析证明质量集中、边界恢复与热核半群；Poisson 半群的 Fourier 证明将在
+第~7 章给出。
+
+\begin{definition}[近似恒等]\label{def:4-4-2-1}
+一族 $\phi_\varepsilon\in L^1(\R^n)$（$\varepsilon>0$）称为近似恒等，如果
+\[
+ \int_{\R^n}\phi_\varepsilon(x)\dd x=1,
+ \qquad \sup_{\varepsilon>0}\|\phi_\varepsilon\|_1<\infty,
+\]
+并且对每个 $\delta>0$，
+\[
+ \int_{|x|>\delta}|\phi_\varepsilon(x)|\dd x\longrightarrow0
+ \qquad(\varepsilon\downarrow0).
+\]
+这里不要求 $\phi_\varepsilon$ 非负。
+\end{definition}
+
+最常见的构造是从一个 $\phi\in L^1$、$\int\phi=1$ 出发，令
+$\phi_\varepsilon(x)=\varepsilon^{-n}\phi(x/\varepsilon)$。变量替换立即验证前两项，而
+\[
+ \int_{|x|>\delta}|\phi_\varepsilon(x)|\dd x
+ =\int_{|z|>\delta/\varepsilon}|\phi(z)|\dd z\longrightarrow0
+\]
+验证了质量集中。
+
+\begin{example}[正性不是定义的一部分]\label{ex:4-4-2-1}
+取 $\eta\in C_c^\infty(\R^n)$，$\eta\ge0$ 且 $\int\eta=1$，并令
+$\phi=\eta+a\partial_1\eta$，其中 $a\ne0$。由于紧支撑函数导数的积分为零，
+$\int\phi=1$；相应伸缩族 $\phi_\varepsilon$ 是近似恒等，尽管适当选取 $a$ 后 $\phi$ 会变号。
+
+统一 $L^1$ 控制却不能删掉。为看清这一点，可在圆周 $\mathbb T=\R/(2\pi\Z)$ 上比较
+\[
+ D_N(\theta)=\sum_{k=-N}^Ne^{ik\theta}
+ =\frac{\sin((N+\tfrac12)\theta)}{\sin(\theta/2)}
+\]
+与 \Fejer{} 核
+\[
+ F_N(\theta)=\frac1{N+1}\sum_{j=0}^ND_j(\theta)
+ =\frac1{N+1}
+ \left(\frac{\sin((N+1)\theta/2)}{\sin(\theta/2)}\right)^2.
+\]
+二者相对于归一化测度 $(2\pi)^{-1}\dd\theta$ 都有积分一，但
+$\|D_N\|_{L^1(\mathbb T)}$ 随 $N$ 呈对数增长。这里把这个常被一句带过的估计写出。
+在 $|\theta|\le\pi$ 上，
+\[
+ |D_N(\theta)|\le
+ \min\{2N+1,\pi/|\theta|\},
+\]
+所以分开 $|\theta|\le(N+1)^{-1}$ 与其余部分积分，得到
+$\|D_N\|_1\le C\log(N+2)$。反向令 $M=N+\tfrac12$，并在
+\[
+ I_j=\left[\frac{(j+1/6)\pi}{M},
+             \frac{(j+5/6)\pi}{M}\right],
+ \qquad 1\le j\le N-1,
+\]
+上积分。此处 $|\sin(M\theta)|\ge1/2$，而
+$\sin(\theta/2)\le\theta/2$，故
+\[
+ \int_{I_j}|D_N(\theta)|\dd\theta
+ \ge\int_{I_j}\frac{\dd\theta}{\theta}
+ =\log\frac{j+5/6}{j+1/6}\ge\frac{c}{j+1}.
+\]
+求和给 $\|D_N\|_1\ge c\log(N+1)$。另一方面，$F_N\ge0$，而逐项积分
+$\int_{\mathbb T}D_j\,\dd\theta/(2\pi)=1$，所以 $\|F_N\|_1=1$。
+这只是圆周上的旁证，不把周期核冒充为定义
+\ref{def:4-4-2-1} 中的 $\R^n$ 核；它准确指出，缺少统一总变差控制时，质量一并不足以抑制振荡。
+\end{example}
+
+\begin{definition}[热核]\label{def:4-4-2-2}
+对 $t>0$，定义
+\[
+ p_t(x)=(4\pi t)^{-n/2}\exp\!\left(-\frac{|x|^2}{4t}\right),
+ \qquad H_tf=p_t*f.
+\]
+\end{definition}
+
+\begin{definition}[Poisson 核]\label{def:4-4-2-3}
+令
+\[
+c_n=\left(\int_{\R^n}(1+|z|^2)^{-(n+1)/2}\dd z\right)^{-1},
+\]
+并定义上半空间的 Poisson 核与 Poisson 算子为
+\[
+ q_t(x)=c_n\frac{t}{(t^2+|x|^2)^{(n+1)/2}},
+ \qquad Q_tf=q_t*f,\qquad t>0.
+\]
+\end{definition}
+
+\begin{proposition}[Poisson 核的归一化]
+若 Euler Gamma 函数定义为
+\[
+ \Gamma(a)=\int_0^\infty s^{a-1}e^{-s}\,\dd s,
+ \qquad a>0,
+\]
+则
+\[
+ c_n=\frac{\Gamma((n+1)/2)}{\pi^{(n+1)/2}},
+ \qquad \int_{\R^n}q_t(x)\,\dd x=1.
+\]
+\end{proposition}
+
+\begin{proof}
+先把所用常数公式写明。对 $a,b>0$ 定义
+\[
+ B(a,b):=\int_0^\infty
+   \frac{v^{a-1}}{(1+v)^{a+b}}\dd v.
+\]
+Tonelli 定理以及换元
+$s=\rho\theta$、$t=\rho(1-\theta)$（Jacobian 为 $\rho$）给出
+\begin{align*}
+ \Gamma(a)\Gamma(b)
+ &=\int_0^\infty\!\int_0^\infty
+   s^{a-1}t^{b-1}e^{-(s+t)}\dd s\dd t\\
+ &=\left(\int_0^\infty\rho^{a+b-1}e^{-\rho}\dd\rho\right)
+   \left(\int_0^1\theta^{a-1}(1-\theta)^{b-1}\dd\theta\right)\\
+ &=\Gamma(a+b)B(a,b),
+\end{align*}
+其中最后一步在第二个积分中用了 $v=\theta/(1-\theta)$。此外，一维 Gaussian 积分和
+$s=r^2$ 给出
+\[
+ \Gamma(1/2)=2\int_0^\infty e^{-r^2}\dd r=\sqrt\pi.
+\]
+再将 $\int_{\R^n}e^{-|x|^2}\dd x=\pi^{n/2}$ 写成极坐标积分，得到
+\[
+ \pi^{n/2}=|\mathbb S^{n-1}|\int_0^\infty e^{-r^2}r^{n-1}\dd r
+ =\frac{|\mathbb S^{n-1}|}{2}\Gamma(n/2),
+\]
+即 $|\mathbb S^{n-1}|=2\pi^{n/2}/\Gamma(n/2)$。现在作代换 $u=r^2$，有
+\begin{align*}
+ \int_{\R^n}(1+|z|^2)^{-(n+1)/2}\dd z
+ &=|\mathbb S^{n-1}|\int_0^\infty
+   \frac{r^{n-1}}{(1+r^2)^{(n+1)/2}}\,\dd r\\
+ &=\frac{|\mathbb S^{n-1}|}{2}B\!\left(\frac n2,\frac12\right)
+ =\frac{\pi^{(n+1)/2}}{\Gamma((n+1)/2)}.
+\end{align*}
+取倒数得到 $c_n$ 的公式；再令 $x=tz$，便有
+\[
+ \int_{\R^n}q_t(x)\,\dd x
+ =c_n\int_{\R^n}(1+|z|^2)^{-(n+1)/2}\dd z=1.
+\]
+\end{proof}
+
+符号 $H_t$ 与 $Q_t$ 分别表示热算子和 Poisson 算子；两族核的尺度与方程不同。
+
+\begin{example}[热核的质量与扩散尺度]\label{ex:4-4-2-2}
+一维 Gaussian 积分
+\[
+ \int_\R e^{-x^2/(4t)}\dd x=\sqrt{4\pi t}
+\]
+及乘积结构给出 $\int_{\R^n}p_t=1$。奇偶性给出
+$\int x_jp_t(x)\dd x=0$。再对
+$\int_\R e^{-a x^2}\dd x=\sqrt{\pi/a}$ 关于 $a$ 求导，并取 $a=(4t)^{-1}$，得到
+\[
+ \int_\R x^2(4\pi t)^{-1/2}e^{-x^2/(4t)}\dd x=2t.
+\]
+因此
+\[
+ \int_{\R^n}x_j^2p_t(x)\dd x=2t,
+ \qquad \int_{\R^n}|x|^2p_t(x)\dd x=2nt.
+\]
+由点态不等式
+$\1_{\{|x|>\delta\}}\le |x|^2/\delta^2$ 直接积分，得到
+$\int_{|x|>\delta}p_t(x)\dd x\le2nt/\delta^2$；这表明 $t\downarrow0$ 时质量集中于原点，
+二阶矩则表明典型扩散距离具有 $\sqrt t$ 的尺度。
+\end{example}
+
+\begin{theorem}[近似恒等的范数收敛]\label{theorem:4-4-2-1}
+设 $(\phi_\varepsilon)$ 是近似恒等。
+若 $1\le p<\infty$ 且 $f\in L^p(\R^n)$，则
+\[
+ \|\phi_\varepsilon*f-f\|_p\longrightarrow0.
+\]
+若 $f\in C_0(\R^n)$，则上述收敛在一致范数中成立。
+\end{theorem}
+
+\begin{proof}
+记 $C=\sup_\varepsilon\|\phi_\varepsilon\|_1$。由积分型 Minkowski 不等式，
+\begin{equation}\label{eq:approx-id-translation}
+ \|\phi_\varepsilon*f-f\|_p
+ \le\int_{\R^n}|\phi_\varepsilon(y)|
+       \|\tau_yf-f\|_p\dd y.
+\end{equation}
+给定 $\eta>0$，定理~\ref{theorem:4-4-1-1} 给出 $\delta>0$，使
+$|y|<\delta$ 时 $\|\tau_yf-f\|_p<\eta/(2C)$。又恒有
+$\|\tau_yf-f\|_p\le2\|f\|_p$，故式~\eqref{eq:approx-id-translation} 的右端至多为
+\[
+ \frac\eta{2C}\int_{|y|<\delta}|\phi_\varepsilon(y)|\dd y
+ +2\|f\|_p\int_{|y|\ge\delta}|\phi_\varepsilon(y)|\dd y.
+\]
+第一项不超过 $\eta/2$，第二项在 $\varepsilon\downarrow0$ 时趋于零。
+
+若 $f\in C_0$，则 $f$ 在 $\R^n$ 上一致连续。确实，先在一个足够大的紧球内使用一致连续性，
+球外则用 $f(x)\to0$。把上面的 $L^p$ 平移模量换成
+$\|\tau_yf-f\|_\infty$，同一分割证明一致收敛。
+\end{proof}
+
+$L^p$ 收敛只使用总变差集中，并不保证每个指定点都收敛。点态恢复还要求核不把质量集中在越来越
+细的偏心环层中；径向递减上界排除了这种偏心集中。
+
+\begin{theorem}[Lebesgue 点处的恢复]\label{theorem:4-4-2-2}
+设 $1\le p\le\infty$、$f\in L^p(\R^n)$，并令
+$\phi_\varepsilon(x)=\varepsilon^{-n}\phi(x/\varepsilon)$，其中 $\int\phi=1$。
+假设存在径向递减函数 $\Psi\in L^1(\R^n)$ 使 $|\phi|\le\Psi$。
+则在 $f$ 的每个 Lebesgue 点 $x$，
+\[
+ (\phi_\varepsilon*f)(x)\longrightarrow f(x).
+\]
+此外，在右侧有意义的每一点，
+\[
+ \sup_{\varepsilon>0}|\phi_\varepsilon*f(x)|
+ \le C_n\|\Psi\|_1Mf(x),
+\]
+其中 $M$ 是定义~\ref{def:4-1-1-1} 的中心极大函数，$C_n$ 只依赖维数。
+\end{theorem}
+
+\begin{proof}
+把 $\Psi(z)$ 的径向递减代表写成 $\psi(|z|)$，并令
+$A_k=\{z:2^{k-1}<|z|\le2^k\}$，$k\in\Z$。在 $A_k$ 上
+$\Psi(z)\le\psi(2^{k-1})$，从而对任意局部可积 $g\ge0$，
+\begin{align}
+ \int\varepsilon^{-n}\Psi(y/\varepsilon)g(x-y)\dd y
+ &\le \sum_{k\in\Z}\varepsilon^{-n}\psi(2^{k-1})
+       \int_{|y|\le2^k\varepsilon}g(x-y)\dd y \notag\\
+ &\le \sum_{k\in\Z}a_k
+   \frac1{|B(x,2^k\varepsilon)|}
+   \int_{B(x,2^k\varepsilon)}g(z)\dd z,                 \label{eq:radial-majorant}
+\end{align}
+其中 $a_k=|B(0,1)|2^{kn}\psi(2^{k-1})$。环层
+$\{2^{k-2}<|z|\le2^{k-1}\}$ 两两不交，而且在该环层上
+$\Psi(z)\ge\psi(2^{k-1})$。记 $\omega_n=|B(0,1)|$，则逐项有
+\begin{align*}
+ \int_{2^{k-2}<|z|\leq2^{k-1}}\Psi(z)\dd z
+ &\geq \omega_n\bigl(2^{n(k-1)}-2^{n(k-2)}\bigr)
+          \psi(2^{k-1})\\
+ &=\frac{2^n-1}{2^{2n}}a_k.
+\end{align*}
+对 $k\in\Z$ 求和并使用这些环层的不交性，故
+\begin{equation}\label{eq:radial-coefficients}
+ \sum_{k\in\Z}a_k
+ \leq\frac{2^{2n}}{2^n-1}\|\Psi\|_1.
+\end{equation}
+将 $g=|f|$ 代入式~\eqref{eq:radial-majorant}，便得到所述极大函数控制。
+
+现在固定一个 Lebesgue 点 $x$，并取
+$g_x(z)=|f(z)-f(x)|$。Lebesgue 点条件恰好说
+\[
+ \frac1{|B(x,r)|}\int_{B(x,r)}g_x(z)\dd z\longrightarrow0
+ \qquad(r\downarrow0).
+\]
+取 $r_0>0$，使 $0<r<r_0$ 时这些平均不超过一。若 $1\leq p<\infty$ 且 $r\geq r_0$，
+\Holder{} 不等式给出
+\[
+ \frac1{|B(x,r)|}\int_{B(x,r)}g_x
+ \leq |B(x,r)|^{-1/p}\|f\|_p+|f(x)|
+ \leq |B(0,r_0)|^{-1/p}\|f\|_p+|f(x)|.
+\]
+若 $p=\infty$，相应平均至多为 $\|f\|_\infty+|f(x)|$。所以这些球平均对全部 $r>0$ 确有
+有限共同上界。
+式~\eqref{eq:radial-majorant} 与式~\eqref{eq:radial-coefficients} 给出
+\[
+ |\phi_\varepsilon*f(x)-f(x)|
+ \le\sum_{k\in\Z}a_k
+ \frac1{|B(x,2^k\varepsilon)|}
+ \int_{B(x,2^k\varepsilon)}g_x(z)\dd z.
+\]
+对每个固定 $k$，右侧相应球平均随 $\varepsilon\downarrow0$ 趋于零；又由
+$\sum_ka_k<\infty$ 和刚得到的共同上界可在计数测度上使用支配收敛定理。因此右侧趋于零。
+\end{proof}
+
+热核与 Poisson 核都是非负、径向递减、质量一的伸缩族：
+$p_t(x)=t^{-n/2}p_1(x/\sqrt t)$，而 $q_t(x)=t^{-n}q_1(x/t)$。
+所以前两定理同时给出它们的 $L^p$、$C_0$ 与 Lebesgue 点边界恢复。两个尺度
+$\sqrt t$ 与 $t$ 的差别将在它们满足的方程中再次出现。
+
+\begin{proposition}[热核半群]\label{proposition:4-4-2-3}
+对 $s,t>0$，
+\[
+ p_s*p_t=p_{s+t},\qquad H_sH_t=H_{s+t}.
+\]
+因而 $H_t$ 在每个 $L^p(\R^n)$（$1\le p\le\infty$）上为正收缩；当
+$1\le p<\infty$ 时，$H_tf\to f$ 于 $L^p$。
+\end{proposition}
+
+\begin{proof}
+完成平方得到
+\[
+ \frac{|x-y|^2}{4s}+\frac{|y|^2}{4t}
+ =\frac{|x|^2}{4(s+t)}
+ +\frac{s+t}{4st}\left|y-\frac{t}{s+t}x\right|^2.
+\]
+因此
+\begin{align*}
+ (p_s*p_t)(x)
+ &=(4\pi s)^{-n/2}(4\pi t)^{-n/2}
+ e^{-|x|^2/(4(s+t))}
+ \int_{\R^n}e^{-(s+t)|y-tx/(s+t)|^2/(4st)}\dd y\\
+ &=(4\pi(s+t))^{-n/2}e^{-|x|^2/(4(s+t))}=p_{s+t}(x).
+\end{align*}
+结合律给出算子半群恒等。正性来自 $p_t\ge0$，而基础型 Young 不等式与
+$\|p_t\|_1=1$ 给出收缩性。最后，$(p_t)_{t>0}$ 在 $t\downarrow0$ 时是近似恒等，故
+定理~\ref{theorem:4-4-2-1} 给出强连续性。
+\end{proof}
+
+\begin{remark}[Poisson 半群的 Fourier 表示]
+恒等式 $q_s*q_t=q_{s+t}$ 成立，并推出 $Q_sQ_t=Q_{s+t}$。按照第~7 章采用的 Fourier 约定
+$e^{-2\pi i x\cdot\xi}$，可由
+$\widehat q_t(\xi)=e^{-2\pi t|\xi|}$ 立即验证。该 Fourier 公式将在第~7 章证明。
+
+同一约定下，第~7 章还将核对
+\[
+ \widehat p_t(\xi)=e^{-4\pi^2t|\xi|^2},
+ \qquad
+ \widehat q_t(\xi)=e^{-2\pi t|\xi|}.
+\]
+若把 Fourier 核改成 $e^{-ix\cdot\xi}$，相应乘子则写成
+$e^{-t|\xi|^2}$ 与 $e^{-t|\xi|}$。热核半群已经由上面的完成平方计算直接得到。
+\end{remark}
+
+\begin{proposition}[热方程与 Poisson 方程]\label{proposition:4-4-2-4}
+若 $f\in C_c^\infty(\R^n)$，则
+\[
+ u(x,t)=H_tf(x),\qquad v(x,t)=Q_tf(x)
+\]
+分别满足
+\[
+ \partial_tu=\Delta_xu,\qquad
+ (\Delta_x+\partial_t^2)v=0\qquad(t>0).
+\]
+对任意 $f\in L^p$、$1\le p\le\infty$，这些等式在每个固定的正时间带
+$t\in[a,b]\subset(0,\infty)$ 上仍以经典空间导数和 $L^p$ 值时间导数成立。
+在 $t=0$ 的初值或边界值恢复则分别采用定理~\ref{theorem:4-4-2-1} 与
+定理~\ref{theorem:4-4-2-2}，不把正时间微分与边界极限混作同一步。
+\end{proposition}
+
+\begin{proof}
+直接求导给出
+\[
+ \partial_tp_t(x)=
+ \left(-\frac n{2t}+\frac{|x|^2}{4t^2}\right)p_t(x)
+ =\Delta_xp_t(x).
+\]
+对 Poisson 核令 $R=t^2+|x|^2$、$a=(n+1)/2$。略去共同常数 $c_n$，逐项计算为
+\begin{align*}
+ \Delta_x(tR^{-a})
+ &=-2antR^{-a-1}+4a(a+1)t|x|^2R^{-a-2},\\
+ \partial_t^2(tR^{-a})
+ &=-6atR^{-a-1}+4a(a+1)t^3R^{-a-2}.
+\end{align*}
+两式相加并利用 $|x|^2+t^2=R$，得到
+\begin{align*}
+ &(\Delta_x+\partial_t^2)(tR^{-a})\\
+ &\quad=\bigl[-2a(n+3)+4a(a+1)\bigr]tR^{-a-1}=0,
+\end{align*}
+其中最后一步使用 $2(a+1)=n+3$。
+
+对 $f\in C_c^\infty$，上述核及其在正时间带上的任意固定阶导数都有可积上界，故支配收敛定理
+允许在卷积积分号下微分，并把核等式传给 $u,v$。
+
+再考虑粗糙的 $f$。记 $k_t$ 为 $p_t$ 或 $q_t$。在任意紧正时间带
+$[a,b]\subset(0,\infty)$ 上先证明所需的核估计。对热核，逐次求导给出
+\[
+ \partial_t^j\partial_x^\alpha p_t(x)
+ =t^{-n/2-j-|\alpha|/2}
+   P_{j,\alpha}\!\left(\frac{x}{\sqrt t}\right)
+   \exp\!\left(-\frac{|x|^2}{4t}\right).
+\]
+其中 $P_{j,\alpha}$ 是一个多项式。对 Poisson 核，由
+$q_t(x)=t^{-n}q_1(x/t)$ 归纳得到
+\[
+ \partial_t^j\partial_x^\alpha q_t(x)
+ =t^{-n-j-|\alpha|}Q_{j,\alpha}(x/t),
+ \qquad
+ |Q_{j,\alpha}(z)|\le
+ C_{j,\alpha}(1+|z|)^{-n-1-|\alpha|}.
+\]
+这里后一估计从
+$q_1(z)=c_n(1+|z|^2)^{-(n+1)/2}$ 开始归纳：空间求导使右端的衰减幂至少增加一，
+而一次时间求导在缩放变量中只把剖面 $Q$ 换成
+$-(n+j+|\alpha|)Q-z\cdot\nabla Q$，不减弱已有的衰减幂。
+
+第一个缩放公式经变量代换 $x=\sqrt t\,z$，第二个缩放公式经变量代换 $x=tz$，表明
+方程中出现的每个 $\partial_t^j\partial_x^\alpha k_t$ 都属于 $L^1\cap C_0$，并且
+其 $L^1$ 与一致范数在 $t\in[a,b]$ 上一致有界。它们还在这两个范数中关于 $t$ 连续。
+事实上，若 $t_\nu\to t\in[a,b]$，则相应导数逐点收敛；热核族有形如
+$C(1+|x|)^N e^{-|x|^2/(4b)}$ 的共同可积上界，Poisson 核族由
+$C(1+|x|/b)^{-n-1-|\alpha|}$ 控制，故 $L^1$ 连续性来自支配收敛定理。
+在任意固定紧集上的收敛由关于 $(t,x)$ 的联合连续性而一致；上述两个上界又使紧集外的
+一致范数关于 $t\in[a,b]$ 一致趋于零，因而得到 $C_0$ 范数连续性。特别地，这些导数在
+$L^1$ 与 $C_0$ 中都具有空间平移连续性。
+
+先固定 $t$。对空间一阶差商，一维微积分基本定理给出
+\[
+ \frac{k_t(\,\cdot+he_j)-k_t}{h}-\partial_jk_t
+ =\frac1h\int_0^h
+   \bigl[\partial_jk_t(\,\cdot+se_j)-\partial_jk_t\bigr]\,\dd s.
+\]
+$L^1$ 平移连续性使右端的 $L^1$ 范数趋于零；把 $k_t$ 依次换成它的空间导数，便得到二阶空间
+差商的同一结论。时间方向同样由
+\[
+ \frac{k_{t+h}-k_t}{h}-\partial_tk_t
+ =\frac1h\int_0^h
+ \bigl(\partial_tk_{t+s}-\partial_tk_t\bigr)\,\dd s
+\]
+得到，二阶时间导数亦然。把上述积分恒等式分别取 $L^1$ 范数与 $C_0$ 范数，并使用相应的平移
+连续性或时间连续性，便知所有所需核差商同时在 $L^1$ 与 $L^\infty$ 中收敛到对应核导数。
+基础型 Young 不等式遂给出所有这些差商卷积在 $L^p$ 中的极限；例如
+\[
+ \frac{(p_t*f)(\,\cdot+he_j)-p_t*f}{h}
+ \longrightarrow(\partial_jp_t)*f
+ \quad\hbox{于 }L^p,
+\]
+对 $p=\infty$ 也成立。因此
+\[
+ \partial_t(k_t*f)=(\partial_tk_t)*f,\qquad
+ \partial_t^2(k_t*f)=(\partial_t^2k_t)*f,\qquad
+ \partial_i\partial_j(k_t*f)=(\partial_i\partial_jk_t)*f
+\]
+作为 $L^p$ 值恒等式成立。另一方面，上述核差商还在 $L^{p'}$ 中收敛：当
+$1<p<\infty$ 时由 $L^1\cap L^\infty$ 插值得到，两个端点分别直接使用 $L^\infty$ 与
+$L^1$。\Holder{} 不等式因而允许对每个固定 $x$ 在积分中取差商极限，给出所述经典空间导数。
+最后把 $\partial_tp_t=\Delta p_t$ 与
+$\partial_t^2q_t=-\Delta q_t$ 同 $f$ 卷积，便得到两个方程。这个论证也覆盖不可分的
+$L^\infty$ 端点，而没有借助光滑函数稠密性。
+\end{proof}
+
+\begin{example}[一维 Poisson 延拓的可计算边界值]\label{ex:4-4-2-3}
+在 $n=1$ 时 $c_1=1/\pi$。取 $f=\1_{[-1,1]}$，则
+\begin{align*}
+ Q_tf(x)
+ &=\frac1\pi\int_{-1}^1\frac{t}{t^2+(x-y)^2}\dd y\\
+ &=\frac1\pi\left[
+   \arctan\frac{1-x}{t}+\arctan\frac{1+x}{t}\right].
+\end{align*}
+命题~\ref{proposition:4-4-2-4} 表明它在上半平面调和。令 $t\downarrow0$ 可直接读出极限：
+在 $|x|<1$ 为 $1$，在 $|x|>1$ 为 $0$，在 $x=\pm1$ 为 $1/2$。端点不是所选代表的
+Lebesgue 点，而核给出的半和也没有与 Lebesgue 点定理冲突。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[->,BookInk!70] (-3.5,0)--(3.7,0) node[right] {$x$};
+  \draw[->,BookInk!70] (0,-0.15)--(0,3.4);
+  \draw[BookAccent,very thick,domain=-3.2:3.2,samples=100]
+    plot (\x,{2.9*exp(-2.2*\x*\x)});
+  \draw[BookWarm,thick,domain=-3.2:3.2,samples=100]
+    plot (\x,{1.45*exp(-0.55*\x*\x)});
+  \draw[BookInk!55,thick,dashed,domain=-3.2:3.2,samples=100]
+    plot (\x,{0.9*exp(-0.22*\x*\x)});
+  \node[BookAccent] at (0.75,2.85) {$t_1$};
+  \node[BookWarm] at (1.45,1.45) {$t_2$};
+  \node[BookInk!70] at (2.35,0.86) {$t_3$};
+  \node[anchor=west,text width=4.0cm] at (4.2,2.1)
+    {$0<t_1<t_2<t_3$。热核变矮、变宽，面积始终为一；反向令 $t\downarrow0$，
+     核变窄而读取更局部的平均。};
+\end{tikzpicture}
+\caption{热核的扩散与集中。图中高度和宽度只作尺度示意，质量守恒由 Gaussian 积分而非图形证明。}
+\label{fig:4-4-2-kernel-scales}
+\end{figure}
+
+\begin{remark}[Brownian 时间尺度]
+测度 $p_t\dd x$ 的二阶矩矩阵为 $2tI_n$。第~6 章定义协方差为
+$tI_n$ 的标准 Brownian 运动后，其转移核将是 $p_{t/2}$，生成元为
+$\tfrac12\Delta$；$p_t$ 对应的则是空间尺度放大 $\sqrt2$ 后的过程，生成元为 $\Delta$。
+这一时间归一化将在 Brownian 转移半群中再次出现。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 从定义三条件独立证明定理~\ref{theorem:4-4-2-1}，并指出何处必须排除 $p=\infty$。
+  \item 用极坐标和 Beta 积分验证定义~\ref{def:4-4-2-3} 中 $c_n$ 的 Gamma 函数公式。
+  \item 不使用 Fourier 变换，按完成平方的计算证明 $p_s*p_t=p_{s+t}$。
+  \item 直接验证 $q_t$ 调和，并用例~\ref{ex:4-4-2-3} 检查边界极限。
+\end{enumerate}
+\end{exercise}
+
+核的卷积律把一段时间的演化拆成两段时间的复合。下一小节把这个结构从热核中抽象出来；
+与此同时，短时间差商只对部分函数收敛，这会迫使我们认真记录一个算子的定义域。
+
+
+\subsection{强连续半群、生成元与能量估计}\label{subsec:4-4-3}
+\index{强连续半群}\index{生成元}\index{能量估计}
+
+等式 $H_sH_t=H_{s+t}$ 说明：先扩散 $t$ 单位时间，再扩散 $s$ 单位时间，
+与一次扩散 $s+t$ 单位时间相同。但这个代数等式并不保证短时差商
+\[
+  \frac{T_tf-f}{t}
+\]
+对每个 $f$ 都收敛。下面三个例子分别考察平移半群、热半群和 $L^\infty$ 端点；随后将定义
+强连续性、生成元及其定义域，并严格识别前两个例子中的生成元。
+
+Hille 与 Yosida 的生成元理论刻画产生强连续半群的无界算子。本小节从已知半群出发，证明局部一致
+有界、生成元稠密且闭，并导出正实参数上的 Laplace 预解式。逆向生成定理需要更完整的预解式条件。
+
+\begin{example}[平移半群]\label{ex:4-4-3-1}
+在 $L^p(\R)$ 上，$1\le p<\infty$，令
+\[
+  T_tf(x)=f(x+t),\qquad t\ge0.
+\]
+则 $T_0=I$、$T_sT_t=T_{s+t}$，并且 $\|T_tf\|_p=\|f\|_p$。由定理
+\ref{theorem:4-4-1-1}，$\|T_tf-f\|_p\to0$。若 $f$ 有弱导数 $f'\in L^p$，
+一维绝对连续代表给出
+\[
+  \frac{T_tf-f}{t}=\frac1t\int_0^t T_sf'\,\dd s.
+\]
+这个公式暗示短时速度是 $f'$，但“差商收敛恰好等价于
+$f\in W^{1,p}(\R)$”还需要反向论证。
+\end{example}
+
+\begin{example}[热半群]\label{ex:4-4-3-2}
+令 $T_t=H_t$，并在 $t=0$ 时定义 $H_0=I$。上一小节已经证明
+$H_sH_t=H_{s+t}$；对 $1\le p<\infty$，近似恒等定理给出
+$H_tf\to f$ 于 $L^p$。核的时间微分恒等式
+$\partial_tp_t=\Delta p_t$ 表明光滑函数的短时速度应为 $\Delta f$。
+下面将在 $C_c^\infty(\R^n)$ 上证明这一点，而不对完整生成元域作出断言。
+\end{example}
+
+\begin{example}[$L^\infty$ 端点的失败]\label{ex:4-4-3-3}
+仍取 $T_tf(x)=f(x+t)$，但把空间改为 $L^\infty(\R)$。对
+$f=\1_{(0,\infty)}$ 与每个 $t>0$，$T_tf-f$ 在 $(-t,0]$ 上等于一，在其他点
+几乎处处为零。因而
+\[
+  \|T_tf-f\|_\infty=1.
+\]
+平移公式没有变，但范数变了，时间连续性便消失了。
+\end{example}
+
+\begin{definition}[$C_0$ 半群]\label{def:4-4-3-1}
+设 $B$ 是 Banach 空间。一族有界线性算子
+$(T_t)_{t\ge0}\subset\mathcal L(B)$ 称为 $B$ 上的一个\emph{$C_0$ 半群}，如果
+\[
+ T_0=I,\qquad T_{s+t}=T_sT_t\quad(s,t\ge0),
+\]
+且对每个 $f\in B$ 都有
+\[
+ \|T_tf-f\|_B\longrightarrow0\qquad(t\downarrow0).
+\]
+最后一条称为强连续性。它是逐向量的范数连续，并不要求
+$\|T_t-I\|_{\mathcal L(B)}\to0$。
+\end{definition}
+
+定义只说每条轨道在零时刻连续。为了对轨道积分，还需要一个共同的算子范数界。
+这个界不是定义的形式后果；它的证明正是 Baire 范畴定理在这里的用武之地。
+
+\begin{proposition}[紧时间区间上的一致有界]\label{proposition:4-4-3-0}
+若 $(T_t)_{t\ge0}$ 是 $B$ 上的 $C_0$ 半群，则对每个 $T<\infty$，
+\[
+  M_T:=\sup_{0\le t\le T}\|T_t\|_{\mathcal L(B)}<\infty.
+\]
+\end{proposition}
+
+\begin{proof}
+先固定 $f\in B$。由 $T_rf\to f$，可取 $\delta>0$ 使
+$\|T_rf\|\le\|f\|+1$ 对 $0\le r\le\delta$ 成立。若
+$t\in[0,T]$，写成 $t=k\delta+r$，其中
+$0\le r<\delta$ 且 $0\le k\le\lceil T/\delta\rceil$，则半群律给出
+\[
+  \|T_tf\|=\|T_{k\delta}T_rf\|
+  \le \|T_{k\delta}\|(\|f\|+1).
+\]
+令 $N=\lceil T/\delta\rceil$。右边只涉及 $T_{k\delta}$（$0\leq k\leq N$）这有限多个已知有界
+算子，因而
+\[
+ \sup_{0\leq t\leq T}\|T_tf\|
+ \leq(\|f\|+1)\max_{0\leq k\leq N}\|T_{k\delta}\|<\infty.
+\]
+
+对每个 $t\in[0,T]$ 定义连续标量函数
+$F_t:B\to\R$，$F_t(f)=\|T_tf\|$。上一段证明了函数族
+$\{F_t:0\le t\le T\}$ 逐点有界。Banach 空间是 Baire 空间，因而定理
+\ref{theorem:1-4-1-3} 给出非空开集 $U\subset B$ 和 $C<\infty$，使
+\[
+  \|T_tf\|\le C\qquad(f\in U, 0\le t\le T).
+\]
+取 $f_0\in B$ 与 $r>0$ 使 $B(f_0,r)\subset U$。对任意 $\|h\|\le1$，
+$f_0$ 与 $f_0+(r/2)h$ 都在 $U$ 中，故
+\[
+ \frac r2\|T_th\|
+ \le \|T_t(f_0+(r/2)h)\|+\|T_tf_0\|
+ \le2C.
+\]
+对 $t\in[0,T]$ 取上确界，得 $M_T\le4C/r$。
+\end{proof}
+
+命题~\ref{proposition:4-4-3-0} 还把零时刻的强连续性推到了所有时刻。
+对 $h\downarrow0$，
+\[
+ \|T_{t+h}f-T_tf\|\le\|T_t\|\,\|T_hf-f\|\longrightarrow0,
+\]
+而当 $0<h<t$ 时，
+\[
+ \|T_tf-T_{t-h}f\|
+ =\|T_{t-h}(T_hf-f)\|
+ \le M_t\|T_hf-f\|\longrightarrow0.
+\]
+因而 $t\mapsto T_tf$ 是 $[0,\infty)$ 到 $B$ 的连续曲线，在每个紧时间区间上
+Bochner 可积。
+
+\begin{definition}[生成元]\label{def:4-4-3-2}
+$C_0$ 半群 $(T_t)$ 的\emph{生成元} $A$ 定义为
+\[
+ D(A)=\left\{f\in B:
+   \lim_{t\downarrow0}\frac{T_tf-f}{t}
+   \text{ 在 $B$ 中存在}\right\},
+ \qquad
+ Af=\lim_{t\downarrow0}\frac{T_tf-f}{t}.
+\]
+差商的线性和范数极限的唯一性说明 $D(A)$ 是线性子空间，
+$A:D(A)\to B$ 是线性算子。定义没有声称 $D(A)=B$。
+\end{definition}
+
+\begin{definition}[收缩半群与 Markov 性]\label{def:4-4-3-3}
+若 $\|T_t\|\le1$ 对每个 $t\ge0$ 成立，则称 $(T_t)$ 为\emph{收缩半群}。
+若 $B$ 是带逐点序的函数 Banach 空间、$\1\in B$，每个 $T_t$ 保正，且
+$T_t\1=\1$，则称它为\emph{Markov 半群}。
+
+在无穷测度空间的 $L^p$（$p<\infty$）中，常数一不是该空间的向量，
+所以不把 $T_t\1=\1$ 写成 $L^p$ 内的等式。此时可在 $L^p\cap L^\infty$ 上使用
+\emph{sub-Markov 性}：
+\[
+  0\le f\le1\quad\Longrightarrow\quad0\le T_tf\le1
+  \quad\text{a.e.}
+\]
+\end{definition}
+
+\begin{proposition}[轨道微分]\label{proposition:4-4-3-1}
+若 $f\in D(A)$，则 $T_tf\in D(A)$，并且
+\[
+  AT_tf=T_tAf.
+\]
+曲线 $t\mapsto T_tf$ 在 $t>0$ 处可微且
+\[
+  \frac{\dd}{\dd t}T_tf=AT_tf=T_tAf;
+\]
+在 $t=0$ 上式的导数按右导数理解。
+\end{proposition}
+
+\begin{proof}
+对 $h>0$，半群律给出
+\[
+ \frac{T_hT_tf-T_tf}{h}
+ =T_t\frac{T_hf-f}{h}\longrightarrow T_tAf.
+\]
+因为 $T_t$ 有界，极限可经 $T_t$ 传递。这证明
+$T_tf\in D(A)$ 及 $AT_tf=T_tAf$，同时给出右导数。
+
+若 $t>0$ 且 $0<h<t$，记 $q_h=(T_hf-f)/h$，则左差商为
+\[
+ \frac{T_tf-T_{t-h}f}{h}=T_{t-h}q_h.
+\]
+命题~\ref{proposition:4-4-3-0} 与 $q_h\to Af$ 给出
+\[
+ \|T_{t-h}(q_h-Af)\|\le M_t\|q_h-Af\|\longrightarrow0.
+\]
+另一方面，
+\[
+ \|T_{t-h}Af-T_tAf\|
+ \le M_t\|T_hAf-Af\|\longrightarrow0.
+\]
+所以左差商也趋于 $T_tAf$。
+\end{proof}
+
+生成元域不是人为挑出的光滑函数类。下一个平均操作表明，它至少稠密到足以
+近似每个向量。
+
+\begin{proposition}[生成元稠密性的 Yosida 平均]\label{proposition:4-4-3-2}
+对 $f\in B$ 与 $t>0$，定义
+\[
+ f_t=\frac1t\int_0^tT_sf\,\dd s.
+\]
+则 $f_t\in D(A)$、$f_t\to f$ 于 $B$，并且
+\[
+ Af_t=\frac{T_tf-f}{t}.
+\]
+\end{proposition}
+
+\begin{proof}
+轨道连续性与命题~\ref{proposition:4-4-3-0} 保证定义中的 Bochner 积分存在。
+由 Bochner 积分的基本估计，
+\[
+ \|f_t-f\|
+ \le\frac1t\int_0^t\|T_sf-f\|\,\dd s
+ \le\sup_{0\le s\le t}\|T_sf-f\|\longrightarrow0.
+\]
+对 $h>0$，有界算子与 Bochner 积分的交换性
+（命题~\ref{proposition:3-4-3-2}）和半群律给出
+\begin{align*}
+ \frac{T_hf_t-f_t}{h}
+ &=\frac1t\left\{
+   \frac1h\int_t^{t+h}T_sf\,\dd s
+   -\frac1h\int_0^hT_sf\,\dd s\right\}.
+\end{align*}
+连续 $B$ 值函数在端点附近的平均趋于端点值；例如
+\[
+ \left\|\frac1h\int_t^{t+h}T_sf\,\dd s-T_tf\right\|
+ \le\sup_{t\le s\le t+h}\|T_sf-T_tf\|\longrightarrow0.
+\]
+对另一个积分使用同样的估计，便得
+$(T_hf_t-f_t)/h\to(T_tf-f)/t$。
+\end{proof}
+
+对一个只在 $D(A)$ 上定义的线性算子，“闭”是指：只要
+$f_n\in D(A)$、$f_n\to f$ 且 $Af_n\to g$ 于 $B$，就有
+$f\in D(A)$ 与 $Af=g$。这是其图像在 $B\times B$ 中为闭集的序列表达。
+
+\begin{proposition}[生成元的闭性]\label{proposition:4-4-3-5}
+每个 $C_0$ 半群的生成元都稠密定义且为闭算子。
+\end{proposition}
+
+\begin{proof}
+稠密性已由命题~\ref{proposition:4-4-3-2} 证明。先建立后面需要的轨道积分公式。
+对 $f\in D(A)$ 固定 $t>0$，令 $h=t/N$ 且
+$q_h=(T_hf-f)/h$。望远镜求和给出严格的代数等式
+\[
+ T_tf-f
+ =\sum_{k=0}^{N-1}T_{kh}(T_hf-f)
+ =h\sum_{k=0}^{N-1}T_{kh}q_h.
+\]
+它与 $h\sum_{k=0}^{N-1}T_{kh}Af$ 之差的范数不超过
+$tM_t\|q_h-Af\|$，因而趋于零。连续轨道
+$s\mapsto T_sAf$ 的 Riemann 和收敛于其 Bochner 积分，所以
+\begin{equation}\label{eq:4-4-3-orbit-integral}
+ T_tf-f=\int_0^tT_sAf\,\dd s
+ \qquad(f\in D(A)).
+\end{equation}
+
+现设 $f_n\in D(A)$、$f_n\to f$ 且 $Af_n\to g$。把
+\eqref{eq:4-4-3-orbit-integral} 用于 $f_n$，则
+\[
+ T_tf_n-f_n=\int_0^tT_sAf_n\,\dd s.
+\]
+左边趋于 $T_tf-f$，而
+\[
+ \left\|\int_0^tT_s(Af_n-g)\,\dd s\right\|
+ \le tM_t\|Af_n-g\|\longrightarrow0.
+\]
+因此
+\[
+ T_tf-f=\int_0^tT_sg\,\dd s.
+\]
+除以 $t$ 并令 $t\downarrow0$，轨道连续性给出
+\[
+ \frac{T_tf-f}{t}=\frac1t\int_0^tT_sg\,\dd s\longrightarrow g.
+\]
+所以 $f\in D(A)$ 且 $Af=g$。
+\end{proof}
+
+现在识别前述平移半群与热半群的生成元。
+
+\begin{proposition}[平移生成元的双向识别]
+\label{proposition:4-4-3-translation-generator}
+设 $1\le p<\infty$，$B=L^p(\R)$，并令 $T_tf(x)=f(x+t)$。则 $(T_t)$ 是等距
+$C_0$ 半群，它的生成元满足
+\[
+  D(A)=W^{1,p}(\R),\qquad Af=f'.
+\]
+若改用 $S_tf(x)=f(x-t)$，则生成元为 $-f'$，域仍为
+$W^{1,p}(\R)$。
+\end{proposition}
+
+\begin{proof}
+半群律和等距性由平移不变性得到，强连续性是定理
+\ref{theorem:4-4-1-1}。
+
+先设 $f\in W^{1,p}(\R)$。由命题
+\ref{proposition:4-3-3-ac-representative}，在每个 $I_m=(-m,m)$ 上选取 $f$ 的绝对连续代表
+$\widetilde f_m$。在 $I_m$ 上，$\widetilde f_m$ 与 $\widetilde f_{m+1}$ a.e. 相等；两者的差连续，
+所以其零集的补集不可含非空开区间，从而它们在 $I_m$ 上处处相等。因此这些代表粘合成
+$f$ 的一个局部绝对连续代表，并且对 a.e. $x$
+\[
+ f(x+t)-f(x)=\int_0^t f'(x+s)\,\dd s.
+\]
+将这个等式视为 $L^p$ 中的 Bochner 积分，由积分型 Minkowski
+不等式和 $L^p$ 平移连续性，
+\[
+ \left\|\frac{T_tf-f}{t}-f'\right\|_p
+ \le\frac1t\int_0^t\|T_sf'-f'\|_p\,\dd s
+ \longrightarrow0.
+\]
+因而 $f\in D(A)$ 且 $Af=f'$。
+
+反过来，设 $f\in D(A)$ 且
+$(T_tf-f)/t\to g$ 于 $L^p$。对任意 $\varphi\in C_c^\infty(\R)$，变量代换给出
+\begin{align*}
+ \int_\R\frac{f(x+t)-f(x)}t\,\varphi(x)\,\dd x
+ &=\int_\R f(y)\frac{\varphi(y-t)-\varphi(y)}t\,\dd y.
+\end{align*}
+右边括号中的差商在一个固定紧集上支撑，并在
+$L^{p'}$ 中趋于 $-\varphi'$；当 $p=1$时，这里的 $p'=\infty$
+收敛来自 $\varphi'$ 的一致连续性。\Holder{} 不等式于是允许两边取极限，得
+\[
+ \int_\R g\varphi\,\dd x=-\int_\R f\varphi'\,\dd x.
+\]
+这正是 $g$ 为 $f$ 的弱导数的定义。故 $f\in W^{1,p}(\R)$且
+$f'=g$。对 $S_t$ 把 $t$ 换成 $-t$，差商的极限符号相反。
+\end{proof}
+
+\begin{proposition}[热半群在测试函数上的生成元]
+\label{proposition:4-4-3-heat-test-generator}
+对 $1\le p<\infty$，$(H_t)_{t\ge0}$ 是 $L^p(\R^n)$ 上的保正收缩
+$C_0$ 半群，并具有 sub-Markov 性。若 $f\in C_c^\infty(\R^n)$，则
+$f\in D(A)$ 且 $Af=\Delta f$。
+\end{proposition}
+
+\begin{proof}
+$p_t\ge0$ 且 $\int p_t=1$，所以 $H_t$ 保正；基础型 Young 不等式给出
+$\|H_tf\|_p\le\|f\|_p$。若 $0\le f\le1$，则
+$0\le p_t*f\le\int p_t=1$，故 sub-Markov 性成立。半群律由命题
+\ref{proposition:4-4-2-3} 给出，强连续性由定理
+\ref{theorem:4-4-2-1} 给出。
+
+现设 $f\in C_c^\infty$。由命题~\ref{proposition:4-4-2-4}，对 $s>0$
+$\frac{\dd}{\dd s}H_sf=\Delta(H_sf)=(\Delta p_s)*f$。对每个坐标 $j$，
+$\partial_{x_j}^2p_s(x-y)=\partial_{y_j}^2p_s(x-y)$。由于 $f$ 光滑且具紧支撑，
+在 $y_j$ 上连续作两次分部积分，边界项均为零，从而
+\begin{align*}
+ ((\Delta p_s)*f)(x)
+ &=\sum_{j=1}^n\int_{\R^n}
+   \partial_{y_j}^2p_s(x-y)f(y)\,\dd y\\
+ &=\sum_{j=1}^n\int_{\R^n}
+   p_s(x-y)\partial_{y_j}^2f(y)\,\dd y
+ =(H_s\Delta f)(x).
+\end{align*}
+所以对 $s>0$
+\[
+ \frac{\dd}{\dd s}H_sf=H_s\Delta f
+\]
+在 $L^p$ 中成立。固定 $0<\varepsilon<t$，对连续的 Banach 值导函数作 Riemann 和
+并用有限和的望远镜等式，得
+\[
+ H_tf-H_\varepsilon f=\int_\varepsilon^tH_s\Delta f\,\dd s.
+\]
+令 $\varepsilon\downarrow0$。近似恒等定理分别用于 $f$ 和 $\Delta f$，给出
+\begin{equation}\label{eq:4-4-3-heat-difference-integral}
+ H_tf-f=\int_0^tH_s\Delta f\,\dd s.
+\end{equation}
+因此
+\[
+ \left\|\frac{H_tf-f}{t}-\Delta f\right\|_p
+ \le\frac1t\int_0^t\|H_s\Delta f-\Delta f\|_p\,\dd s
+ \longrightarrow0.
+\]
+这只识别了 $C_c^\infty$ 上的生成元，不包含对 $D(A)$ 的完整描述。
+\end{proof}
+
+上述两例也显示了为什么生成元通常无界。例如取非零
+$\eta\in C_c^\infty(\R)$ 与 $f_k(x)=e^{ikx}\eta(x)$，则 $\|f_k\|_p=\|\eta\|_p$，而
+\[
+ \|f_k'\|_p\ge k\|\eta\|_p-\|\eta'\|_p\longrightarrow\infty.
+\]
+“$A$ 是线性的”不能与“$A$ 在整个 $B$ 上有界”混为一谈。
+
+\begin{theorem}[热能量恒等式]\label{theorem:4-4-3-3}
+设 $f\in C_c^\infty(\R^n)$、$u(t)=H_tf$。对每个 $t>0$，
+\[
+ \frac{\dd}{\dd t}\|u(t)\|_2^2
+ =-2\|\nabla u(t)\|_2^2\le0.
+\]
+更一般地，若 $f\in L^2(\R^n)$ 且 $b>0$，则
+\begin{equation}\label{eq:4-4-3-integrated-energy}
+ \|H_bf\|_2^2+2\int_0^b\|\nabla H_sf\|_2^2\,\dd s
+ =\|f\|_2^2.
+\end{equation}
+后一式是时间积分恒等式；它不声称粗糙 $f$ 在 $t=0$ 具有点态时间导数。
+\end{theorem}
+
+\begin{proof}
+先取 $f\in C_c^\infty$。命题~\ref{proposition:4-4-2-4} 给出
+$\partial_tu=\Delta u$，并且对每个 $t>0$，$u(t)$ 及其所需导数都由 Gaussian
+尾部支配。因此 $t\mapsto u(t)$ 在 $L^2$ 中可微，且可将空间积分先限制到
+$B(0,R)$ 再令 $R\to\infty$。对复值函数计算得
+\begin{align*}
+ \frac{\dd}{\dd t}\|u(t)\|_2^2
+ &=2\operatorname{Re}\int_{\R^n}(\partial_tu)\overline u\,\dd x\\
+ &=2\operatorname{Re}\int_{\R^n}(\Delta u)\overline u\,\dd x\\
+ &=-2\sum_{j=1}^n\int_{\R^n}|\partial_ju|^2\,\dd x
+ =-2\|\nabla u(t)\|_2^2.
+\end{align*}
+第三行可先在 $B(0,R)$ 上分部积分。若 $\supp f\subset B(0,R_0)$，则对固定 $t>0$ 及
+$|x|>2R_0$，由 Gaussian 核及其一阶导数的显式公式可取常数 $C_t,c_t>0$，使
+\[
+ |u(t,x)|+|\nabla u(t,x)|\leq C_te^{-c_t|x|^2}.
+\]
+因此球面边界项的绝对值不超过
+$C_tR^{n-1}e^{-2c_tR^2}\to0$，令 $R\to\infty$ 即得到第三行。
+在 $[a,b]\subset(0,\infty)$ 上积分即得
+\begin{equation}\label{eq:4-4-3-energy-ab-smooth}
+ \|H_bf\|_2^2+2\int_a^b\|\nabla H_sf\|_2^2\,\dd s
+ =\|H_af\|_2^2.
+\end{equation}
+
+对一般 $f\in L^2$，由光滑稠密性取 $f_k\in C_c^\infty$ 使
+$f_k\to f$ 于 $L^2$。收缩性给出
+$H_tf_k\to H_tf$ 于 $L^2$，并且对 $s\in[a,b]$，Young 不等式给出
+\[
+ \|\nabla H_s(f_k-f)\|_2
+ \le\|\nabla p_s\|_1\|f_k-f\|_2
+ \le a^{-1/2}\|\nabla p_1\|_1\|f_k-f\|_2.
+\]
+最后一步使用了缩放恒等式
+$\nabla p_s(x)=s^{-(n+1)/2}(\nabla p_1)(x/\sqrt s)$。上式在 $s\in[a,b]$ 上一致；
+同时 $(\|f_k\|_2)$ 有界，所以存在 $C<\infty$ 使
+\[
+ \sup_{k,\,s\in[a,b]}\|\nabla H_sf_k\|_2
+ +\sup_{s\in[a,b]}\|\nabla H_sf\|_2\le C.
+\]
+于是
+\begin{align*}
+ &\left|\int_a^b\|\nabla H_sf_k\|_2^2\,\dd s
+ -\int_a^b\|\nabla H_sf\|_2^2\,\dd s\right|\\
+ &\qquad\le
+ \int_a^b\bigl(\|\nabla H_sf_k\|_2+\|\nabla H_sf\|_2\bigr)
+ \|\nabla H_s(f_k-f)\|_2\,\dd s\\
+ &\qquad\le 2C(b-a)a^{-1/2}\|\nabla p_1\|_1\|f_k-f\|_2
+ \longrightarrow0.
+\end{align*}
+因此可在 \eqref{eq:4-4-3-energy-ab-smooth} 中令 $k\to\infty$，得到对 $f$ 成立的同一等式。
+最后令 $a\downarrow0$。近似恒等定理给出 $H_af\to f$ 于 $L^2$，而非负函数
+$s\mapsto\|\nabla H_sf\|_2^2$ 的积分由单调收敛定理趋于 $(0,b)$ 上的积分。
+这就得到 \eqref{eq:4-4-3-integrated-energy}。
+\end{proof}
+
+半群记录了所有正时间的演化，生成元记录了零时刻的速度。还有第三种记录方式：
+以指数权把整条轨道平均起来。它会把无界算子问题转成一个定义在整个 $B$ 上的有界算子。
+
+\begin{proposition}[预解算子的 Laplace 表示]\label{proposition:4-4-3-4}
+设 $(T_t)$ 是 $B$ 上的收缩 $C_0$ 半群，$A$ 是其生成元。对 $\lambda>0$，定义
+\[
+ R_\lambda f=\int_0^\infty e^{-\lambda t}T_tf\,\dd t.
+\]
+则 $R_\lambda\in\mathcal L(B)$、$\|R_\lambda\|\le\lambda^{-1}$，并且
+\[
+ R_\lambda B\subset D(A),\qquad
+ (\lambda I-A)R_\lambda f=f\quad(f\in B),
+\]
+\[
+ R_\lambda(\lambda I-A)g=g\quad(g\in D(A)).
+\]
+因而 $\lambda I-A:D(A)\to B$ 是双射，其有界逆是 $R_\lambda$。
+
+若 $B$ 是复 Banach 空间，定义
+\[
+ \rho(A)=\{z\in\C:zI-A:D(A)\to B
+ \text{ 为双射且逆算子在 $B$ 上有界}\}.
+\]
+则 $(0,\infty)\subset\rho(A)$，且
+\[
+ R(\lambda,A)=(\lambda I-A)^{-1}=R_\lambda,
+ \qquad\|R(\lambda,A)\|\le\frac1\lambda.
+\]
+\end{proposition}
+
+\begin{proof}
+连续轨道使 $t\mapsto e^{-\lambda t}T_tf$ 强可测，而收缩性给出
+\[
+ \int_0^\infty\|e^{-\lambda t}T_tf\|\,\dd t
+ \le\|f\|\int_0^\infty e^{-\lambda t}\,\dd t
+ =\frac{\|f\|}{\lambda}.
+\]
+所以广义 Bochner 积分存在，基本估计给出
+$\|R_\lambda\|\le1/\lambda$。
+
+由命题~\ref{proposition:3-4-3-2}，对 $h>0$
+\begin{align*}
+ T_hR_\lambda f
+ &=\int_0^\infty e^{-\lambda t}T_{t+h}f\,\dd t\\
+ &=e^{\lambda h}\int_h^\infty e^{-\lambda s}T_sf\,\dd s\\
+ &=e^{\lambda h}\left(R_\lambda f-
+     \int_0^h e^{-\lambda s}T_sf\,\dd s\right).
+\end{align*}
+因此
+\[
+ \frac{T_hR_\lambda f-R_\lambda f}{h}
+ =\frac{e^{\lambda h}-1}{h}R_\lambda f
+ -e^{\lambda h}\frac1h\int_0^he^{-\lambda s}T_sf\,\dd s.
+\]
+第一项趋于 $\lambda R_\lambda f$；第二项中的平均趋于 $f$，因为
+$e^{-\lambda s}T_sf\to f$ 于 $B$。故 $R_\lambda f\in D(A)$ 且
+\[
+ AR_\lambda f=\lambda R_\lambda f-f,
+\]
+这就是 $(\lambda I-A)R_\lambda=I$。
+
+再取 $g\in D(A)$。对 $R>0$ 记
+\[
+ u_R=\int_0^R e^{-\lambda t}T_tg\,\dd t,
+ \qquad
+ v_R=\int_0^R e^{-\lambda t}T_tAg\,\dd t.
+\]
+由命题~\ref{proposition:4-4-3-1}，$T_tg\in D(A)$ 且
+$AT_tg=T_tAg$。对上述两个连续轨道取同一列带权 Riemann 和
+$u_{R,N}$ 与 $v_{R,N}$。每个 $u_{R,N}$ 都属于 $D(A)$，且线性性给出
+\[
+ Au_{R,N}=v_{R,N}.
+\]
+轨道的一致连续性使 $u_{R,N}\to u_R$、$v_{R,N}\to v_R$ 于 $B$。
+命题~\ref{proposition:4-4-3-5} 的闭性于是给出
+\begin{equation}\label{eq:4-4-3-resolvent-commutes-generator-finite}
+ u_R\in D(A),\qquad Au_R=v_R.
+\end{equation}
+当 $R\to\infty$ 时，收缩性与指数可积性给出
+\[
+ u_R\longrightarrow R_\lambda g,
+ \qquad v_R\longrightarrow R_\lambda Ag
+ \quad\text{于 }B.
+\]
+再用一次闭性于 \eqref{eq:4-4-3-resolvent-commutes-generator-finite}，得
+\[
+ AR_\lambda g=R_\lambda Ag.
+\]
+已证的左逆恒等式应用于 $g$ 后为
+$\lambda R_\lambda g-AR_\lambda g=g$，代入上式便得
+\[
+ R_\lambda(\lambda I-A)g=g.
+\]
+轨道微分命题还给出
+\[
+ \frac{\dd}{\dd t}\bigl(e^{-\lambda t}T_tg\bigr)
+ =-e^{-\lambda t}T_t(\lambda g-Ag).
+\]
+因而上述右逆恒等式正是这条微分式在 $[0,\infty)$ 上的积分形式；
+前面的闭性与 Riemann 和论证已经为该积分形式给出了无需借助形式计算的证明。
+两个乘积恒等式分别给出满射性和单射性，其余结论随之得到。
+\end{proof}
+
+\begin{example}[标量半群]
+若 $T_t=e^{-ct}I$，其中 $c\ge0$，则
+\[
+ \frac{T_tf-f}{t}=\frac{e^{-ct}-1}{t}f\longrightarrow-cf,
+\]
+所以 $A=-cI$ 且 $D(A)=B$。直接积分得
+\[
+ R_\lambda=\int_0^\infty e^{-(\lambda+c)t}\,\dd t\,I
+ =\frac1{\lambda+c}I.
+\]
+因此预解算子在两侧都消去 $\lambda I-A=(\lambda+c)I$，并且
+$\|R_\lambda\|=(\lambda+c)^{-1}\le\lambda^{-1}$。
+\end{example}
+
+\begin{remark}[与 Hille--Yosida 定理的关系]
+本小节从一个已给定的收缩 $C_0$ 半群出发，证明了它的生成元稠密、闭，且
+\[
+  \|\lambda R(\lambda,A)\|\le1\qquad(\lambda>0).
+\]
+这只是 Hille--Yosida 必要条件的第一层，不包含高次预解式估计。
+反过来，从一个闭算子的预解式条件构造收缩 $C_0$ 半群，是一般 Hille--Yosida 生成定理的困难方向，
+需要高次预解式估计。
+\end{remark}
+
+\begin{remark}[实空间与复预解集]
+命题~\ref{proposition:4-4-3-4} 中对正实参数 $\lambda$ 的逆公式同样适用于实 Banach 空间。
+但 $\rho(A)\subset\C$ 是复线性理论的记号；在没有先作复化时，不把实空间上的算子
+直接代入 $zI-A$。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+  \draw[book line,-{Stealth[length=2.4mm]}] (-0.3,1.8)--(12.0,1.8)
+    node[right,book label]{时间};
+  \foreach \x/\lab in {0/$0$,4/$t$,10.5/$t+s$}{
+    \draw[book line] (\x,1.68)--(\x,1.92);
+    \node[book label,above] at (\x,1.95) {\lab};
+  }
+  \draw[book accent arrow] (0,1.35)--node[below,book label]{$T_t$}(4,1.35);
+  \draw[book accent arrow] (4,1.35)--node[below,book label]{$T_s$}(10.5,1.35);
+  \draw[book dashed arrow] (0,0.75)--node[below,book label]{$T_{t+s}=T_sT_t$}(10.5,0.75);
+
+  \node[book node] (all) at (0.8,-0.65) {$f\in B$};
+  \node[book strong node] (avg) at (5.1,-0.65)
+    {$f_h=\dfrac1h\int_0^hT_rf\,\dd r\in D(A)$};
+  \node[book warm node] (vel) at (11.1,-0.65)
+    {$Af_h=\dfrac{T_hf-f}{h}$};
+  \draw[book accent arrow] (all)--node[above,book label,align=center,font=\scriptsize]{Yosida\\平均}(avg);
+  \draw[book arrow] (avg)--node[above,book label,align=center,font=\scriptsize]{短时\\速度}(vel);
+\end{tikzpicture}
+\caption{半群律拼接时间段；Yosida 平均则把任意向量送入生成元域，且保留可计算的差商。}
+\label{fig:4-4-3-semigroup-yosida}
+\end{figure}
+
+\begin{remark}[Markov 性与转移核]
+第~6 章引入过程与转移核以后，概率核 $K_t(x,\dd y)$ 将产生算子
+\[
+ T_tf(x)=\int f(y)K_t(x,\dd y).
+\]
+保正性和质量一分别对应保正与常数不变，Chapman--Kolmogorov 公式对应半群律。
+坐标函数 $x_i$ 和二次函数 $x_ix_j$ 未必属于所考察的 $L^p$ 或 $C_0$ 空间；短时矩计算需要先截断，
+再在矩的一致控制下撤去截断。热核 $p_t$ 与 $p_{t/2}$ 对应的生成元分别为
+$\Delta$ 与 $\tfrac12\Delta$，这与上一小节的二阶矩计算一致。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 对 $S_tf(x)=f(x-t)$ 重做命题~\ref{proposition:4-4-3-translation-generator}
+        的双向论证，并在测试函数配对中跟踪负号。
+  \item 不引用命题~\ref{proposition:4-4-3-1}，从半群律直接证明
+        $T_tD(A)\subset D(A)$ 与轨道微分公式。
+  \item 若 $f_t=t^{-1}\int_0^tT_sf\,\dd s$，证明
+        $\|f_t-f\|\le\sup_{0\le s\le t}\|T_sf-f\|$，并逐步计算
+        $(T_hf_t-f_t)/h$ 的极限。
+  \item 对 $f\in C_c^\infty(\R^n)$ 从 $\partial_tp_t=\Delta p_t$ 出发验证
+        \eqref{eq:4-4-3-heat-difference-integral}，再完成热能量恒等式中的分部积分边界估计。
+  \item 从 Laplace 积分直接证明
+        $\|R_\lambda\|\le\lambda^{-1}$ 与两个逆恒等式，并说明这是
+        Hille--Yosida 理论中从半群到生成元的方向。
+\end{enumerate}
+\end{exercise}
+
+至此，测度、积分、核与时间演化已经放在同一张图景中。第~5 章将把可测集读作事件、
+把积分读作期望，并开始追问“已知部分信息”如何改变我们对同一无穷对象的观测。

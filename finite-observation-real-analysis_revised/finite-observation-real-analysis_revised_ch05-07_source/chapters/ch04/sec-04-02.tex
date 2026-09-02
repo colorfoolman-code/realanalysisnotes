@@ -1,0 +1,1371 @@
+\section{一维变差、Stieltjes 积分与绝对连续}\label{sec:04-02}
+
+第~3 章在 Radon--Nikodym 定理的一维应用中已经引入有界变差与绝对连续函数。本节回顾这些定义，
+并系统建立 Jordan 分解、Stieltjes 测度以及 Lebesgue 微积分基本定理之间的联系。
+
+\subsection{单调函数、有界变差与 Jordan 分解}\label{subsec:4-2-1}
+\index{有界变差}\index{Jordan 分解!函数版}
+
+对 $C^1$ 曲线，弧长可以由速度积分计算。若曲线带有尖角，这个公式仍有希望；若它还带有跳跃，
+普通导数却不能记录跳跃的大小。此外，函数可以在越来越短的区间上来回振荡，首尾增量很小，
+沿途累计的路程却很大。因此应先问一个只涉及有限观测的问题：在任意有限分割上，把相邻函数值的
+绝对增量相加，所得数能否由同一个常数控制？
+
+有界变差的概念同时源于曲线长度与 Fourier 级数。分割定义既描述有限折线对总路程的逼近，也自然
+导出增量测度，从而把函数的 Jordan 分解与测度的 Jordan 分解联系起来。
+
+\begin{definition}[总变差]\label{def:4-2-1-1}
+设 $f:[a,b]\to\R$。对分割
+$P=\{a=x_0<x_1<\cdots <x_m=b\}$，记
+\[
+ V(f;P)=\sum_{j=1}^m|f(x_j)-f(x_{j-1})|,
+ \qquad
+ V_a^b(f)=\sup_P V(f;P).
+\]
+若 $V_a^b(f)<\infty$，称 $f$ 在 $[a,b]$ 上有界变差，记作
+$f\in BV([a,b])$。同样的记号 $V_s^t(f)$ 用于任意子区间 $[s,t]\subset[a,b]$。
+\end{definition}
+
+把一点插入分割只会增大变差和。由此，对 $a\le s\le t\le u\le b$，
+\begin{equation}\label{eq:4-2-variation-additivity}
+ V_s^u(f)=V_s^t(f)+V_t^u(f).
+\end{equation}
+事实上，合并 $[s,t]$ 与 $[t,u]$ 上的两个分割给出“$\ge$”；反过来，把 $t$ 插进
+$[s,u]$ 的任意分割，再按 $t$ 左右分组，便得到“$\le$”。这项简单的可加性是后面把变差
+变成测度的第一个信号。
+为了明确上确界的取法，给定 $\varepsilon>0$，取两个分割 $P_1,P_2$ 使
+\[
+ V(f;P_1)>V_s^t(f)-\frac\varepsilon2,\qquad
+ V(f;P_2)>V_t^u(f)-\frac\varepsilon2.
+\]
+将它们在 $t$ 处合并，得
+\[
+ V_s^u(f)\ge V(f;P_1)+V(f;P_2)
+ >V_s^t(f)+V_t^u(f)-\varepsilon.
+\]
+令 $\varepsilon\downarrow0$ 得到“$\ge$”。反向上，对 $[s,u]$ 的任意分割 $P$，令
+$P'=P\cup\{t\}$，则
+\[
+ V(f;P)\le V(f;P')
+ =V(f;P'\cap[s,t])+V(f;P'\cap[t,u])
+ \le V_s^t(f)+V_t^u(f).
+\]
+对 $P$ 取上确界即得“$\le$”。
+
+\begin{definition}[变差函数]\label{def:4-2-1-2}
+若 $f\in BV([a,b])$，定义
+\[
+ v_f(x)=V_a^x(f),\qquad a\le x\le b.
+\]
+\end{definition}
+
+由 \eqref{eq:4-2-variation-additivity}，$v_f$ 递增；并且对 $x<y$，
+\begin{equation}\label{eq:4-2-increment-dominated}
+ |f(y)-f(x)|\le V_x^y(f)=v_f(y)-v_f(x).
+\end{equation}
+所以 $v_f$ 记录的不是净位移，而是已经走过的总路程。
+
+\begin{example}[阶梯函数]\label{ex:4-2-1-1}
+设 $a<x_1<\cdots <x_N\le b$，并令
+\[
+ F(x)=\sum_{k=1}^N c_k\1_{[x_k,b]}(x).
+\]
+在不含跳点的区间上 $F$ 恒定，而经过 $x_k$ 时增量为 $c_k$。把所有跳点加入任意分割后，
+任意分割 $P={t_j}$ 的第 $j$ 个增量可写成
+\[
+ F(t_j)-F(t_{j-1})
+ =\sum_{\{k:t_{j-1}<x_k\le t_j\}}c_k.
+\]
+这些指标集两两不交，所以
+\[
+ V(F;P)
+ \le\sum_j\sum_{\{k:t_{j-1}<x_k\le t_j\}}|c_k|
+ =\sum_{k=1}^N|c_k|.
+\]
+取包含全部 $x_k$ 的分割时，每个非零增量正好是一个 $c_k$，上界达到。故
+\[
+ V_a^b(F)=\sum_{k=1}^N|c_k|.
+\]
+与 $F$ 对应的增量测度是 $\sum_kc_k\delta_{x_k}$。如果把一个跳点放在 $a$，则所有
+$(s,t]$（$a\le s<t$）都不包含该跳跃；因此左端原子必须另行指定。
+\end{example}
+
+\begin{proposition}[单调函数的正则性]\label{proposition:4-2-1-1}
+单调函数在每个内点都有有限的左、右极限；它的不连续点都是跳跃点，并且至多可数。
+特别地，单调函数 Borel 可测。
+\end{proposition}
+
+\begin{proof}
+只证非减函数 $g$；对非增函数考察 $-g$。若 $a<x<b$，则
+\[
+ g(x-):=\sup_{a\le t<x}g(t),\qquad
+ g(x+):=\inf_{x<t\le b}g(t)
+\]
+都是有限实数，并且单调性直接给
+$g(t)\to g(x-)$（$t\uparrow x$）与 $g(t)\to g(x+)$（$t\downarrow x$）。
+因此若 $g$ 在 $x$ 不连续，就有 $g(x-)<g(x)$ 或 $g(x)<g(x+)$；其函数值中出现一个
+正长度的空隙。
+
+对每个不连续点 $x$，从开区间 $(g(x-),g(x+))$ 中选一个有理数；若 $x<y$，单调性给
+$g(x+)\le g(y-)$，所以不同点对应的开区间两两不交。每个这样的区间含有不同的有理数，
+故内点中的不连续点集可数；两个端点至多再贡献两个单侧跳跃，因而全部不连续点仍至多可数。
+最后，对任意 $c\in\R$，集合
+$\{x:g(x)>c\}$ 是空集、全区间或一个端点取舍未定的区间，因而是 Borel 集。
+这些半直线生成 $\Borel(\R)$，所以 $g$ Borel 可测。
+\end{proof}
+
+\begin{theorem}[Jordan 分解（函数版）]\label{theorem:4-2-1-2}
+函数 $f:[a,b]\to\R$ 属于 $BV([a,b])$，当且仅当它可以写成两个非减函数之差。
+若 $f\in BV([a,b])$，则可取
+\[
+ p=\frac{v_f+f}{2},\qquad q=\frac{v_f-f}{2},\qquad f=p-q.
+\]
+若再有 $f(a)=0$，则 $p(a)=q(a)=0$；在所有满足
+$f=\widetilde p-\widetilde q$ 且
+$\widetilde p(a)=\widetilde q(a)=0$ 的非减分解中，这一对逐点最小：
+$\widetilde p\ge p$、$\widetilde q\ge q$。
+\end{theorem}
+
+\begin{proof}
+设 $f\in BV([a,b])$。由 \eqref{eq:4-2-increment-dominated}，对 $x<y$，
+\[
+ (v_f\pm f)(y)-(v_f\pm f)(x)
+ =v_f(y)-v_f(x)\pm(f(y)-f(x))\ge0.
+\]
+故 $p,q$ 非减，且 $p-q=f$。
+
+反过来，若 $f=p-q$，其中 $p,q$ 非减，则对每个分割 $P$，
+\[
+ V(f;P)
+ \le\sum_j\bigl(p(x_j)-p(x_{j-1})\bigr)
+   +\sum_j\bigl(q(x_j)-q(x_{j-1})\bigr)
+ =p(b)-p(a)+q(b)-q(a).
+\]
+所以 $f\in BV([a,b])$。
+
+最后设 $f(a)=0$，并给定规范化分解 $f=\widetilde p-\widetilde q$。对 $[a,x]$ 上任意分割，
+上面的估计给
+\[
+ V(f;P)\le \widetilde p(x)+\widetilde q(x).
+\]
+取上确界得 $v_f(x)\le\widetilde p(x)+\widetilde q(x)$。与
+$f(x)=\widetilde p(x)-\widetilde q(x)$ 相加、相减，分别得到
+\[
+ p(x)=\frac{v_f(x)+f(x)}2\le\widetilde p(x),\qquad
+ q(x)=\frac{v_f(x)-f(x)}2\le\widetilde q(x).
+\]
+这正是所述最小性。
+\end{proof}
+
+上一证明还给出 BV 函数在每点的左右极限：它是两个单调函数之差。特别地，BV 函数的跳跃点
+至多可数。不过，点态 BV 不是按几乎处处相等取商的空间。若 $a<x_0<b$ 且
+$f=\1_{\{x_0\}}$，则 $V_a^b(f)=2$；把 $x_0$ 处的值改为 $0$ 后，函数变成零函数，变差也变成
+$0$。因此“选一个右连续版本”是额外操作，不是像 $L^p$ 中那样免费的代表元替换。
+
+\begin{proposition}[BV 的代数性质]\label{proposition:4-2-1-3}
+$BV([a,b])$ 是向量空间，并且
+\[
+ V_a^b(\alpha f)=|\alpha|V_a^b(f),\qquad
+ V_a^b(f+g)\le V_a^b(f)+V_a^b(g).
+\]
+\end{proposition}
+
+\begin{proof}
+两个等式分别来自
+$|\alpha\Delta f|=|\alpha|\,|\Delta f|$ 与
+$|\Delta(f+g)|\le|\Delta f|+|\Delta g|$：先对每个分割求和，再取上确界。
+\end{proof}
+
+Helly 选择定理断言：统一有界且总变差统一有界的函数列具有点态收敛子列。其证明从两个单调
+Jordan 分量出发，先在可数稠密集上作对角抽取，再在连续点利用单调性夹逼，并处理可数多个跳点。
+该定理将在讨论弱收敛时证明。
+
+要让区间增量唯一编码测度，我们固定如下约定。
+
+\begin{definition}[右连续规范与左端原子]\label{def:4-2-1-3}
+与 Stieltjes 测度对应的函数总取右连续的 BV 代表，并规定 $F(a)=0$；其增量只编码
+$(a,b]$ 上的质量。若要编码 $[a,b]$ 上的任意测度，必须另给数
+$\nu(\{a\})$，或者在区间外规定 $F(a-)=0$ 并允许 $F(a)\ne0$。这两种端点约定不可混用。
+\end{definition}
+
+只知道所有 $F(t)-F(s)$ 不能恢复左端原子：$0$ 与 $c\delta_a$ 在每个
+$(s,t]$（$a\le s<t\le b$）上都给出零质量。相同的数据也不能区分 $F$ 与 $F+C$。
+
+\begin{lemma}[右连续性传给变差函数]\label{lemma:4-2-1-right-variation}
+若 $F\in BV([a,b])$、$F(a)=0$ 且 $F$ 右连续，则 $v_F$ 以及最小 Jordan 分量
+$p=(v_F+F)/2$、$q=(v_F-F)/2$ 都右连续。
+\end{lemma}
+
+\begin{proof}
+$p,q$ 非减，所以每点有右极限。固定 $x<b$。由 $F=p-q$ 的右连续性，
+\[
+ p(x+)-p(x)=q(x+)-q(x)=:d\ge0.
+\]
+若 $d>0$，令 $r=d\1_{(x,b]}$。函数 $p-r$ 与 $q-r$ 仍非减：越过 $x$ 时恰好删去共同的
+右跳跃，其他增量不变。它们在 $a$ 仍为零，并且
+$F=(p-r)-(q-r)$，却在 $x$ 右侧严格小于最小分量 $p,q$，与
+\cref{theorem:4-2-1-2} 的最小性矛盾。因此 $d=0$。这对每个 $x<b$ 成立，故 $p,q$ 右连续，
+$v_F=p+q$ 也右连续。
+\end{proof}
+
+\begin{theorem}[BV 函数与有限有符号 Stieltjes 测度]\label{theorem:4-2-1-4}
+右连续、满足 $F(a)=0$ 的 $BV([a,b])$ 函数，与 $(a,b]$ 上有限有符号 Borel 测度一一对应；
+对应由
+\[
+ \nu_F((s,t])=F(t)-F(s),\qquad a\le s<t\le b,
+\]
+刻画，并且
+\begin{equation}\label{eq:4-2-variation-measure}
+ |\nu_F|((a,b])=V_a^b(F).
+\end{equation}
+反向对应为 $F_\nu(x)=\nu((a,x])$。
+\end{theorem}
+
+\begin{proof}
+先设 $F$ 如定理所述，并取最小 Jordan 分解 $F=p-q$。由上一引理，$p,q$ 右连续、非减且
+在 $a$ 为零。\Cref{theorem:2-3-3-2,cor:stieltjes-compact-interval} 分别给出
+$(a,b]$ 上有限正测度 $\mu_p,\mu_q$，使
+\[
+ \mu_p((s,t])=p(t)-p(s),\qquad
+ \mu_q((s,t])=q(t)-q(s).
+\]
+令 $\nu_F=\mu_p-\mu_q$，便得到所需增量。半开区间构成生成 Borel $\sigma$-代数的
+$\pi$-系统。若两个有限有符号测度有相同增量，写成 $\nu_1^+-\nu_1^-$ 与
+$\nu_2^+-\nu_2^-$ 后，两个有限正测度
+$\nu_1^++\nu_2^-$、$\nu_2^++\nu_1^-$ 在该 $\pi$-系统上相等；有限正测度唯一性说明它们
+处处相等，故 $\nu_1=\nu_2$。这证明 $\nu_F$ 唯一。
+
+先证 \eqref{eq:4-2-variation-measure} 的一个方向。任意分割 $P$ 给出
+\[
+ \sum_j|F(x_j)-F(x_{j-1})|
+ =\sum_j|\nu_F((x_{j-1},x_j])|
+ \le\sum_j|\nu_F|((x_{j-1},x_j])
+ =|\nu_F|((a,b]),
+\]
+故 $V_a^b(F)\le|\nu_F|((a,b])$。
+
+反向不等式把有符号测度的正负区域化为有限分割上的估计。取 $\nu_F$ 的 Hahn 分解
+$(P_+,P_-)$。给定 $\varepsilon>0$，有限 Borel 测度 $|\nu_F|$ 在紧区间上正则，故可取互不相交
+紧集 $K_+\subset P_+$、$K_-\subset P_-$，使
+\[
+ |\nu_F|\bigl((a,b]\setminus(K_+\cup K_-)\bigr)<\varepsilon.
+\]
+再取互不相交的相对开集 $U_+\supset K_+$、$U_-\supset K_-$，并使
+$|\nu_F|(U_\pm\setminus K_\pm)<\varepsilon$。由紧性，可在各 $U_\pm$ 内用有限个半开区间覆盖
+$K_\pm$；细分全部端点后，得到两族互不相交半开区间，其并记作 $A_+,A_-$。令
+$h=\1_{A_+}-\1_{A_-}$。在 $K_+\cup K_-$ 上，$h$ 等于
+$\dd\nu_F/\dd|\nu_F|$ 的符号，而所有误差落在
+$(a,b]\setminus(K_+\cup K_-)$ 与 $U_\pm\setminus K_\pm$ 中。因此
+\[
+ \begin{aligned}
+ \int h\,\dd\nu_F
+ &=\int h\frac{\dd\nu_F}{\dd|\nu_F|}\,\dd|\nu_F|\\
+ &\ge |\nu_F|(K_+\cup K_-)
+      -|\nu_F|\bigl((A_+\cup A_-)\setminus(K_+\cup K_-)\bigr)\\
+ &\ge |\nu_F|((a,b])
+      -|\nu_F|\bigl((a,b]\setminus(K_+\cup K_-)\bigr)
+      -|\nu_F|(U_+\setminus K_+)-|\nu_F|(U_-\setminus K_-)\\
+ &>|\nu_F|((a,b])-3\varepsilon.
+ \end{aligned}
+\]
+也就是
+\[
+ |\nu_F|((a,b])-3\varepsilon
+ \le \int h\,\dd\nu_F.
+\]
+把 $A_+,A_-$ 的全部端点并入同一分割，并把各区间的符号记为 $\epsilon_j\in\{-1,0,1\}$，则
+\[
+ \int h\,\dd\nu_F
+ =\sum_j\epsilon_j\bigl(F(x_j)-F(x_{j-1})\bigr)
+ \le\sum_j|F(x_j)-F(x_{j-1})|
+ \le V_a^b(F).
+\]
+令 $\varepsilon\downarrow0$，得到 $|\nu_F|((a,b])\le V_a^b(F)$。
+
+反过来，给定有限有符号测度 $\nu$，令 $F(x)=\nu((a,x])$。若 $x_n\downarrow x$，则
+$(a,x_n]\downarrow(a,x]$，有限正负部分的从上连续性给 $F(x_n)\to F(x)$，故 $F$ 右连续。
+对任意分割，
+\[
+ \sum_j|F(x_j)-F(x_{j-1})|
+ \le |\nu|((a,b]),
+\]
+所以 $F\in BV$ 且 $F(a)=0$。区间增量等于 $\nu((s,t])$；唯一性给
+$\nu_F=\nu$，而已证的等式给 $V(F)=|\nu|((a,b])$。两项构造因此互逆。
+\end{proof}
+
+\begin{example}[不定积分的变差]\label{ex:4-2-1-2}
+设 $g\in L^1([a,b])$，$F(x)=\int_a^xg(t)\,\dd t$。对应增量测度为
+$g\,m$，而 $|g\,m|=|g|\,m$。因此 \eqref{eq:4-2-variation-measure} 给出
+\[
+ V_a^b(F)=\int_a^b|g(t)|\,\dd t.
+\]
+这也说明只写 $V(F)\le\int|g|$ 会漏掉一半信息。
+\end{example}
+
+\begin{example}[Cantor 函数]\label{ex:4-2-1-3}
+令 $K$ 为三分 Cantor 集。若
+$x\in K$ 有三进制展开 $x=0.\varepsilon_1\varepsilon_2\cdots{}_3$，其中
+$\varepsilon_j\in\{0,2\}$，置
+\[
+ C(x)=0.(\varepsilon_1/2)(\varepsilon_2/2)\cdots{}_2,
+\]
+并在每个被删去的三分开区间上作常值延拓。端点的两种展开给同一连续延拓。于是 $C$ 连续非减，
+$C(0)=0,C(1)=1$，故 $V_0^1(C)=1$。它在 $[0,1]\setminus K$ 上局部常值，而 $K$ 的
+Lebesgue 测度为零，所以 $C'=0$ a.e.；然而总变差仍为 $1$。普通 a.e. 导数没有记录这份奇异连续增长。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.0cm,y=.75cm]
+  \begin{scope}
+    \draw[->] (0,0)--(5.4,0) node[right]{$x$};
+    \draw[->] (0,-1.25)--(0,1.55) node[above]{$f$};
+    \draw[BookAccent,thick] plot[smooth] coordinates
+      {(0,.1) (.7,.85) (1.4,-.55) (2.1,1.05) (3,.25) (3.8,1.2) (4.8,.6)};
+    \node[book label] at (2.5,-1.05){有升有降的 $f$};
+  \end{scope}
+  \begin{scope}[xshift=6.3cm]
+    \draw[->] (0,0)--(5.4,0) node[right]{$x$};
+    \draw[->] (0,0)--(0,3.2) node[above]{$v_f$};
+    \draw[BookWarm,thick] plot[smooth] coordinates
+      {(0,.1) (.7,.65) (1.4,1.25) (2.1,1.9) (3,2.25) (3.8,2.75) (4.8,3)};
+    \draw[BookAccent,dashed,thick] plot[smooth] coordinates
+      {(0,.05) (.7,.55) (1.4,.62) (2.1,1.45) (3,1.5) (3.8,2.1) (4.8,2.25)};
+    \draw[BookWarning,dashed,thick] plot[smooth] coordinates
+      {(0,.02) (.7,.12) (1.4,.68) (2.1,.72) (3,1.05) (3.8,1.08) (4.8,1.35)};
+    \node[book label] at (2.6,.32){$v_f$（实线），$p,q$（虚线）};
+  \end{scope}
+  \draw[book accent arrow] (5.1,1.15)--node[above]{$v_f(x)=V_a^x(f)$}(6.1,1.15);
+\end{tikzpicture}
+\caption{变差函数把正负振荡都记成增长；$p=(v_f+f)/2$ 与 $q=(v_f-f)/2$ 再把增长分到两个单调分量。}
+\label{fig:variation-jordan}
+\end{figure}
+
+\begin{remark}
+BV 不推出连续，更不推出绝对连续；Cantor 函数又说明连续 BV 仍可能不能由 a.e. 导数恢复。
+测度对应保留跳跃、绝对连续和奇异连续三类增量，后两小节将依次把它们用于积分与微积分基本定理。
+\end{remark}
+
+\begin{exercise}
+证明 $V_s^u(f)=V_s^t(f)+V_t^u(f)$，并据此计算任意有限阶梯函数的总变差。
+\end{exercise}
+\begin{exercise}
+利用 Jordan 分解证明每个 BV 函数都有左右极限，并证明其不连续点至多可数。
+\end{exercise}
+\begin{exercise}
+若 $f(a)=0$ 且 $f=p-q$ 是最小 Jordan 分解，证明
+$V_a^b(f)=V_a^b(p)+V_a^b(q)=p(b)+q(b)$。说明为何最后一个等号必须先规范端点。
+\end{exercise}
+区间增量现在已经成为测度。下一步是检验经典分割和是否收敛，以及它与测度积分是否真的给出同一个数。
+
+\subsection{Stieltjes 测度、分割和与积分}\label{subsec:4-2-2}
+\index{Stieltjes 积分}\index{标记分割网}
+
+普通 Riemann 和用区间长度作权重。若权重来自一个递增函数 $F$，第 $j$ 段更自然的“宽度”是
+$F(x_j)-F(x_{j-1})$。这允许某个几何长度趋于零的区间仍携带固定权重---那正是 $F$ 的跳跃。
+然而，若被积函数也在同一点跳跃，不同标记可能产生不同的极限。下面先计算原子、绝对连续密度与
+Cantor 型奇异测度三种典型情形，再给出分割和稳定收敛的条件。
+
+Stieltjes 积分的早期问题来自连分数与矩问题；现代测度论把分割增量扩张为 Borel 测度。标记分割网
+仍保留有限和，并精确区分沿某一列分割收敛与对所有充分细分割一致稳定这两种要求。
+
+\begin{example}[跳跃积分]\label{ex:4-2-2-1}
+设 $a<x_k\le b$，$\sum_{k\ge1}|a_k|<\infty$，并令
+\[
+ F(x)=\sum_{k\ge1}a_k\1_{[x_k,b]}(x).
+\]
+级数一致绝对收敛，故 $F$ 右连续；对每个半开区间直接相减可得
+\[
+ \nu_F=\sum_{k\ge1}a_k\delta_{x_k}.
+\]
+因而对连续 $f$，
+\begin{equation}\label{eq:4-2-jump-integral}
+ \int_{(a,b]}f\,\dd F=\sum_{k\ge1}a_kf(x_k).
+\end{equation}
+右侧绝对收敛，因为
+$\sum_k|a_kf(x_k)|\le\|f\|_\infty\sum_k|a_k|$。有限阶梯情形相应地给出有限加权和
+$\sum_k a_kf(x_k)$。
+\end{example}
+
+\begin{example}[光滑密度]\label{ex:4-2-2-2}
+若 $g\in L^1([a,b])$、$g\ge0$，且
+$F(x)=\int_a^xg(t)\,\dd t$，则对半开区间
+\[
+ \mu_F((s,t])=\int_s^tg(x)\,\dd x.
+\]
+测度唯一性给 $\dd\mu_F=g\,\dd x$，所以每个 $fg\in L^1$ 都满足
+\[
+ \int_{(a,b]}f\,\dd F=\int_a^bf(x)g(x)\,\dd x.
+\]
+\end{example}
+
+\begin{example}[Cantor 柱状近似]\label{ex:4-2-2-3}
+令 $K_n$ 是 Cantor 构造第 $n$ 步剩下的 $2^n$ 个闭区间之并，并置
+\[
+ \dd\mu_n=\left(\frac32\right)^n\1_{K_n}\,\dd x.
+\]
+每个长度 $3^{-n}$ 的柱子质量为 $2^{-n}$，故 $\mu_n([0,1])=1$。令 $\mu_C=\dd C$ 为
+Cantor 函数的 Stieltjes 测度；它在每个第 $n$ 级柱子上也有质量 $2^{-n}$。若这些柱子的左端点为
+$\ell_1,\dots,\ell_{2^n}$，连续函数 $f$ 的模连续性记作 $\omega_f$，则
+\[
+ \left|\int f\,\dd\mu_n-2^{-n}\sum_{j=1}^{2^n}f(\ell_j)\right|
+ \le\omega_f(3^{-n}),
+\]
+而把 $\mu_n$ 换成 $\mu_C$ 后同一估计仍成立。因此
+\begin{equation}\label{eq:4-2-cantor-column-limit}
+ \left|\int f\,\dd\mu_n-\int f\,\dd C\right|
+ \le2\omega_f(3^{-n})\longrightarrow0.
+\end{equation}
+这些绝对连续柱状密度越来越高、支撑总长度 $(2/3)^n$ 越来越小，极限却不是原子测度，而是集中在
+Cantor 零测集上的奇异连续测度。公式 \eqref{eq:4-2-cantor-column-limit} 给出了相应积分的定量收敛。
+\end{example}
+
+上面三例中的积分暂时只是第 3 章已经定义的测度积分，增量测度来自
+\cref{theorem:4-2-1-4}。现在把两种 Stieltjes 语言正式并列起来。
+
+\begin{definition}[Stieltjes 测度]\label{def:4-2-2-1}
+若 $F:[a,b]\to\R$ 右连续、非减且 $F(a)=0$，记 $\mu_F$ 为 $(a,b]$ 上满足
+\[
+ \mu_F((s,t])=F(t)-F(s)
+\]
+的有限正测度。若 $F$ 是右连续、规范化的 BV 函数，则以 $\nu_F$ 表示
+\cref{theorem:4-2-1-4} 给出的有限有符号测度。若积分域写成 $[a,b]$，左端原子
+$\nu(\{a\})$ 必须另外加入。
+\end{definition}
+
+\begin{definition}[标记分割网]\label{def:4-2-2-2}
+标记分割 $\mathcal P=(P,\xi)$ 由
+\[
+ P=\{a=x_0<\cdots <x_m=b\},\qquad
+ \xi_j\in[x_{j-1},x_j]
+\]
+组成。若 $Q$ 细化 $P$，规定 $(P,\xi)\preceq(Q,\eta)$；不要求新旧标记相容。
+任意两个底层分割的端点之并是共同细化，所以这些指标构成有向预序。定义
+\[
+ S_F(f;P,\xi)
+ =\sum_{j=1}^mf(\xi_j)\bigl(F(x_j)-F(x_{j-1})\bigr).
+\]
+若这个网在值域中收敛，称其极限为 Riemann--Stieltjes 积分。
+\end{definition}
+
+\begin{definition}[Lebesgue--Stieltjes 积分]\label{def:4-2-2-3}
+对 $\mu_F$ 可积的标量函数或 Bochner 可积的 Banach 值函数 $f$，定义
+\[
+ \int_{(a,b]}f\,\dd F:=\int_{(a,b]}f\,\dd\mu_F.
+\]
+BV 情形令 $u=\dd\nu_F/\dd|\nu_F|$。若 Banach 值函数 $f$ 强可测且
+\[
+ \int_{(a,b]}\|f\|\,\dd|\nu_F|<\infty,
+\]
+定义
+\[
+ \int_{(a,b]}f\,\dd F
+ :=\int_{(a,b]}f\,\dd\nu_F
+ :=\int_{(a,b]}u(x)f(x)\,\dd|\nu_F|(x),
+\]
+右端是关于正测度 $|\nu_F|$ 的 Bochner 积分。等价地，也可对 $\nu_F$ 的 Jordan 正负部分
+分别积分后作差。于是
+\[
+ \left\|\int f\,\dd\nu_F\right\|
+ \leq\int\|f\|\,\dd|\nu_F|.
+\]
+连续 Banach 值函数在紧区间上有界，而 $|\nu_F|$ 有限，所以自动满足上述可积条件。
+\end{definition}
+
+不要求细化分割继承原标记是必要的。若只沿某一列特定标记取极限，极限可能依赖标记选择。
+网的 Cauchy 性要求所有足够细的分割及其任意标记给出相近的数值。
+
+\begin{theorem}[分割和收敛]\label{theorem:4-2-2-1}
+设 $F$ 右连续、非减且 $F(a)=0$，$B$ 为 Banach 空间，$f\in C([a,b];B)$。则
+$S_F(f;P,\xi)$ 构成 $B$ 中的 Cauchy 网，因而存在极限，并且
+\[
+ \left\|\int_a^bf\,\dd F\right\|
+ \le\|f\|_\infty\bigl(F(b)-F(a)\bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+记
+\[
+ \omega_f(\delta)=\sup\{\|f(x)-f(y)\|:|x-y|\le\delta\}.
+\]
+紧区间上的一致连续性给 $\omega_f(\delta)\to0$。给定 $\varepsilon>0$；若 $F(b)=F(a)$，
+所有和均为零。否则选 $\delta>0$ 使
+$2\omega_f(\delta)(F(b)-F(a))<\varepsilon$，再取网格小于 $\delta$ 的底分割
+$P_0=\{x_j\}$，并在各段固定标记 $\zeta_j$。
+
+设 $(Q,\eta)$ 是 $P_0$ 的任意细化。把 $Q$ 的小区间按其所在的
+$[x_{j-1},x_j]$ 分组。在第 $j$ 组中，每个新标记与 $\zeta_j$ 的距离不超过 $\delta$，而所有
+$F$ 增量之和恰为 $F(x_j)-F(x_{j-1})$。所以
+\[
+ \left\|S_F(f;Q,\eta)-S_F(f;P_0,\zeta)\right\|
+ \le\omega_f(\delta)\sum_j\bigl(F(x_j)-F(x_{j-1})\bigr)
+ =\omega_f(\delta)(F(b)-F(a)).
+\]
+两个任意细化分别与固定和比较，距离小于 $\varepsilon$。故该网 Cauchy；$B$ 的完备性给出极限。
+最后每个和满足
+\[
+ \|S_F(f;P,\xi)\|
+ \le\|f\|_\infty\sum_j(F(x_j)-F(x_{j-1}))
+ =\|f\|_\infty(F(b)-F(a)),
+\]
+令网取极限即得估计。
+\end{proof}
+
+\begin{theorem}[Riemann--Stieltjes 与 Lebesgue--Stieltjes 一致]\label{theorem:4-2-2-2}
+在 \cref{theorem:4-2-2-1} 的假设下，标记分割网的极限等于 Bochner 积分
+\[
+ \int_{(a,b]} f\,\dd\mu_F.
+\]
+特别地，标量连续函数的两种 Stieltjes 积分一致。
+\end{theorem}
+
+\begin{proof}
+给标记分割 $(P,\xi)$ 配上阶梯函数
+\[
+ s_{P,\xi}(x)=\sum_{j=1}^mf(\xi_j)\1_{(x_{j-1},x_j]}(x).
+\]
+有限简单函数的 Bochner 积分定义与 Stieltjes 增量给
+\[
+ \int_{(a,b]}s_{P,\xi}\,\dd\mu_F=S_F(f;P,\xi).
+\]
+若 $P$ 的网格小于 $\delta$，则
+$\|s_{P,\xi}(x)-f(x)\|\le\omega_f(\delta)$ 对所有 $x\in(a,b]$ 成立。由 Bochner 积分基本估计
+\cref{theorem:3-4-2-2}，
+\[
+ \left\|S_F(f;P,\xi)-\int_{(a,b]}f\,\dd\mu_F\right\|
+ \le\omega_f(\delta)\mu_F((a,b])
+ =\omega_f(\delta)(F(b)-F(a)).
+\]
+右端与标记无关并趋于零，故网极限就是测度积分。
+\end{proof}
+
+\begin{proposition}[BV Stieltjes 积分估计]\label{proposition:4-2-2-3}
+若 $F$ 右连续、$F(a)=0$ 且 $F\in BV([a,b])$，则对连续 Banach 值 $f$，
+\[
+ \left\|\int_{(a,b]}f\,\dd F\right\|
+ \le\|f\|_\infty V_a^b(F).
+\]
+在实标量情形，$L_F:C([a,b])\to\R$，
+$L_F(f)=\int f\,\dd F$ 的算子范数恰为 $V_a^b(F)$。
+\end{proposition}
+
+\begin{proof}
+由有限有符号测度积分估计和 \eqref{eq:4-2-variation-measure}，
+\[
+ \left\|\int f\,\dd\nu_F\right\|
+ \le\int\|f\|\,\dd|\nu_F|
+ \le\|f\|_\infty V_a^b(F).
+\]
+所以 $\|L_F\|\le V_a^b(F)$。
+
+为证反向，取 $\nu_F$ 的 Hahn 分解 $(P_+,P_-)$。给定 $\varepsilon>0$，由正则性取互不相交紧集
+$K_+\subset P_+$、$K_-\subset P_-$，使
+$|\nu_F|((a,b]\setminus(K_+\cup K_-))<\varepsilon$。若两者都非空，令
+\[
+ \varphi(x)=
+ \frac{\dist(x,K_-)-\dist(x,K_+)}
+      {\dist(x,K_-)+\dist(x,K_+)};
+\]
+它连续、$|\varphi|\le1$，并在 $K_+$ 上等于 $1$、在 $K_-$ 上等于 $-1$。若某个紧集为空，
+取相应常数符号即可。于是
+\[
+ L_F(\varphi)=\int\varphi\,\dd\nu_F
+ \ge |\nu_F|(K_+\cup K_-)-\varepsilon
+ \ge V_a^b(F)-2\varepsilon.
+\]
+令 $\varepsilon\downarrow0$，得到 $\|L_F\|\ge V_a^b(F)$。
+\end{proof}
+
+如果 $F$ 是一般 BV 函数，分割和可由其最小 Jordan 分量之差处理；误差估计中的总质量相应换成
+$V(F)$。被积函数的连续性仍是分割网收敛的重要条件。
+
+\begin{remark}[共同跳跃使标记网失败]
+在 $[-1,1]$ 上令 $F=H=\1_{[0,1]}$。则 $\dd F=\delta_0$，按右连续代表，
+Lebesgue--Stieltjes 积分给
+$\int H\,\dd F=H(0)=1$。但每个足够细的分割都有一个小区间跨过 $0$；若该段标记取在
+$0$ 左侧，相应分割和的原子项为 $0$，取在 $0$ 或右侧则为 $1$。这两族任意细指标始终相差 $1$，
+所以标记网不收敛。现代测度积分仍有定义，经典分割和却要求更强的相容性。
+\end{remark}
+
+BV 函数的部分积分公式必须区分当前值与左极限。下面给出公式及其有限阶梯模型；一般 BV 情形需要
+进一步的近似论证。
+
+\begin{remark}[BV 部分积分公式的端点形式]\label{proposition:4-2-2-4}
+若 $F,G$ 右连续且有界变差，预期的公式是
+\begin{equation}\label{eq:4-2-bv-ibp-preview}
+ F(b)G(b)-F(a)G(a)
+ =\int_{(a,b]}F(x-)\,\dd G(x)
+  +\int_{(a,b]}G(x)\,\dd F(x).
+\end{equation}
+对共同分割上的阶梯函数，这不是极限论证，而是逐段恒等式
+\[
+ F(x_j)G(x_j)-F(x_{j-1})G(x_{j-1})
+ =F(x_{j-1})\Delta_jG+G(x_j)\Delta_jF
+\]
+的望远镜求和。若二者在 $x$ 共同跳跃，把两个积分都写成当前值会多算
+$\Delta F(x)\Delta G(x)$；把二者都写成左极限则少算同一项。因此，公式
+\eqref{eq:4-2-bv-ibp-preview} 必须采用一项左极限与一项当前值。下一小节将对绝对连续
+函数证明不涉及跳跃项的部分积分公式。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.05cm,y=.72cm]
+  \draw[->] (0,0)--(10.2,0) node[right]{$x$};
+  \foreach \x in {0,1.1,2.1,3.4,4.5,5.7,6.8,8.1,9.4}
+    \draw[BookInk!55] (\x,-.12)--(\x,.12);
+  \draw[BookAccent,thick]
+    (0,.3)--(1.1,.3)--(1.1,.65)--(2.1,.65)--(2.1,.9)--(3.4,.9)--
+    (3.4,2.6)--(4.5,2.6)--(4.5,2.85)--(5.7,2.85)--(5.7,3.25)--
+    (6.8,3.25)--(6.8,3.5)--(8.1,3.5)--(8.1,4.0)--(9.4,4.0);
+  \draw[BookWarning,very thick] (3.4,.9)--(3.4,2.6);
+  \node[book warning node] at (3.4,3.3){跳跃给原子柱};
+  \draw[decorate,decoration={brace,mirror,amplitude=4pt},BookWarm]
+    (5.7,-.35)--(6.8,-.35) node[midway,below=5pt]{$\Delta F$ 是权重};
+  \node[book label] at (7.5,1.35){细化 $x$--分割};
+\end{tikzpicture}
+\caption{Stieltjes 和的权重由 $F$ 的纵向增量决定；几何上很窄的区间也可能承载一个固定原子。}
+\label{fig:stieltjes-tagged-net}
+\end{figure}
+
+离散谱产生 \eqref{eq:4-2-jump-integral} 型的加权和，矩问题考察测试函数
+$1,x,x^2,\ldots$ 的 Stieltjes 积分，紧区间上的测度表示则反向使用
+\cref{proposition:4-2-2-3} 的线性泛函估计。这些应用将在后文展开。
+
+\begin{exercise}
+不引用定理结论，按任意共同细化逐项证明标记分割和构成 Cauchy 网。
+\end{exercise}
+\begin{exercise}
+对 $F=2\1_{[1/3,1]}-\1_{[2/3,1]}$ 计算 $V_0^1(F)$，并求
+$\int_0^1x^2\,\dd F$。
+\end{exercise}
+\begin{exercise}
+证明 \cref{proposition:4-2-2-3} 中的范数等式；特别说明紧集分离函数为何连续且模不超过 $1$。
+\end{exercise}
+\begin{exercise}
+若改用左连续累计函数与区间 $[s,t)$，核对原子落点和部分积分公式中的左右值。构造一个例子说明
+只改连续性约定、不改半开区间方向会产生错误。
+\end{exercise}
+
+Stieltjes 测度同时容纳原子、普通密度和 Cantor 质量。下一步要回答更具体的问题：哪些累计函数
+完全由普通 $L^1$ 密度产生？
+
+\subsection{绝对连续函数与 Lebesgue 基本定理}\label{subsec:4-2-3}
+\index{绝对连续}\index{Lebesgue 基本定理}\index{Luzin N 性质}
+
+Cantor 函数连续、单调且几乎处处导数为零，却从 $0$ 增长到 $1$。因此，连续性与几乎处处可微性
+都不足以保证由导数恢复函数。绝对连续性所排除的正是如下行为：在总长度任意小的不交区间族上，
+函数增量的总和仍保持为一个固定的正数。
+
+\begin{definition}[绝对连续]\label{def:4-2-3-1}
+函数 $F:[a,b]\to\R$ 称为绝对连续，如果对每个 $\varepsilon>0$，存在 $\delta>0$，使得任意有限族
+两两不交的开区间 $(\alpha_k,\beta_k)\subset[a,b]$ 只要满足
+\[
+ \sum_k(\beta_k-\alpha_k)<\delta,
+\]
+就有
+\[
+ \sum_k|F(\beta_k)-F(\alpha_k)|<\varepsilon.
+\]
+记所有这类函数为 $AC([a,b])$。
+\end{definition}
+
+只取一个区间便知绝对连续函数一致连续。更重要的是，绝对连续性不仅控制各区间的首尾差，还控制
+其中所有振荡。
+
+\begin{lemma}[短区间族的局部变差控制]\label{lemma:4-2-3-local-variation}
+若 $F\in AC([a,b])$，则对每个 $\varepsilon>0$，存在 $\delta>0$，使任意有限族两两不交区间
+$(\alpha_k,\beta_k)$ 满足总长度小于 $\delta$ 时，
+\[
+ \sum_k V_{\alpha_k}^{\beta_k}(F)\le\varepsilon.
+\]
+特别地，$F\in BV([a,b])$。
+\end{lemma}
+
+\begin{proof}
+先取绝对连续定义中对应 $\varepsilon$ 的 $\delta$。在每个
+$[\alpha_k,\beta_k]$ 内任取有限分割；所有相邻开子区间仍两两不交，总长度等于
+$\sum_k(\beta_k-\alpha_k)<\delta$。绝对连续性说明这些子区间上的绝对增量总和小于
+$\varepsilon$。更明确地，若区间族共有 $N$ 个，则对任意 $\eta>0$ 可为每个 $k$ 选分割 $P_k$，使
+\[
+ V(F;P_k)>V_{\alpha_k}^{\beta_k}(F)-\frac\eta N.
+\]
+将全部 $P_k$ 的相邻子区间一起代入绝对连续性，得
+\[
+ \sum_{k=1}^NV_{\alpha_k}^{\beta_k}(F)-\eta
+ <\sum_{k=1}^NV(F;P_k)<\varepsilon.
+\]
+令 $\eta\downarrow0$ 得到所述估计。
+
+为证全局 BV，只需在绝对连续定义中固定例如 $\varepsilon=1$，并取相应 $\delta$。把
+$[a,b]$ 分成 $N$ 个长度严格小于 $\delta$ 的基区间。任意分割加入这些基端点后，每个基区间内
+的变差和小于 $1$，故整个变差和小于 $N$。对原分割取上确界，得到 $V_a^b(F)\le N<\infty$。
+\end{proof}
+
+\begin{definition}[Luzin $N$ 性质]\label{def:4-2-3-2}
+函数 $F:[a,b]\to\R$ 具有 Luzin $N$ 性质，如果每个 Lebesgue 零测集 $E\subset[a,b]$
+的像 $F(E)$ 仍是 Lebesgue 零测集。
+\end{definition}
+
+\begin{proposition}[绝对连续函数的基本性质]\label{proposition:4-2-3-ac-basic}
+绝对连续函数连续、属于 $BV([a,b])$，并具有 Luzin $N$ 性质。
+\end{proposition}
+
+\begin{proof}
+连续性与 BV 已在上面证明。设 $m(E)=0$，给定 $\varepsilon>0$，取
+\cref{lemma:4-2-3-local-variation} 对应的 $\delta$。用开集
+$G\supset E$ 覆盖，使 $m(G)<\delta$，并把 $G\cap[a,b]$ 写成至多可数个两两不交相对开区间
+$J_k$。若某个分量含有 $a$ 或 $b$，先从区间内部截去该端点，再借 $F$ 的连续性令截点趋向端点；
+因此上一引理同样适用于任意有限个相对开分量，并给出
+$\sum_{k=1}^nV_{J_k}(F)\le\varepsilon$；令 $n\to\infty$，同一估计对全体成立。
+
+由于 $F$ 连续，$F(J_k)$ 包含在一个长度不超过
+$\operatorname{osc}_{J_k}F\le V_{J_k}(F)$ 的区间中。这些像区间覆盖 $F(E)$，故
+\[
+ m^*(F(E))\le\sum_k\operatorname{osc}_{J_k}F
+ \le\sum_kV_{J_k}(F)\le\varepsilon.
+\]
+$\varepsilon$ 任意，遂有 $m(F(E))=0$。
+\end{proof}
+
+\begin{definition}[不定积分]\label{def:4-2-3-3}
+对实值 $f\in L^1([a,b])$，定义其从 $a$ 起算的不定积分为
+\[
+ I_f(x)=\int_a^xf(t)\,\dd t.
+\]
+\end{definition}
+
+\begin{theorem}[Lebesgue 微积分基本定理 I]\label{theorem:4-2-3-1}
+若 $f\in L^1([a,b])$ 为实值函数，$F=I_f$，则 $F\in AC([a,b])$，
+\[
+ F'(x)=f(x)\quad\text{a.e.},
+ \qquad
+ V_a^b(F)=\int_a^b|f(t)|\,\dd t.
+\]
+\end{theorem}
+
+\begin{proof}
+先证积分对小测度集合一致绝对连续。给定 $\varepsilon>0$，选 $M>0$ 使
+\[
+ \int_{\{|f|>M\}}|f|<\frac\varepsilon2,
+\]
+再取 $\delta=\varepsilon/(2M)$。若可测集 $A$ 满足 $m(A)<\delta$，则
+\begin{equation}\label{eq:4-2-integral-absolute-continuity}
+ \int_A|f|
+ \le M m(A)+\int_{\{|f|>M\}}|f|<\varepsilon.
+\end{equation}
+对定义中的两两不交区间族，令 $A$ 为其并；于是
+\[
+ \sum_k|F(\beta_k)-F(\alpha_k)|
+ \le\sum_k\int_{\alpha_k}^{\beta_k}|f|
+ =\int_A|f|<\varepsilon.
+\]
+所以 $F$ 绝对连续。
+
+把 $f$ 在 $[a,b]$ 外延拓为零。由 Lebesgue 微分定理
+\cref{theorem:4-1-2-1}，几乎每个内点 $x$ 是 $f$ 的 Lebesgue 点。对这样的 $x$ 及
+$h>0$，
+\[
+ \left|\frac{F(x+h)-F(x)}h-f(x)\right|
+ \le\frac1h\int_x^{x+h}|f(t)-f(x)|\,\dd t
+ \le\frac2{2h}\int_{x-h}^{x+h}|f(t)-f(x)|\,\dd t\longrightarrow0.
+\]
+对 $h>0$，左差商满足
+\[
+ \left|\frac{F(x)-F(x-h)}h-f(x)\right|
+ \le \frac1h\int_{x-h}^{x}|f(t)-f(x)|\,\dd t
+ \le \frac2{2h}\int_{x-h}^{x+h}|f(t)-f(x)|\,\dd t,
+\]
+右端仍由 Lebesgue 点条件趋于零。故双侧差商都趋于 $f(x)$，即
+$F'(x)=f(x)$ 于几乎每个 $x$。
+
+对任意分割，三角不等式给
+$V(F;P)\le\int_a^b|f|$，所以 $V_a^b(F)\le\int|f|$。为证反向，令
+$\lambda=|f|m$，并在 $f\ne0$ 处置 $h=\sgn f$，在 $f=0$ 处置 $h=0$。记
+$P_+=\{h=1\}$、$P_-=\{h=-1\}$。有限 Radon 测度 $\lambda$ 的内正则性给出互不相交的紧集
+$K_\pm\subset P_\pm$，使
+\[
+ \lambda\bigl((P_+\cup P_-)\setminus(K_+\cup K_-)\bigr)<\frac\varepsilon2.
+\]
+由紧集分离可取互不相交的开集 $U_\pm\supset K_\pm$。在各 $U_\pm$ 内用有限多个半开区间覆盖
+$K_\pm$，把全部端点细分成一个共同分割 $P=\{x_j\}$；令落在 $U_+$ 中的小区间系数为 $1$，
+落在 $U_-$ 中的系数为 $-1$，其余为 $0$。所得阶梯函数
+\[
+ \phi=\sum_j\epsilon_j\1_{(x_{j-1},x_j]},\qquad
+ \epsilon_j\in\{-1,0,1\},
+\]
+在 $K_+\cup K_-$ 上等于 $h$，而在其他地方 $|h-\phi|\le2$。又因
+$\lambda(\{h=0\})=0$，
+\[
+ \int|h-\phi|\,\dd\lambda
+ \le2\lambda\bigl((P_+\cup P_-)\setminus(K_+\cup K_-)\bigr)<\varepsilon.
+\]
+于是
+\[
+ \int_a^b|f|-\varepsilon
+ <\int_a^b\phi f
+ =\sum_j\epsilon_j\int_{x_{j-1}}^{x_j}f
+ =\sum_j\epsilon_j(F(x_j)-F(x_{j-1}))
+ \le V(F;P)\le V_a^b(F).
+\]
+令 $\varepsilon\downarrow0$，得到反向不等式。
+\end{proof}
+
+\begin{theorem}[Lebesgue 微积分基本定理 II]\label{theorem:4-2-3-2}
+若 $F\in AC([a,b])$，则 $F'$ 几乎处处存在、$F'\in L^1([a,b])$，并且对每个
+$x\in[a,b]$，
+\begin{equation}\label{eq:4-2-ftc-ii}
+ F(x)=F(a)+\int_a^xF'(t)\,\dd t.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+减去常数后可设 $F(a)=0$。由
+\cref{lemma:4-2-3-local-variation}，$F\in BV([a,b])$，故
+\cref{theorem:4-2-1-4} 给出有限有符号增量测度 $\nu_F$。
+
+我们证明 $|\nu_F|\ll m$。给定 $\varepsilon>0$，取局部变差控制中的 $\delta$。若开集
+$G\subset[a,b]$ 满足 $m(G)<\delta$，把它写成两两不交相对开区间 $J_k$ 的并。绝对连续函数连续，
+所以 $\nu_F$ 与 $|\nu_F|$ 都没有原子，相对开分量的端点取舍不改变其测度；由变差测度等式在
+每个子区间上的版本，
+\[
+ |\nu_F|(J_k)
+ =\sup_{[s,t]\Subset J_k}|\nu_F|((s,t])
+ =\sup_{[s,t]\Subset J_k}V_s^t(F)=:V_{J_k}(F),
+ \qquad
+ |\nu_F|(G)=\sum_kV_{J_k}(F).
+\]
+任意有限部分不超过 $\varepsilon$，测度从下连续给
+$|\nu_F|(G)\le\varepsilon$。若 $m(E)=0$，可把 $E$ 放进这类开集 $G$，故
+$|\nu_F|(E)=0$。于是 $|\nu_F|\ll m$。
+
+对 $\nu_F$ 的正负部分分别应用 Radon--Nikodym 定理
+\cref{theorem:3-3-1-1}，得到 $f\in L^1([a,b])$ 使
+$\nu_F=fm$。区间增量公式给每个 $x$ 上的恒等式
+\[
+ F(x)-F(a)=\nu_F((a,x])=\int_a^xf(t)\,\dd t.
+\]
+现在对右侧应用 \cref{theorem:4-2-3-1}，得到 $F'=f$ a.e.；特别地 $F'\in L^1$，并且上式就是
+\eqref{eq:4-2-ftc-ii}。注意，先得到增量测度的 $L^1$ 密度，再由 Lebesgue 点推出普通导数；
+对称密度的存在不能替代这一步骤。
+\end{proof}
+
+\begin{example}[Lipschitz 与绝对连续]\label{ex:4-2-3-1}
+若 $F$ 是 $L$-Lipschitz，则任意不交区间族满足
+\[
+ \sum_k|F(\beta_k)-F(\alpha_k)|
+ \le L\sum_k(\beta_k-\alpha_k),
+\]
+故 $F$ 绝对连续。反向不成立：
+\[
+ \sqrt x=\int_0^x\frac{1}{2\sqrt t}\,\dd t,
+\]
+而 $(2\sqrt t)^{-1}\in L^1(0,1)$，所以 $\sqrt x$ 在 $[0,1]$ 上绝对连续；但
+$\sqrt x/x=x^{-1/2}\to\infty$，不存在全局 Lipschitz 常数。
+\end{example}
+
+\begin{proposition}[绝对连续曲线的长度公式]\label{proposition:4-2-3-curve-length}
+设 $\gamma:[a,b]\to\R^m$ 的每个坐标都绝对连续，并定义
+\[
+ \ell(\gamma)=\sup_P\sum_j|\gamma(x_j)-\gamma(x_{j-1})|.
+\]
+则 $\gamma'$ a.e. 存在、$|\gamma'|\in L^1$，并且
+\[
+ \ell(\gamma)=\int_a^b|\gamma'(t)|\,\dd t.
+\]
+\end{proposition}
+
+\begin{proof}
+逐坐标应用 \cref{theorem:4-2-3-2}，得到
+$\gamma(t)-\gamma(s)=\int_s^t\gamma'(r)\,\dd r$；有限维范数等价性说明
+$|\gamma'|\in L^1$。因此对任意分割，
+\[
+ \sum_j|\gamma(x_j)-\gamma(x_{j-1})|
+ \le\sum_j\int_{x_{j-1}}^{x_j}|\gamma'|
+ =\int_a^b|\gamma'|,
+\]
+故 $\ell(\gamma)\le\int|\gamma'|$。
+
+反向令 $u(t)=\gamma'(t)/|\gamma'(t)|$ 于 $\gamma'(t)\ne0$，其余处令 $u(t)=0$。
+记有限 Radon 测度 $\lambda=|\gamma'|\,\dd t$。先以有限值简单函数
+$s=\sum_{\ell=1}^La_\ell\1_{E_\ell}$ 逼近 $u$，使 $|a_\ell|\le1$ 且
+$\int|u-s|\,\dd\lambda<\varepsilon/2$。对两两不交的值层 $E_\ell$，正则性给出两两不交的紧集
+$K_\ell\subset E_\ell$ 及两两不交的开集 $U_\ell\supset K_\ell$，并可使
+\[
+ \sum_{\ell=1}^L\lambda(E_\ell\setminus K_\ell)<\frac\varepsilon8,
+ \qquad
+ \sum_{\ell=1}^L\lambda(U_\ell\setminus K_\ell)<\frac\varepsilon8.
+\]
+在每个 $U_\ell$ 内用有限多个半开区间覆盖 $K_\ell$，细分全部端点，并将同一值层中的小区间合并为 $A_\ell$。
+则 $A_\ell\subset U_\ell$两两不交、$K_\ell\subset A_\ell$，且
+\[
+ \sum_{\ell=1}^L\lambda(E_\ell\triangle A_\ell)
+ \le\sum_{\ell=1}^L
+ \bigl(\lambda(E_\ell\setminus K_\ell)+\lambda(U_\ell\setminus K_\ell)\bigr)
+ <\frac\varepsilon4.
+\]
+因而区间阶梯向量 $\phi=\sum_\ell a_\ell\1_{A_\ell}$ 满足
+\[
+ \int|u-\phi|\,\dd\lambda
+ \le\int|u-s|\,\dd\lambda
+    +2\sum_\ell\lambda(E_\ell\triangle A_\ell)<\varepsilon.
+\]
+把全部区间端点写成一个共同分割后，这就是
+\[
+ \phi=\sum_jc_j\1_{(x_{j-1},x_j]},\qquad |c_j|\le1,\qquad
+ \int|u-\phi|\,|\gamma'|<\varepsilon.
+\]
+于是
+\[
+ \int_a^b|\gamma'|-\varepsilon
+ <\int_a^b\langle\phi,\gamma'\rangle
+ =\sum_j\left\langle c_j,
+   \gamma(x_j)-\gamma(x_{j-1})\right\rangle
+ \le\sum_j|\gamma(x_j)-\gamma(x_{j-1})|
+ \le\ell(\gamma).
+\]
+令 $\varepsilon\downarrow0$ 得到反向不等式。
+\end{proof}
+
+若 $\gamma$ 在每个分割段以常向量 $v_j$ 为速度，则公式右端为
+$\sum_j|v_j|(x_j-x_{j-1})$，正好是折线边长之和；停驻区间的零速度也确实不给长度。
+
+先构造原函数、再应用微积分基本定理的方法还给出一维换元。只写形式微分
+$\dd s=\phi'(t)\dd t$ 会掩盖两个问题：复合函数是否仍绝对连续，以及链式法则在哪些点成立。
+
+\begin{proposition}[绝对连续参数下的一维换元]\label{proposition:4-2-3-change-of-variables}
+设 $\phi\in AC([a,b])$，$h$ 在包含 $\phi([a,b])$ 的区间上连续。则
+\[
+ \int_a^b h(\phi(t))\phi'(t)\,\dd t
+ =\int_{\phi(a)}^{\phi(b)}h(s)\,\dd s,
+\]
+右侧按有向区间理解。特别地，若 $\phi$ 非减，这就是从 $t$--区间到
+$[\phi(a),\phi(b)]$ 的通常换元公式。
+\end{proposition}
+
+\begin{proof}
+在包含 $\phi([a,b])$ 的紧区间上定义
+\[
+ H(y)=\int_{\phi(a)}^y h(s)\,\dd s.
+\]
+普通微积分基本定理给 $H\in C^1$ 与 $H'=h$；在这个紧区间上，$H$ 还是
+$\|h\|_\infty$-Lipschitz。若一族不交区间的总长度足够小，$\phi$ 的绝对连续性使
+$\sum|\Delta\phi|$ 任意小，进而
+\[
+ \sum|\Delta(H\circ\phi)|
+ \le\|h\|_\infty\sum|\Delta\phi|
+\]
+也任意小。因此 $H\circ\phi\in AC([a,b])$。在 $\phi$ 可微的几乎处处点，经典一元链式法则给
+\[
+ (H\circ\phi)'(t)=H'(\phi(t))\phi'(t)
+ =h(\phi(t))\phi'(t).
+\]
+对 $H\circ\phi$ 应用 \cref{theorem:4-2-3-2}，便得
+\[
+ \int_a^b h(\phi(t))\phi'(t)\,\dd t
+ =H(\phi(b))-H(\phi(a))
+ =\int_{\phi(a)}^{\phi(b)}h(s)\,\dd s.
+\]
+\end{proof}
+
+\begin{example}[平方参数换元]
+在 $[0,1]$ 上取 $\phi(t)=t^2$ 与 $h(s)=(1+s)^{-1}$。命题给出
+\[
+ \int_0^1\frac{2t}{1+t^2}\,\dd t
+ =\int_0^1\frac{\dd s}{1+s}=\log2.
+\]
+左边也可直接令 $u=1+t^2$ 验算；这次有限计算同时核对了导数因子与端点方向。
+\end{example}
+
+对一般 BV 函数，增量测度的 Lebesgue 分解还可以进一步把奇异质量中的原子逐个取出。
+
+\begin{theorem}[BV 的三部分分解]\label{theorem:4-2-3-3}
+设 $F$ 是右连续、$F(a)=0$ 的 BV 函数。存在唯一分解
+\[
+ F=F_{ac}+F_j+F_{sc},
+\]
+其中 $F_{ac}$ 绝对连续，$F_j$ 是绝对收敛跳跃级数的累计函数，$F_{sc}$ 连续且其增量测度
+奇异于 Lebesgue 测度、没有原子。相应增量测度分解为
+\[
+ \nu_F=fm+\sum_{x\in(a,b]}\nu_F(\{x\})\delta_x+\nu_{sc}.
+\]
+\end{theorem}
+
+\begin{proof}
+对 $\nu_F$ 的正负部分分别应用 Lebesgue 分解定理
+\cref{theorem:3-3-1-2}，再合并密度与奇异部分，得到
+\[
+ \nu_F=fm+\nu_s,\qquad f\in L^1([a,b]),\qquad \nu_s\perp m.
+\]
+有限测度 $|\nu_s|$ 的原子至多可数。更具体地，对每个 $n$，满足
+$|\nu_s(\{x\})|\geq1/n$ 的原子只有有限个；
+对 $n$ 取并即可。并且
+\[
+ \sum_{x\in(a,b]}|\nu_s(\{x\})|
+ \le |\nu_s|((a,b])<\infty.
+\]
+所以
+\[
+ \nu_j=\sum_x\nu_s(\{x\})\delta_x
+\]
+在全变差范数下收敛，$\nu_{sc}:=\nu_s-\nu_j$ 是有限、奇异且无原子的有符号测度。
+
+分别取规范累计函数
+\[
+ F_{ac}(x)=\int_a^xf(t)\,\dd t,
+ \quad
+ F_j(x)=\sum_{a<y\le x}\nu_s(\{y\}),
+ \quad
+ F_{sc}(x)=\nu_{sc}((a,x]).
+\]
+\Cref{theorem:4-2-3-1} 给出 $F_{ac}\in AC$；绝对收敛给 $F_j$ 右连续并具有所列跳跃；
+$\nu_{sc}$ 无原子，
+故其累计函数从左、从右都连续。三个增量测度之和等于 $\nu_F$，且三者在 $a$ 都为零，
+\cref{theorem:4-2-1-4} 的唯一性给 $F=F_{ac}+F_j+F_{sc}$。
+
+若另有一个这类分解，取增量测度后，Lebesgue 分解的唯一性先确定绝对连续项和奇异项；奇异测度的
+每个原子质量又由单点取值唯一确定，故纯跳跃与无原子奇异项也分别相同。再用共同规范恢复函数，
+得到唯一性。
+\end{proof}
+
+Cantor 函数就是 $F_{sc}$ 可以非零的最小模型。阶梯函数则只有 $F_j$。普通 a.e. 导数只返回
+$F_{ac}'=f$；它既不返回跳跃，也不返回 Cantor 型增长。
+
+为了刻画绝对连续性，还需要解决一个不易被一句直觉替代的问题：若连续 BV 函数把零测集仍送到
+零测集，为什么它的\emph{变差测度}也不能藏在零测集上？函数本身的 $N$ 性质并不会形式地传给
+Jordan 分量。答案是一维 Banach indicatrix 公式，它按高度计算曲线穿越次数。
+
+\begin{lemma}[一维 Banach indicatrix 公式]\label{lemma:4-2-3-banach-indicatrix}
+设 $F:[a,b]\to\R$ 连续且属于 $BV([a,b])$；形成增量测度时以
+$F-F(a)$ 作规范化，并把 $(a,b]$ 上的测度 $|\nu_{F-F(a)}|$ 以
+$\mu(\{a\})=0$ 延拓到 $[a,b]$，所得测度记为 $\mu$。减常数不改变下文的变差或穿越重数。
+存在可测的穿越重数
+$N(F,E,y)\in\{0,1,2,\ldots,\infty\}$，使每个 Borel 集 $E\subset[a,b]$ 满足
+\begin{equation}\label{eq:4-2-banach-indicatrix}
+ \mu(E)=\int_\R N(F,E,y)\,\dd y.
+\end{equation}
+而且 $N(F,E,y)=0$ 对 a.e. $y\notin F(E)$ 成立。对折线且 $y$ 不取顶点高度时，
+$N(F,E,y)$ 就是参数落在 $E$ 中、曲线穿过水平线 $y$ 的次数；平坦段造成的无穷多个普通原像
+只出现在至多可数个平坦高度上，不改变积分。
+\end{lemma}
+
+\begin{proof}
+取含 $a,b$ 的可数稠密集 $D\subset[a,b]$，并记 $Z=F(D)$；$Z$ 可数，因而是零测集。
+若 $s<t$ 属于 $D$，对顶点都在 $D$ 中的分割
+$Q=\{s=t_0<\cdots<t_r=t\}$ 定义
+\[
+ n_Q(y)=\sum_{j=1}^r
+ \1_{(\min\{F(t_{j-1}),F(t_j)\},\,
+          \max\{F(t_{j-1}),F(t_j)\})}(y).
+\]
+每一项的积分就是相应纵向增量的长度，所以
+\begin{equation}\label{eq:4-2-indicatrix-polygonal}
+ \int_\R n_Q(y)\,\dd y
+ =\sum_{j=1}^r|F(t_j)-F(t_{j-1})|.
+\end{equation}
+若在一段中插入顶点 $d\in D$，则对 $y\notin Z$，旧段跨过高度 $y$ 时两个新段至少有一个跨过
+$y$；旧段不跨过而新顶点落在另一侧时则新增两次。因此细化使 $n_Q(y)$ 不减。
+
+定义
+\[
+ N_{s,t}(y)=\sup_Q n_Q(y)\quad(y\notin Z),\qquad N_{s,t}(y)=0\quad(y\in Z),
+\]
+上确界取上述所有 $D$-顶点分割。这样的分割只有可数多个，所以 $N_{s,t}$ 可测，且定义与任何枚举
+无关。枚举全部分割并逐次取共同细化，所得穿越数单调增加到这个上确界。连续性还说明，把任意有限
+分割的顶点移到 $D$ 中可使变差和的改变量任意小。详细地，给定
+$P=\{s=x_0<\cdots<x_m=t\}$ 与 $\eta>0$，由 $F$ 的一致连续性和 $D$ 的稠密性，可保持次序地取
+\[
+ d_0=s,\quad d_m=t,\quad d_i\in D,\qquad
+ |F(d_i)-F(x_i)|<\frac{\eta}{2m}\quad(1\le i<m).
+\]
+于是
+\[
+ \begin{aligned}
+ &\left|\sum_{i=1}^m|F(d_i)-F(d_{i-1})|
+       -\sum_{i=1}^m|F(x_i)-F(x_{i-1})|\right|\\
+ &\qquad\le
+ \sum_{i=1}^m\bigl(|F(d_i)-F(x_i)|
+                   +|F(d_{i-1})-F(x_{i-1})|\bigr)<\eta.
+ \end{aligned}
+\]
+故 $D$-分割给出的变差上确界仍是 $V_s^t(F)$。单调收敛定理与
+\eqref{eq:4-2-indicatrix-polygonal} 因而给出
+\begin{equation}\label{eq:4-2-indicatrix-interval}
+ \int_\R N_{s,t}(y)\,\dd y=V_s^t(F)=\mu((s,t]).
+\end{equation}
+最后一个等号来自变差测度等式在子区间上的应用；$F$ 连续使 $\nu_F$ 及 $\mu$ 都没有原子，
+所以端点取舍无关。
+
+若 $r<s<t$ 都在 $D$ 中，左右两个分割合并后给出
+$N_{r,t}(y)\ge N_{r,s}(y)+N_{s,t}(y)$。反过来，在 $[r,t]$ 的任意分割中插入 $s$：一条旧线段
+若跨过 $y$，分成的两条新线段中恰有一条跨过 $y$；若旧线段不跨过 $y$，插点至多新增两次穿越。
+因此细化后的穿越数不小于原数，而细化后的数等于其左右两部分之和，至多为
+$N_{r,s}(y)+N_{s,t}(y)$。对原分割取上确界，得到反向不等式。故对 $y\notin Z$ 有精确可加性
+\begin{equation}\label{eq:4-2-indicatrix-additivity}
+ N_{r,t}(y)=N_{r,s}(y)+N_{s,t}(y).
+\end{equation}
+由 \eqref{eq:4-2-indicatrix-interval}，
+$k(y):=N_{a,b}(y)<\infty$ 对 a.e. $y$ 成立。删去 $Z$ 与这个零测例外集后固定 $y$，简记
+$k=k(y)$。
+
+下面把区间上的整数权构造成有限测度。写
+$D=\{d_1,d_2,\ldots\}$。递归构造有限 $D$-分割：令 $P_m$ 细化 $P_{m-1}$，包含
+$d_1,\ldots,d_m$，并另外加入有限多个 $D$ 中的点使网格小于 $1/m$；稠密性保证最后一步可以完成。
+于是 $(P_m)$ 逐次细化、网格趋于零，并且每个 $D$ 中的点从某一层起永远是顶点。给 $P_m$ 的每个半开小区间
+$I=(s,t]$ 赋整数权
+\[
+ w_y(I)=N_{s,t}(y).
+\]
+式 \eqref{eq:4-2-indicatrix-additivity} 说明父区间的权等于其所有子区间权之和，且每一层的总权
+都是 $k$。在第一层放置 $k$ 个标号，并先按 $P_1$ 各小区间的整数权分配，使每个小区间恰携带
+与其权重相同数目的标号；每次细化时，再把每个父区间携带的标号按各子区间的整数权分配下去。
+由父权等于子权之和归纳可知，每一层的每个小区间始终恰携带与其权重相同数目的标号。
+每个标号由此确定一列闭包递减、直径趋于零的小区间，其交为一个点 $x_i(y)$。
+
+标号所在的每个小区间权至少为一。按 $N_{s,t}$ 的上确界定义，其中存在一个有限分割，至少有一段的
+两个端值严格分处 $y$ 两侧；连续性给出该小区间闭包中的一点 $z_m$ 满足 $F(z_m)=y$。
+随网格趋零，$z_m\to x_i(y)$，故 $F(x_i(y))=y$。特别地
+$x_i(y)\notin D$，因为 $y\notin F(D)$。这也消除了半开区间端点的歧义。若若干标号收敛到同一点，
+仍分别计入其重数，并定义
+\[
+ \kappa_y=\sum_{i=1}^k\delta_{x_i(y)}.
+\]
+当 $s,t\in D$ 同时成为 $P_m$ 的顶点后，分配规则表明，落在 $(s,t]$ 内的标号数恰为
+$N_{s,t}(y)$；所以
+\[
+ \kappa_y((s,t])=N_{s,t}(y).
+\]
+对先前删去的高度置 $\kappa_y=0$。这样每个 $\kappa_y$ 从定义起就是有限 Borel 测度，而且
+\[
+ \supp\kappa_y\subset F^{-1}(\{y\}).
+\]
+
+在 $D$-端点半开区间上，$y\mapsto\kappa_y(A)$ 可测；有限不交并的 $\kappa_y$ 值是相应
+区间值的有限和，故同一结论成立于这些区间组成的环。还要核对从这个环推广到全部
+Borel 集时没有暗中要求原子位置 $x_i(y)$ 本身可测。令 $\mathcal C$ 为所有满足
+$y\mapsto\kappa_y(E)$ 可测的 Borel 集 $E$。先有
+$[a,b]\in\mathcal C$，因为 $\kappa_y([a,b])$ 等于可测函数 $N_{a,b}(y)$ 在保留高度集上的限制，
+在删去的高度上为零。若 $E\in\mathcal C$，则
+\[
+ \kappa_y([a,b]\setminus E)=\kappa_y([a,b])-\kappa_y(E)
+\]
+可测；若 $(E_j)$ 两两不交且都属于 $\mathcal C$，则
+$\kappa_y(\bigcup_jE_j)=\sum_j\kappa_y(E_j)$ 是非负可测函数。因此 $\mathcal C$ 是一个
+$\lambda$-系统，并包含
+\[
+ \mathcal P=\{[a,b],\varnothing\}
+ \cup\{(s,t]:s,t\in D,\ s<t\}.
+\]
+这是一个生成 $\Borel([a,b])$ 的 $\pi$-系统。
+$\pi$--$\lambda$ 定理给出 $\mathcal C=\Borel([a,b])$。于是可定义
+\[
+ \lambda(E)=\int_\R\kappa_y(E)\,\dd y.
+\]
+若 $(E_j)$ 两两不交，则
+$\kappa_y(\bigcup_jE_j)=\sum_j\kappa_y(E_j)$；对非负级数使用单调收敛定理，得到
+$\lambda(\bigcup_jE_j)=\sum_j\lambda(E_j)$。此外，$\kappa_y([a,b])$ 与 $k(y)$ 在删去的
+零测高度集之外相等，因而
+$\lambda([a,b])=\int k(y)\dd y=V_a^b(F)<\infty$；所以 $\lambda$ 是有限 Borel 测度。
+由 \eqref{eq:4-2-indicatrix-interval}，$\lambda$ 与 $\mu$ 在所有 $D$-端点半开区间上相等。
+此外 $a\in D$ 且保留高度满足 $y\notin F(D)$，故所有 $x_i(y)$ 都不等于 $a$；删去高度又给零测度，
+所以 $\lambda(\{a\})=0=\mu(\{a\})$。这些半开区间与 $\{a\}$ 生成
+$\Borel([a,b])$，有限测度唯一性遂给 $\lambda=\mu$。定义
+\[
+ N(F,E,y)=\kappa_y(E),
+\]
+就得到 \eqref{eq:4-2-banach-indicatrix}。支撑包含关系还说明
+$y\notin F(E)$ 时 $N(F,E,y)=0$。
+
+若 $F$ 是折线且 $y$ 不等于任何顶点高度，每个非水平线段至多贡献一次，以上有限分割计数就是图像
+穿过水平线的次数。平坦段只有在其平坦高度才造成无穷多个普通原像；有限折线只有有限个这种高度，
+一般连续 BV 函数中相应例外也已被上述零测高度集排除。特别地，对开集 $U$，
+\begin{equation}\label{eq:4-2-indicatrix-open}
+ \int N(F,U,y)\,\dd y=\mu(U),
+\end{equation}
+并且
+\begin{equation}\label{eq:4-2-indicatrix-domination}
+ N(F,U,y)\le N(F,[a,b],y),
+\end{equation}
+左侧被积函数只可能在 $F(U)$ 上非零。
+\end{proof}
+
+\begin{lemma}[连续 BV 的变差--$N$ 引理]\label{lemma:4-2-3-variation-N}
+设 $F$ 连续且有界变差。若 $F$ 具有 Luzin $N$ 性质，则
+$|\nu_{F-F(a)}|\ll m$。
+\end{lemma}
+
+\begin{proof}
+记 $\mu=|\nu_{F-F(a)}|$，并令
+$N(y)=N(F,[a,b],y)$。由
+\cref{lemma:4-2-3-banach-indicatrix}，$N\in L^1(\R)$。
+先设 $E\subset[a,b]$ 为 Borel 集且 $m(E)=0$。由 $N$ 性质，$m(F(E))=0$。
+
+先取紧集 $K\subset E$。给定 $\varepsilon>0$，积分的绝对连续性给出开集
+$V\supset F(K)$，使 $\int_VN(y)\,\dd y<\varepsilon$。具体地，先取
+$\delta>0$ 使 $m(A)<\delta$ 蕴含 $\int_A N<\varepsilon$；$F(K)$ 是紧零测集，故
+Lebesgue 外正则性允许取开集 $V\supset F(K)$ 且 $m(V)<\delta$。集合
+$U=F^{-1}(V)$ 是含 $K$ 的相对开集。由
+\eqref{eq:4-2-indicatrix-open}、\eqref{eq:4-2-indicatrix-domination} 及局部穿越只落在 $F(U)$ 中，
+\[
+ \mu(K)\le\mu(U)
+ =\int N(F,U,y)\,\dd y
+ \le\int_{F(U)}N(y)\,\dd y
+ \le\int_VN(y)\,\dd y<\varepsilon.
+\]
+故 $\mu(K)=0$。有限 Borel 测度在紧区间上内正则，于是
+$\mu(E)=\sup\{\mu(K):K\subset E,\ K\text{ 紧}\}=0$。
+若 $A$ 只是 Lebesgue 可测零集，取 Borel 零集 $E\supset A$；$\mu(E)=0$。有限 Borel 测度
+$\mu$ 的 Lebesgue 完成化因而在 $A$ 上也取零；等价地，对绝对连续性所需的每个 Borel 零集已经有
+$\mu(E)=0$。这证明 $\mu\ll m$。
+\end{proof}
+
+\begin{example}[重数不能删掉]\label{ex:4-2-3-indicatrix}
+在 $[0,1]$ 上取帐篷函数
+\[
+ F(x)=1-|2x-1|.
+\]
+它的像集是 $[0,1]$，长度为 $1$；但它先以斜率 $2$ 上升、再以斜率 $-2$ 下降，故
+$V_0^1(F)=2$。对几乎每个 $y\in(0,1)$，水平线与图像相交两次，所以
+\[
+ \int_0^1N(F,[0,1],y)\,\dd y=\int_0^12\,\dd y=2.
+\]
+只量像集而不数穿越次数会恰好少算一半。
+\end{example}
+
+\begin{proposition}[Banach--Zarecki 判据]\label{proposition:4-2-3-5}
+函数 $F:[a,b]\to\R$ 绝对连续，当且仅当它连续、属于 $BV([a,b])$，并具有 Luzin $N$ 性质。
+\end{proposition}
+
+\begin{proof}
+正向由 \cref{proposition:4-2-3-ac-basic} 得到。
+
+反向设三个条件成立。减去 $F(a)$ 后使用
+\cref{theorem:4-2-1-4} 得到增量测度 $\nu_F$。由
+\cref{lemma:4-2-3-variation-N}，$|\nu_F|\ll m$；对正负部分应用 Radon--Nikodym 定理，
+存在 $f\in L^1([a,b])$ 使 $\nu_F=fm$。于是对每个 $x$，
+\[
+ F(x)-F(a)=\nu_F((a,x])=\int_a^xf(t)\,\dd t.
+\]
+\Cref{theorem:4-2-3-1} 说明右侧绝对连续，所以 $F$ 绝对连续。
+\end{proof}
+
+判据中的两个附加条件都不可删。非恒定阶梯函数属于 BV，并且把任何零测集送到有限集或可数集，
+因而有 $N$ 性质，但它不连续。Cantor 函数连续且 BV，却把零测 Cantor 集映到整个 $[0,1]$，
+所以没有 $N$ 性质。
+
+\begin{proposition}[积分部分公式]\label{proposition:4-2-3-4}
+若 $F,G\in AC([a,b])$，则
+\[
+ F(b)G(b)-F(a)G(a)
+ =\int_a^bF'(x)G(x)\,\dd x
+  +\int_a^bF(x)G'(x)\,\dd x.
+\]
+\end{proposition}
+
+\begin{proof}
+绝对连续函数在紧区间上有界。对任意不交区间族，逐段使用精确恒等式
+\[
+ F(\beta)G(\beta)-F(\alpha)G(\alpha)
+ =F(\beta)(G(\beta)-G(\alpha))
+  +G(\alpha)(F(\beta)-F(\alpha)).
+\]
+因此，只要总长度充分小，所有乘积增量的绝对值之和至多
+\[
+ \|F\|_\infty\sum|\Delta G|
+ +\|G\|_\infty\sum|\Delta F|,
+\]
+并可由 $F,G$ 的绝对连续性控制为任意小。具体地，给定 $\varepsilon>0$，分别取绝对连续性中对应于
+\[
+ \frac{\varepsilon}{2(1+\|G\|_\infty)}
+ \quad\text{和}\quad
+ \frac{\varepsilon}{2(1+\|F\|_\infty)}
+\]
+的 $\delta_F,\delta_G$。当区间族总长度小于
+$\min\{\delta_F,\delta_G\}$ 时，
+\[
+ \sum|\Delta(FG)|
+ \le \|F\|_\infty\frac{\varepsilon}{2(1+\|F\|_\infty)}
+    +\|G\|_\infty\frac{\varepsilon}{2(1+\|G\|_\infty)}
+ <\varepsilon.
+\]
+故 $FG\in AC([a,b])$。
+在 $F,G$ 同时可微的满测集上，普通乘积法则给
+$(FG)'=F'G+FG'$。右侧属于 $L^1$，因为 $F,G$ 有界。对 $FG$ 应用
+\cref{theorem:4-2-3-2}，得到
+\[
+ F(b)G(b)-F(a)G(a)=\int_a^b(FG)'
+ =\int_a^bF'G+\int_a^bFG'.
+\]
+\end{proof}
+
+\begin{example}[Cantor 函数的失败]\label{ex:4-2-3-2}
+Cantor 函数连续、非减且 $C'=0$ a.e.，但 $C(1)-C(0)=1$。若错误地对它应用
+\cref{theorem:4-2-3-2}，右侧会给
+$\int_0^1C'=0$。失败点可由 Banach--Zarecki 判据精确定位：零测 Cantor 集被 $C$ 映满
+$[0,1]$，所以 $C$ 不具 $N$ 性质，也不绝对连续。
+\end{example}
+
+\begin{example}[跳跃函数的失败]\label{ex:4-2-3-3}
+$H=\1_{[0,1]}$ 在 $[-1,1]$ 上属于 BV，且 $H'=0$ 于 $0$ 以外每点；但
+$H(1)-H(-1)=1$。它在 $0$ 不连续，增量测度为 $\delta_0$，所以 Banach--Zarecki 判据的连续性假设
+也不能删除。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=.85cm,y=1.0cm]
+  \draw[->] (0,0)--(12.4,0) node[right]{$x$};
+  \draw[->] (0,0)--(0,4.5) node[above]{$F$};
+  \draw[BookAccent,thick] (0,.2).. controls (2,.5) and (3,1.45)..(4,1.7)
+    .. controls (6,2.0) and (8,3.15)..(12,3.7);
+  \draw[BookWarning,thick]
+    (0,0)--(2.2,0)--(2.2,.55)--(5.2,.55)--(5.2,1.15)--(8.6,1.15)--(8.6,1.8)--(12,1.8);
+  \draw[BookWarm,thick]
+    (0,.1)--(1.35,.1)--(1.35,.45)--(2.7,.45)--(2.7,.8)--(4.05,.8)--(4.05,1.15)--
+    (5.4,1.15)--(5.4,1.5)--(6.75,1.5)--(6.75,1.85)--(8.1,1.85)--(8.1,2.2)--
+    (9.45,2.2)--(9.45,2.55)--(10.8,2.55)--(10.8,2.9)--(12,2.9);
+  \node[book strong node] at (2.1,3.35){$F_{ac}$：$L^1$ 斜率};
+  \node[book warning node] at (6.2,4.0){$F_j$：离散跳跃};
+  \node[book warm node] at (10.1,3.4){$F_{sc}$：奇异连续};
+\end{tikzpicture}
+\caption{BV 增量的三个分量：绝对连续密度、原子跳跃与无原子的奇异连续增长。图中三条曲线为分量，
+其逐点相加才是原函数。}
+\label{fig:bv-three-parts}
+\end{figure}
+
+\begin{remark}[混合测度的累计函数]
+在 $[0,1]$ 上取有限正测度
+\[
+ \nu=p\delta_{1/2}+q\mu_C+(1-p-q)m|_{[0,1]},
+ \qquad p,q\ge0,\quad p+q\le1.
+\]
+其规范累计函数含一个大小为 $p$ 的跳跃、一个总增长为 $q$ 的 Cantor 分量，以及斜率为
+$1-p-q$ 的绝对连续分量。a.e. 导数只返回最后一项。这也是概率分布函数中混合型分布的标准模型。
+\end{remark}
+
+稍后定义 $W^{1,1}(a,b)$ 后，\cref{theorem:4-2-3-2} 将推出每个一维 $W^{1,1}$ 等价类都有唯一的
+绝对连续代表；
+从导数重建函数仍需另给一个加法常数。
+
+\begin{exercise}
+从绝对连续定义直接证明 Lipschitz 函数绝对连续，并验证 $x\mapsto\sqrt x$ 给出反例说明逆命题失败。
+\end{exercise}
+\begin{exercise}
+验证 Cantor 函数属于 $BV([0,1])$，并直接用定义~\ref{def:4-2-3-1} 证明它不绝对连续：对每一层
+Cantor 基本区间取其内部稍作缩短的有限不交子区间，使总长度趋于零，同时使端点函数增量之和保持
+任意接近 $1$。
+\end{exercise}
+\begin{exercise}
+完整证明 \eqref{eq:4-2-integral-absolute-continuity}，并据此证明 $I_f$ 绝对连续。
+\end{exercise}
+\begin{exercise}
+证明 Cantor 函数把 Cantor 集映到 $[0,1]$，从而不具有 Luzin $N$ 性质。
+\end{exercise}
+\begin{exercise}
+先证明 $FG\in AC([a,b])$，再独立推导积分部分公式；指出若把 $F,G$ 换成具有共同跳跃的 BV 函数，
+乘积法则中会出现哪一项。
+\end{exercise}
+
+绝对连续性把“增量测度有密度”和“函数可由导数积分恢复”变成同一件事。粗糙函数即使不绝对连续，
+仍可通过平移平均获得光滑近似；下一节将把这一有限平均过程组织成 mollifier 与卷积理论。

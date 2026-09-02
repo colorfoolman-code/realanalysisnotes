@@ -1,0 +1,1006 @@
+\section{概率模型、独立性与尾事件}\label{sec:05-01}
+
+\subsection{概率空间、随机变量、分布与期望}\label{subsec:5-1-1}
+\index{概率空间}\index{随机变量}\index{分布}\index{期望}
+
+一枚骰子落定以后，点数并不再“随机”；不确定的是观察之前我们能区分哪些情形，以及给这些情形
+分配多少质量。在有限模型中，把每个子集都看作事件通常不会出问题。到了无限样本空间，这个做法既
+未必与测度相容，也没有反映观测能力的限制。概率论因此不从“随机的数”出发，而从一族允许提问的
+事件出发。
+
+\begin{definition}[概率空间]\label{def:5-1-1-1}
+概率空间是三元组 $(\Omega,\mathcal F,\Prob)$，其中 $\mathcal F$ 是 $\Omega$ 上的
+$\sigma$-代数，$\Prob$ 是 $(\Omega,\mathcal F)$ 上满足 $\Prob(\Omega)=1$ 的测度。
+$\mathcal F$ 的元素称为事件；事件 $A$ 的概率是 $\Prob(A)$。
+\end{definition}
+
+概率为一的事件不必等于 $\Omega$，概率为零的事件也不必为空。测度论中的 ``a.e.'' 在概率空间上
+称为\emph{几乎必然}（almost surely，简写 a.s.）。这只是语言改换：异常点仍须包含在某个可测零集
+中，所有积分定理的集合论含义都没有改变。
+
+Kolmogorov 的公理化把概率纳入测度论，却没有替建模者决定 $\Omega$ 和 $\mathcal F$。频率模型把
+概率与重复试验的长期比例联系，几何模型把概率与归一化体积联系，信息模型则把 $\mathcal F$ 看成
+能够分辨的提问集合；三种解释可以导向同一个概率空间，但都不是测度公理的逻辑后果。
+
+掷骰子的结果是样本点，点数是样本点的函数。这个区别在更复杂的模型里尤其重要：同一个样本点
+可以同时产生位置、速度、首次到达时间等许多观测量。
+
+\begin{definition}[随机元、随机变量与分布]\label{def:5-1-1-2}
+设 $(\Omega,\mathcal F,\Prob)$ 为概率空间，$(S,\mathcal S)$ 为可测空间。可测映射
+\[
+  X:(\Omega,\mathcal F)\longrightarrow(S,\mathcal S)
+\]
+称为取值于 $S$ 的\emph{随机元}；当 $S=\R$ 且 $\mathcal S=\Borel(\R)$ 时，称为
+\emph{随机变量}。随机元 $X$ 的分布是推前概率测度
+\[
+  \Law(X)=X_*\Prob,
+  \qquad \Law(X)(B)=\Prob(X\in B)\quad(B\in\mathcal S).
+\]
+若 $\Law(X)=\Law(Y)$，则称 $X,Y$ 同分布，记作 $X\overset{d}=Y$。
+\end{definition}
+
+分布把样本点的名字全部忘掉，只保存状态空间中每个可测问题的答案。这种遗忘非常有用，但也有
+代价：它不会记录两个变量在同一样本点上如何相互配合。这个缺口将在下一小节成为独立性的入口。
+
+\begin{remark}[一般可测空间与标准 Borel 空间的分工]
+\label{rem:5-1-1-standard-borel}
+分布、推前积分和独立性的定义只需要可测空间。正则条件分布、测度分解以及可数个版本的同时选择则会
+要求状态空间为标准 Borel 空间，即与某个 Polish 空间的 Borel 可测空间可测同构。
+$\R^d$、可数离散空间以及带上确界范数的 $C([0,1])$ 都给出标准 Borel 空间。这个条件不是
+随机元定义的一部分；它是后文存在性定理所支付的正则性成本，\S\ref{subsec:5-2-2} 将解释其作用。
+\end{remark}
+
+\begin{definition}[期望与矩]\label{def:5-1-1-3}
+若 $X$ 是非负扩展实值随机变量，定义
+\[
+  \E X=\int_\Omega X\dd\Prob\in[0,\infty].
+\]
+若 $X$ 为实值或复值且可积，仍定义 $\E X=\int_\Omega X\dd\Prob$。更一般地，若
+$X$ 取值于 $(S,\mathcal S)$，$f:S\to\R$ 或 $\C$ 可测，并且 $f\circ X$ 非负或可积，则
+\[
+  \E f(X)=\int_\Omega f(X(\omega))\dd\Prob(\omega)
+  =\int_S f(x)\dd\Law(X)(x).
+\]
+对实值 $X$，$\E|X|^p$ 称为 $p$ 阶绝对矩。若 $X\in L^2(\Prob)$，定义
+\[
+  \Var(X)=\E|X-\E X|^2.
+\]
+\end{definition}
+
+最后一个等号是非负推前积分公式（命题~\ref{proposition:3-1-1-5}）及其可积版本
+（推论~\ref{corollary:3-1-3-pushforward}）。它给出同一个期望的两种算法：在样本空间上积分，
+或先求分布，再在状态空间上积分。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=13mm and 19mm]
+  \node[book strong node] (omega) {样本空间\\$(\Omega,\mathcal F,\Prob)$};
+  \node[book strong node,right=of omega] (state) {状态空间\\$(S,\mathcal S,\Law(X))$};
+  \node[book warm node,below=of omega] (sampleint)
+    {$\displaystyle\int_\Omega f\!\circ X\,\dd\Prob$};
+  \node[book warm node,below=of state] (lawint)
+    {$\displaystyle\int_S f\,\dd\Law(X)$};
+  \draw[book accent arrow] (omega)--node[above,book label]{$X$}(state);
+  \draw[book arrow] (omega)--node[left,book label]{观测后积分}(sampleint);
+  \draw[book arrow] (state)--node[right,book label]{按分布积分}(lawint);
+  \draw[book dashed arrow] (sampleint.south)--++(0,-9mm)-|(lawint.south);
+  \node[book label,above=1mm] at ($(sampleint.south)!0.5!(lawint.south)+(0,-9mm)$)
+    {推前积分公式};
+\end{tikzpicture}
+\caption{随机变量推前概率测度；期望可在箭头的任一端计算。}
+\label{fig:5-1-1-pushforward-law}
+\end{figure}
+
+\begin{proposition}[期望的分布不变性]\label{proposition:5-1-1-1}
+设 $X,Y$ 取值于同一可测空间 $(S,\mathcal S)$，并且 $X\overset{d}=Y$。若
+$f:S\to\R$ 或 $\C$ 可测，且 $f(X),f(Y)$ 非负或可积，则
+\[
+  \E f(X)=\E f(Y).
+\]
+\end{proposition}
+
+\begin{proof}
+由推前积分公式和 $\Law(X)=\Law(Y)$，
+\[
+ \E f(X)=\int_S f\dd\Law(X)
+ =\int_S f\dd\Law(Y)=\E f(Y).
+\]
+非负情形的等式允许两端同为 $+\infty$；可积情形中各积分是有限标量，因而没有
+$\infty-\infty$ 的问题。
+\end{proof}
+
+\begin{example}[有限样本空间]\label{ex:5-1-1-1}
+令 $\Omega=\{1,\ldots,6\}$、$\mathcal F=2^\Omega$，并令每个单点的概率为 $1/6$。
+有限样本空间上的每个实值或复值函数都可测。取点数变量 $X(\omega)=\omega$。对任意函数
+$g:\Omega\to\C$，
+\[
+ \E g(X)=\frac16\sum_{k=1}^6g(k).
+\]
+特别地，
+\[
+ \E X=\frac{1+\cdots+6}{6}=\frac72,
+ \qquad
+ \E X^2=\frac{1^2+\cdots+6^2}{6}=\frac{91}{6},
+\]
+所以
+\[
+ \Var(X)=\E X^2-(\E X)^2
+ =\frac{91}{6}-\frac{49}{4}=\frac{35}{12}.
+\]
+其中方差恒等式由逐项展开得到：
+\begin{align*}
+ \E|X-\E X|^2
+ &=\E\bigl[X^2-2X\E X+(\E X)^2\bigr]\\
+ &=\E X^2-2(\E X)^2+(\E X)^2
+ =\E X^2-(\E X)^2.
+\end{align*}
+这里期望确实退化为有限加权和；定义的价值在于同一公式不必在连续模型中另起炉灶。
+\end{example}
+
+\begin{example}[均匀变量生成指数变量]\label{ex:5-1-1-2}
+设 $U$ 在 $(0,1)$ 上具有 Lebesgue 均匀分布，$\lambda>0$，并令
+\[
+ X=-\lambda^{-1}\log U.
+\]
+当 $x\ge0$ 时，
+\[
+ \Prob(X>x)=\Prob(U<e^{-\lambda x})=e^{-\lambda x},
+\]
+而 $x<0$ 时该概率为一。因此 $X$ 的分布函数和密度分别为
+\[
+ F_X(x)=
+ \begin{cases}0,&x<0,\\1-e^{-\lambda x},&x\ge0,\end{cases}
+ \qquad
+ p_X(x)=\lambda e^{-\lambda x}\1_{(0,\infty)}(x).
+\]
+利用分布积分公式，对 $R>0$ 在 $[0,R]$ 上分部积分，有
+\begin{align*}
+ \int_0^R x\lambda e^{-\lambda x}\dd x
+ &=\bigl[-xe^{-\lambda x}\bigr]_{0}^{R}
+   +\int_0^R e^{-\lambda x}\dd x\\
+ &=-Re^{-\lambda R}+\frac{1-e^{-\lambda R}}{\lambda}.
+\end{align*}
+由 $Re^{-\lambda R}\to0$ 和 $e^{-\lambda R}\to0$，非负积分的单调收敛定理给出
+\[
+ \E X=\lim_{R\to\infty}\int_0^R x\lambda e^{-\lambda x}\dd x=\frac1\lambda.
+\]
+这项计算只使用推前测度、分布函数和一元换元；样本空间在得到 $F_X$ 后便退出了舞台。
+\end{example}
+
+\begin{example}[一维高斯分布]\label{ex:5-1-1-gaussian-law}
+记 $G\sim N(m,\sigma^2)$（$m\in\R,\sigma>0$）表示 $G$ 的分布具有密度
+\[
+ q_{m,\sigma}(x)=\frac1{\sqrt{2\pi\sigma^2}}
+ \exp\!\left(-\frac{(x-m)^2}{2\sigma^2}\right).
+\]
+Analysis II 中的高斯积分
+$\int_\R e^{-x^2/2}\dd x=\sqrt{2\pi}$ 保证该密度的积分为一。若
+$Z\sim N(0,1)$，则对每个 Borel 集 $A$，以 $x=m+\sigma z$ 换元得到
+\begin{align*}
+ \Prob(m+\sigma Z\in A)
+ &=\int_\R\1_A(m+\sigma z)\frac{e^{-z^2/2}}{\sqrt{2\pi}}\dd z\\
+ &=\int_A q_{m,\sigma}(x)\dd x.
+\end{align*}
+故 $m+\sigma Z\sim N(m,\sigma^2)$。由对称区间上奇函数积分为零以及
+$|z|e^{-z^2/2}$ 可积，有 $\E Z=0$。此外，对 $R>0$，利用
+$(e^{-z^2/2})'=-ze^{-z^2/2}$ 分部积分得
+\begin{align*}
+ \int_{-R}^{R}z^2e^{-z^2/2}\dd z
+ &=-\int_{-R}^{R}z\,\dd\bigl(e^{-z^2/2}\bigr)\\
+ &=-\bigl[ze^{-z^2/2}\bigr]_{-R}^{R}
+   +\int_{-R}^{R}e^{-z^2/2}\dd z\\
+ &=-2Re^{-R^2/2}+\int_{-R}^{R}e^{-z^2/2}\dd z.
+\end{align*}
+令 $R\to\infty$，由 $Re^{-R^2/2}\to0$ 和单调收敛定理，
+\[
+ \E Z^2=\frac1{\sqrt{2\pi}}\int_\R z^2e^{-z^2/2}\dd z
+ =\frac1{\sqrt{2\pi}}\int_\R e^{-z^2/2}\dd z=1.
+\]
+因此，若 $G=m+\sigma Z$，则
+\begin{align*}
+ \E G&=m+\sigma\E Z=m,\\
+ \Var(G)&=\E|G-\E G|^2
+ =\E|\sigma Z|^2=\sigma^2\E Z^2=\sigma^2.
+\end{align*}
+这里固定了一维高斯（Gaussian）分布的记号；联合高斯分布、矩母函数和特征函数将在本章后续各节中分别讨论。
+\end{example}
+
+\begin{example}[同分布不同耦合]\label{ex:5-1-1-3}
+在 $\Omega=\{-1,1\}$ 上取均匀概率，并令 $X(\omega)=\omega$。分别令
+$Y_1=X$ 与 $Y_2=-X$。由于 $X$ 的分布关于原点对称，
+\[
+ \Law(Y_1)=\Law(Y_2)=\Law(X)=\tfrac12\delta_{-1}+\tfrac12\delta_1.
+\]
+然而
+\[
+ \Prob(X=Y_1)=1,
+ \qquad
+ \Prob(X=Y_2)=0.
+\]
+三个单变量分布完全相同，两个联合关系却走向相反极端。单变量分布不负责保存耦合信息。
+\end{example}
+
+积分的单调性可以把一个事件的示性函数压在可积量之下。这条一句话的观察产生了概率论中最常用的
+尾估计之一。
+
+\begin{theorem}[Markov 不等式]\label{theorem:5-1-1-2}
+若 $X\ge0$ a.s. 且 $a>0$，则
+\[
+ \Prob(X\ge a)\le\frac{\E X}{a},
+\]
+其中允许 $\E X=+\infty$。更一般地，若 $X$ 实值，
+$\phi:\R\to[0,\infty]$ 可测且非降，并且 $0<\phi(a)<\infty$，则
+\[
+ \Prob(X\ge a)\le\frac{\E\phi(X)}{\phi(a)}.
+\]
+\end{theorem}
+
+\begin{proof}
+在每个样本点上有
+\[
+ a\1_{\{X\ge a\}}\le X
+\]
+（先在使 $X\ge0$ 成立的共同满概率集合上比较，零集上的取值不影响积分）。非负积分的单调性给出
+\[
+ a\Prob(X\ge a)=\E\bigl[a\1_{\{X\ge a\}}\bigr]\le\E X.
+\]
+两端除以 $a$ 即得第一式。对一般的 $\phi$，当 $X(\omega)\ge a$ 时，单调性给出
+$\phi(X(\omega))\ge\phi(a)$，故
+\[
+ \phi(a)\1_{\{X\ge a\}}\le\phi(X).
+\]
+再取非负积分并除以有限正数 $\phi(a)$，得到第二式。
+\end{proof}
+
+例如令 $\phi(x)=e^{tx}$，其中 $t>0$，便有
+\begin{equation}\label{eq:5-1-1-exponential-markov}
+ \Prob(X\ge a)\le e^{-ta}\E e^{tX}.
+\end{equation}
+右端若有限，还可以对 $t$ 优化。这是 Chernoff 方法的起点；本节只使用
+\eqref{eq:5-1-1-exponential-markov} 这条由单调比较直接得到的公式。
+
+\begin{corollary}[Chebyshev 不等式]\label{corollary:5-1-1-3}
+若 $X\in L^2(\Prob)$，则对每个 $t>0$，
+\[
+ \Prob\bigl(|X-\E X|\ge t\bigr)
+ \le\frac{\Var(X)}{t^2}.
+\]
+\end{corollary}
+
+\begin{proof}
+概率空间总质量为一，Cauchy--Schwarz 不等式给出
+$\E|X|\le(\E|X|^2)^{1/2}$，所以 $\E X$ 有定义且
+$|X-\E X|^2$ 可积。对非负变量 $|X-\E X|^2$ 以阈值 $t^2$ 应用
+定理~\ref{theorem:5-1-1-2}，得到
+\[
+ \Prob(|X-\E X|\ge t)
+ =\Prob(|X-\E X|^2\ge t^2)
+ \le\frac{\E|X-\E X|^2}{t^2}.
+\]
+分子就是 $\Var(X)$。
+\end{proof}
+
+概率空间仍是测度空间，所以极限定理不需要换一套证明。需要换的只是读法：依测度收敛在概率空间上
+称为\emph{依概率收敛}。
+
+\begin{proposition}[期望继承积分的极限定理]\label{proposition:5-1-1-4}
+在同一概率空间上有以下结论。
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item 若 $0\le X_n\uparrow X$ a.s.，则 $\E X_n\uparrow\E X$。
+  \item 若 $X_n\ge0$，则
+  $\E(\liminf_nX_n)\le\liminf_n\E X_n$。
+  \item 若 $X_n\to X$ a.s. 且 $|X_n|\le Y$ a.s. 对所有 $n$ 成立，其中
+  $Y\in L^1$，则 $\E|X_n-X|\to0$，从而 $\E X_n\to\E X$。
+  \item 若每个 $X_n\in L^1$ 且 $X_n\to X$ 依概率，则
+  $\E|X_n-X|\to0$ 当且仅当族 $\{X_n:n\ge1\}$ 一致可积；在这一情形中
+  $X\in L^1$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+从每个 a.s. 陈述中删去容纳全部异常的共同零集，不改变任一积分。
+此后 \textup{(i)} 是单调收敛定理~\ref{theorem:3-1-2-1}，
+\textup{(ii)} 是 Fatou 引理~\ref{theorem:3-1-2-2}，
+\textup{(iii)} 是实／复控制收敛定理~\ref{theorem:3-1-3-5}。
+概率空间满足 $\Prob(\Omega)=1<\infty$，且这里的依概率收敛正是
+定义~\ref{def:3-4-1-1} 的依测度收敛。因此 \textup{(iv)} 是
+Vitali 定理~\ref{theorem:3-4-1-2} 在总质量一情形的直接应用；该定理的正向部分同时给出
+$X\in L^1$。每一步的假设都与相应积分定理逐项一致。
+\end{proof}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+分析语言 & 概率语言\\
+\midrule
+$\mu$-a.e. & 几乎必然（a.s.）\\
+依测度收敛 & 依概率收敛\\
+$\int f\dd\mu$ & $\E f$\\
+MCT／Fatou／DCT & 单调、下极限、支配条件下交换期望与极限\\
+Vitali 定理 & 依概率收敛加一致可积推出 $L^1$ 收敛\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+只有 a.s. 收敛并不足以交换期望。令 $\Omega=(0,1)$，取 Lebesgue 概率测度并定义
+\[
+ X_n=n\1_{(0,1/n)}.
+\]
+对每个 $\omega\in(0,1)$，当 $n>1/\omega$ 时 $X_n(\omega)=0$，故 $X_n\to0$ a.s.；但
+\[
+ \E X_n=n\,m(0,1/n)=1
+\]
+对所有 $n$ 成立。这个族也不一致可积：给定 $K>0$，取整数 $n>K$，则
+\[
+ \E\bigl[|X_n|\1_{\{|X_n|>K\}}\bigr]=1.
+\]
+失败的不是极限计算，而是缺少支配或一致尾控制。
+
+期望的线性同样继承自积分。若 $X,Y\in L^1$，则
+$\E(aX+bY)=a\E X+b\E Y$。对非负变量也可以作非负线性组合并允许 $+\infty$；但若正部、负部
+都具有无穷期望，写下 ``$\infty-\infty$'' 并不会产生一个新的概率定理，只会产生一个未定义的式子。
+
+\begin{exercise}
+\begin{enumerate}
+  \item 设 $F$ 是实直线上的分布函数，$U\sim\mathrm{Unif}(0,1)$。定义
+  $F^{\leftarrow}(u)=\inf\{x:F(x)\ge u\}$，证明
+  $F^{\leftarrow}(U)$ 的分布函数为 $F$。
+  \item 不引用命题~\ref{proposition:5-1-1-1} 的结论，只用推前积分公式重新证明它。
+  \item 从 Markov 不等式推出 Chebyshev 不等式，并在骰子变量上对 $t=3/2$ 比较上界与真实概率。
+  \item 在同一个两点概率空间上构造三对边缘分布相同而
+  $\Prob(X=Y)$ 分别为 $0,1/2,1$ 的耦合；若两点空间不够，说明最小的有限扩张。
+\end{enumerate}
+\end{exercise}
+
+单个分布已经足以计算单变量期望，却不能回答两个变量是否同涨同落。要描述这种关系，必须回到
+联合分布，或等价地，回到各变量所携带的 $\sigma$-代数。
+
+
+\subsection{独立性、乘积结构与生成类判别}\label{subsec:5-1-2}
+\index{独立性}\index{相互独立}\index{两两独立}
+
+考虑两个边缘都均匀的骰子点数。仅凭这两条边缘信息，第二枚骰子可能复制第一枚，也可能与第一枚
+毫无关联。所谓独立，不是“两个变量看起来没有关系”，而是一个精确的乘积测度陈述。
+
+\begin{definition}[独立 $\sigma$-代数]\label{def:5-1-2-1}
+设 $(\mathcal G_i)_{i\in I}$ 是 $\mathcal F$ 的子 $\sigma$-代数族。若对任意有限个互异指标
+$i_1,\ldots,i_k$ 以及任意 $A_j\in\mathcal G_{i_j}$，都有
+\[
+ \Prob\!\left(\bigcap_{j=1}^k A_j\right)
+ =\prod_{j=1}^k\Prob(A_j),
+\]
+则称 $(\mathcal G_i)_{i\in I}$ 相互独立。
+\end{definition}
+
+事件族 $(A_i)$ 的独立性是指 $\bigl(\sigma(A_i)\bigr)$ 独立。这里
+$\sigma(A)=\{\varnothing,A,A^c,\Omega\}$。因此事件独立不仅给出原事件交的乘积公式，也自动包含
+任意一部分事件换成补事件后的公式。
+
+\begin{definition}[随机元的独立性]\label{def:5-1-2-2}
+随机元族 $(X_i)_{i\in I}$ 称为独立的，如果子 $\sigma$-代数族
+$(\sigma(X_i))_{i\in I}$ 相互独立，其中
+\[
+ \sigma(X_i)=\{X_i^{-1}(B):B\text{ 属于 }X_i\text{ 的状态空间 }\sigma\text{-代数}\}.
+\]
+\end{definition}
+
+\begin{definition}[两两独立与相互独立]\label{def:5-1-2-3}
+若族中每两个不同成员独立，则称该族\emph{两两独立}。若它满足
+定义~\ref{def:5-1-2-1} 中每个有限子族的乘积公式，则称为\emph{相互独立}。
+相互独立蕴含两两独立，反向一般不成立。
+\end{definition}
+
+检查独立性的定义似乎要求遍历多个 $\sigma$-代数中的所有事件。前文建立的
+$\pi$--$\lambda$ 方法可以把检验缩减到生成类，但“二元成立”不能未经论证便升级为任意有限元成立。
+
+\begin{theorem}[生成类独立判别]\label{theorem:5-1-2-1}
+对每个 $i\in I$，设 $\mathcal P_i$ 是生成 $\mathcal G_i$ 的 $\pi$-系统。假设任取有限个互异
+指标 $i_1,\ldots,i_k$ 和 $A_j\in\mathcal P_{i_j}$，均有
+\[
+ \Prob\!\left(\bigcap_{j=1}^kA_j\right)=\prod_{j=1}^k\Prob(A_j).
+\]
+则 $(\mathcal G_i)_{i\in I}$ 相互独立。
+\end{theorem}
+
+\begin{proof}
+若某个 $\mathcal P_i$ 不含 $\Omega$，把 $\Omega$ 添入其中。新族仍是 $\pi$-系统，生成同一
+$\sigma$-代数，而含有 $\Omega$ 的乘积公式由原假设中删去该坐标得到。因此以下设
+$\Omega\in\mathcal P_i$。
+
+先看两个指标。固定 $A\in\mathcal P_{i_1}$，令
+\[
+ \mathcal D_A=
+ \{B\in\mathcal G_{i_2}:\Prob(A\cap B)=\Prob(A)\Prob(B)\}.
+\]
+$\Omega\in\mathcal D_A$。若 $B\in\mathcal D_A$，则
+\[
+ \Prob(A\cap B^c)
+ =\Prob(A)-\Prob(A\cap B)
+ =\Prob(A)\Prob(B^c),
+\]
+故 $B^c\in\mathcal D_A$；若 $(B_n)$ 两两不交且都属于 $\mathcal D_A$，则测度的可数可加性给出
+\[
+ \Prob\!\left(A\cap\bigcup_nB_n\right)
+ =\sum_n\Prob(A\cap B_n)
+ =\Prob(A)\sum_n\Prob(B_n).
+\]
+所以 $\mathcal D_A$ 是 $\lambda$-系统。它包含 $\mathcal P_{i_2}$，由
+$\pi$--$\lambda$ 定理包含 $\mathcal G_{i_2}$。
+
+现在固定 $B\in\mathcal G_{i_2}$，把满足同一乘积公式的 $A\in\mathcal G_{i_1}$ 组成
+$\lambda$-系统。上一段说明它包含 $\mathcal P_{i_1}$，再次应用 $\pi$--$\lambda$ 定理，得到
+两个完整 $\sigma$-代数独立。
+
+对一般有限个指标，对坐标数 $k$ 归纳。假设少于 $k$ 个坐标时，乘积公式已对相应的完整
+$\sigma$-代数成立。固定 $A_j\in\mathcal P_{i_j}$（$1\le j<k$），定义
+\[
+ \mathcal D_k=\left\{B\in\mathcal G_{i_k}:
+ \Prob\!\left(\bigcap_{j=1}^{k-1}A_j\cap B\right)
+ =\left(\prod_{j=1}^{k-1}\Prob(A_j)\right)\Prob(B)\right\}.
+\]
+由归纳假设，$\Omega\in\mathcal D_k$。若 $B\in\mathcal D_k$，令
+$C=\bigcap_{j=1}^{k-1}A_j$，则
+\begin{align*}
+ \Prob(C\cap B^c)
+ &=\Prob(C)-\Prob(C\cap B)\\
+ &=\prod_{j<k}\Prob(A_j)
+   -\left(\prod_{j<k}\Prob(A_j)\right)\Prob(B)\\
+ &=\left(\prod_{j<k}\Prob(A_j)\right)\Prob(B^c),
+\end{align*}
+故 $B^c\in\mathcal D_k$。对两两不交的 $(B_n)\subset\mathcal D_k$，可数可加性给出
+\begin{align*}
+ \Prob\!\left(C\cap\bigcup_nB_n\right)
+ &=\sum_n\Prob(C\cap B_n)
+ =\left(\prod_{j<k}\Prob(A_j)\right)\sum_n\Prob(B_n)\\
+ &=\left(\prod_{j<k}\Prob(A_j)\right)\Prob\!\left(\bigcup_nB_n\right).
+\end{align*}
+因此 $\mathcal D_k$ 是包含 $\mathcal P_{i_k}$ 的 $\lambda$-系统，从而
+$\mathcal D_k=\mathcal G_{i_k}$。
+
+现在固定一般的 $A_k\in\mathcal G_{i_k}$ 和
+$A_j\in\mathcal P_{i_j}$（$1\le j<k-1$），把满足同一 $k$ 元乘积公式的
+$B\in\mathcal G_{i_{k-1}}$ 组成 $\mathcal D_{k-1}$。上述三个计算逐字适用：
+$\Omega\in\mathcal D_{k-1}$ 由少一个坐标的归纳假设保证，而
+$\mathcal P_{i_{k-1}}\subset\mathcal D_{k-1}$ 由上一段已经把第 $k$ 坐标推广到
+$\mathcal G_{i_k}$ 保证。故 $\mathcal D_{k-1}=\mathcal G_{i_{k-1}}$。按
+$k-2,k-3,\ldots,1$ 重复此步，最终得到任意
+$A_j\in\mathcal G_{i_j}$（$1\le j\le k$）的乘积公式。归纳完成。
+\end{proof}
+
+\begin{theorem}[联合分布判别]\label{theorem:5-1-2-2}
+设随机元 $X_i$ 取值于 $(S_i,\mathcal S_i)$，$1\le i\le n$。则
+$X_1,\ldots,X_n$ 独立，当且仅当
+\[
+ \Law(X_1,\ldots,X_n)=\bigotimes_{i=1}^n\Law(X_i)
+\]
+作为 $(\prod_iS_i,\bigotimes_i\mathcal S_i)$ 上的概率测度成立。
+\end{theorem}
+
+\begin{proof}
+对可测矩形 $R=A_1\times\cdots\times A_n$，联合分布的定义给出
+\[
+ \Law(X_1,\ldots,X_n)(R)
+ =\Prob\!\left(\bigcap_{i=1}^n\{X_i\in A_i\}\right).
+\]
+若 $X_i$ 独立，右端等于 $\prod_i\Prob(X_i\in A_i)$，也就是
+$(\bigotimes_i\Law(X_i))(R)$。两个概率测度在生成乘积 $\sigma$-代数的矩形
+$\pi$-系统上一致；有限测度唯一性给出它们在整个乘积 $\sigma$-代数上一致。
+
+反之，若两测度相等，则上述矩形计算对所有 $A_i\in\mathcal S_i$ 给出交概率因子化。
+而 $\sigma(X_i)$ 的每个事件都形如 $X_i^{-1}(A_i)$，所以
+$\sigma(X_1),\ldots,\sigma(X_n)$ 独立。
+\end{proof}
+
+\begin{example}[乘积坐标]\label{ex:5-1-2-1}
+设每个 $\mu_i$ 都是 $(S_i,\mathcal S_i)$ 上的概率测度。在
+\[
+ \left(\prod_{i=1}^nS_i,\ \bigotimes_{i=1}^n\mathcal S_i,\
+ \bigotimes_{i=1}^n\mu_i\right)
+\]
+上令 $\pi_i(x_1,\ldots,x_n)=x_i$。对 $A_i\in\mathcal S_i$，
+\[
+ \Prob(\pi_1\in A_1,\ldots,\pi_n\in A_n)
+ =\prod_{i=1}^n\mu_i(A_i).
+\]
+因此坐标投影独立且 $\Law(\pi_i)=\mu_i$。乘积测度不是独立性的一个方便比喻；它正是独立联合
+分布的标准实现。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.0cm,y=0.82cm]
+  \draw[book line] (0,0) rectangle (7,4.5);
+  \foreach \x in {1.1,2.8,4.2,6.1}{\draw[BookInk!45] (\x,0)--(\x,4.5);}
+  \foreach \y in {0.9,2.0,3.4}{\draw[BookInk!45] (0,\y)--(7,\y);}
+  \fill[BookAccent!12] (2.8,2.0) rectangle (6.1,3.4);
+  \draw[BookAccent,semithick] (2.8,2.0) rectangle (6.1,3.4);
+  \draw[decorate,decoration={brace,amplitude=4pt},BookWarm]
+    (2.8,4.75)--(6.1,4.75) node[midway,above=5pt,book label]{$\Law(X)(A)$};
+  \draw[decorate,decoration={brace,amplitude=4pt},BookWarm]
+    (7.25,2.0)--(7.25,3.4) node[midway,right=5pt,book label]{$\Law(Y)(B)$};
+  \node[book label] at (4.45,2.7) {$\Law(X,Y)(A\times B)$};
+  \node[book label,below] at (3.5,-0.15) {$X$ 坐标};
+  \node[book label,rotate=90] at (-0.35,2.25) {$Y$ 坐标};
+\end{tikzpicture}
+\caption{独立时，每个可测矩形的联合质量等于两条边缘质量的乘积；矩形生成整个联合分布。}
+\label{fig:5-1-2-rectangle-law}
+\end{figure}
+
+联合分布的乘积结构不仅控制事件，也控制可测函数。
+
+\begin{theorem}[期望因子化]\label{theorem:5-1-2-3}
+设 $X_1,\ldots,X_n$ 独立，$X_i$ 取值于 $(S_i,\mathcal S_i)$，且
+$f_i:S_i\to\R$ 或 $\C$ 可测。
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item 若每个 $f_i\ge0$，则
+  \[
+    \E\prod_{i=1}^nf_i(X_i)=\prod_{i=1}^n\E f_i(X_i),
+  \]
+  其中若某因子的期望为零，则右端约定为零；否则按通常的扩展非负数乘法解释。
+  \item 若每个 $f_i(X_i)\in L^1$，则 $\prod_i f_i(X_i)\in L^1$，并且同一等式在
+  $\R$ 或 $\C$ 中成立。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+先设 $f_i=\1_{A_i}$。此时所需等式正是
+定义~\ref{def:5-1-2-1} 的有限交公式。对非负简单函数
+$f_i=\sum_{j=1}^{m_i}a_{ij}\1_{A_{ij}}$，展开有限乘积，并对每一项应用示性函数情形，得到
+\begin{align*}
+ \E\prod_{i=1}^nf_i(X_i)
+ &=\sum_{j_1,\ldots,j_n}
+   \left(\prod_i a_{ij_i}\right)
+   \Prob\!\left(\bigcap_i\{X_i\in A_{ij_i}\}\right)\\
+ &=\sum_{j_1,\ldots,j_n}
+   \prod_i\bigl(a_{ij_i}\Prob(X_i\in A_{ij_i})\bigr)
+ =\prod_{i=1}^n\E f_i(X_i).
+\end{align*}
+
+对一般非负 $f_i$，取第三章的规范非负简单函数 $s_{i,k}\uparrow f_i$。因为因子数有限，
+$\prod_i s_{i,k}(X_i)\uparrow\prod_i f_i(X_i)$。单调收敛定理给出
+\[
+ \E\prod_i f_i(X_i)
+ =\lim_{k\to\infty}\prod_i\E s_{i,k}(X_i)
+ =\prod_i\E f_i(X_i).
+\]
+若某个极限因子为零，则相应非负积分为零，命题~\ref{proposition:3-1-1-3} 说明左端也为零；
+若没有零因子，有限个递增扩展实数乘积的极限就是右端。这个简单函数—单调极限过程是函数单调类
+推广在当前乘积函数上的具体实现。
+
+若每个 $f_i(X_i)$ 可积，把已证的非负版本用于 $|f_i|$，得到
+\[
+ \E\prod_i|f_i(X_i)|=\prod_i\E|f_i(X_i)|<\infty.
+\]
+所以乘积可积。若 $f_i$ 为复值，则逐点有
+\[
+ f_i=(\Re f_i)^+-(\Re f_i)^-
+   +\mathrm i\bigl((\Im f_i)^+-(\Im f_i)^-\bigr),
+\]
+并且右端四个非负函数在 $X_i$ 下均可积；实值情形只保留前两项。把
+$\prod_i f_i(X_i)$ 按此表示式展开为有限和，对每一项使用非负因子化，再重新合并，便得到所述
+实值或复值等式；所有项都绝对可积，重排不产生条件收敛问题。
+\end{proof}
+
+第四章的测度卷积在这里得到直接的概率读法。若独立随机向量 $X,Y$ 的分布分别为概率测度
+$\mu,\nu$，则对每个非负 Borel 函数 $h$，定理~\ref{theorem:5-1-2-2}、Tonelli 定理和
+测度卷积的定义给出
+\[
+ \E h(X+Y)
+ =\iint h(x+y)\dd\mu(x)\dd\nu(y)
+ =\int h\dd(\mu*\nu).
+\]
+非负测试函数积分唯一确定测度（取 $h=\1_B$ 即可比较任意 Borel 集 $B$），所以
+\begin{equation}\label{eq:5-1-2-independent-sum-convolution}
+ \Law(X+Y)=\Law(X)*\Law(Y).
+\end{equation}
+若 $\mu=fm$、$\nu=gm$，第四章的卷积计算进一步给出
+$\Law(X+Y)=(f*g)m$。独立性在此承担的准确工作，是把联合分布变成乘积分布；加法映射随后把
+这个乘积推前为卷积。
+
+\begin{proposition}[独立性的可测变换稳定性]\label{proposition:5-1-2-4}
+若 $(X_i)_{i\in I}$ 独立，且每个 $f_i$ 是定义在 $X_i$ 状态空间上的可测映射，则
+$(f_i(X_i))_{i\in I}$ 独立。
+\end{proposition}
+
+\begin{proof}
+对每个 $i$，复合映射的可测性给出
+\[
+ \sigma(f_i(X_i))\subset\sigma(X_i).
+\]
+从一族独立 $\sigma$-代数中各取子 $\sigma$-代数，定义~\ref{def:5-1-2-1} 的每个有限交
+乘积公式仍成立。因此这些复合随机元独立。
+\end{proof}
+
+两两独立为何不够，可以在四个样本点上算清。
+
+\begin{example}[两两独立但不相互独立]\label{ex:5-1-2-2}
+令 $\Omega=\{-1,1\}^2$ 并给四点各概率 $1/4$。定义
+\[
+ X(\omega_1,\omega_2)=\omega_1,
+ \qquad Y(\omega_1,\omega_2)=\omega_2,
+ \qquad Z=XY.
+\]
+三者都具有 Rademacher 分布
+$\tfrac12\delta_{-1}+\tfrac12\delta_1$。映射
+$(\omega_1,\omega_2)\mapsto(X,Z)=(\omega_1,\omega_1\omega_2)$ 是
+$\{-1,1\}^2$ 上的双射，因此 $(X,Z)$ 在四个有序对上均匀；同理 $(Y,Z)$ 均匀，而
+$(X,Y)$ 按构造均匀。故三对都独立。
+
+另一方面，$XYZ=1$ 在每个样本点上成立，并且
+\[
+ \Prob(X=1,Y=1,Z=1)=\frac14
+ \ne\frac12\cdot\frac12\cdot\frac12.
+\]
+因此 $X,Y,Z$ 不相互独立。缺失的信息恰好是三元交，而不是某一对被漏算。
+\end{example}
+
+独立性也比“协方差为零”强。对实值二阶可积变量，暂记
+\[
+ \Cov(X,Y)=\E[(X-\E X)(Y-\E Y)].
+\]
+
+\begin{example}[不相关不等于独立]\label{ex:5-1-2-3}
+设 $U\sim\mathrm{Unif}(-1,1)$，令 $X=U$、$Y=U^2$。均匀分布的密度为
+$\frac12\1_{(-1,1)}$，因而
+\begin{align*}
+ \E U&=\frac12\int_{-1}^{1}u\dd u=0,\\
+ \E U^2&=\frac12\int_{-1}^{1}u^2\dd u
+ =\frac12\left[\frac{u^3}{3}\right]_{-1}^{1}=\frac13,\\
+ \E U^3&=\frac12\int_{-1}^{1}u^3\dd u=0.
+\end{align*}
+所以
+\[
+ \Cov(X,Y)=\E U^3-(\E U)(\E U^2)=0.
+\]
+但取事件 $A=\{|X|\le1/2\}$ 与 $B=\{Y>1/4\}$，有
+\[
+ \Prob(A)=\frac12,\qquad \Prob(B)=\frac12,\qquad \Prob(A\cap B)=0.
+\]
+若 $X,Y$ 独立，最后一个数应为 $1/4$，矛盾。这里 $Y=X^2$ 所携带的确定关系没有被一个二阶
+混合矩检测出来。
+\end{example}
+
+反过来，若 $X,Y\in L^2$ 且独立，定理~\ref{theorem:5-1-2-3} 应用于 $X,Y$，并结合
+Cauchy--Schwarz 保证的可积性，给出 $\E(XY)=\E X\E Y$，所以 $\Cov(X,Y)=0$。
+只有在联合高斯等额外结构下，零协方差才反过来推出独立；联合高斯的定义和证明均留到
+后文，在此不作为独立性判据。
+
+\begin{remark}[独立和的振荡指数]\label{rem:5-1-2-cf-preview}
+指数测试函数给出独立和的一个基本乘法公式。若 $X,Y$ 独立且实值，则
+\[
+ \E e^{it(X+Y)}=(\E e^{itX})(\E e^{itY}),\qquad t\in\R,
+\]
+因为两个因子有模一，定理~\ref{theorem:5-1-2-3} 可直接应用。若 $X,Y$ 是独立 Rademacher
+变量，则 $\E e^{itX}=\cos t$，故左端为 $\cos^2t$。另一方面，$X+Y$ 在
+$-2,0,2$ 上的概率分别是 $1/4,1/2,1/4$，直接求和得到
+\[
+ \E e^{it(X+Y)}=\frac14e^{-2it}+\frac12+\frac14e^{2it}
+ =\frac{1+\cos(2t)}2=\cos^2t.
+\]
+这个计算具体展示了期望因子化怎样把和转化为乘积。第~\ref{subsec:5-4-3}~节将把
+$t\mapsto\E e^{itX}$ 系统地定义为特征函数，并证明它对分布的识别与极限性质。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 设 $X_1,\ldots,X_n$ 独立，$A_i\in\sigma(X_i)$。从定义证明
+  $\1_{A_1},\ldots,\1_{A_n}$ 独立，再用命题~\ref{proposition:5-1-2-4} 给出第二种证明。
+  \item 为例~\ref{ex:5-1-2-2} 写出 $(X,Y,Z)$ 的完整取值表，并逐项验证三对联合分布。
+  \item 设 $X,Y$ 独立且分别有密度 $f,g$。只用 Tonelli 定理和换元证明
+  $X+Y$ 的分布具有密度 $f*g$，并说明第四章的卷积定义怎样进入该密度公式。
+  \item 从矩形生成类出发重证定理~\ref{theorem:5-1-2-2}，说明有限测度唯一性为何足够。
+\end{enumerate}
+\end{exercise}
+
+有限乘积结构回答了固定多个事件如何同时发生。无穷序列提出了两个新问题：稀有事件会不会发生
+无限多次，以及删掉任意有限初段后还留下多少信息。
+
+
+\subsection{Borel--Cantelli、尾 \texorpdfstring{$\sigma$}{sigma}-代数与零一律}\label{subsec:5-1-3}
+\index{Borel--Cantelli 引理}\index{尾 $\sigma$-代数}\index{Kolmogorov 零一律}
+
+假设第 $n$ 次试验有一个坏事件 $A_n$。逐次让 $\Prob(A_n)$ 变小，并不能单独排除坏事一再发生；
+真正可计算的量是整条尾概率级数。收敛时，可数次可加性已经足够。发散时，若事件可以始终一起发生，
+概率之和便会严重重复计数；这正是第二个方向需要独立性的原因。
+
+\begin{definition}[limsup 事件]\label{def:5-1-3-1}
+对事件列 $(A_n)$，定义
+\[
+ \{A_n\ \mathrm{i.o.}\}
+ :=\limsup_{n\to\infty}A_n
+ :=\bigcap_{N=1}^\infty\bigcup_{n\ge N}A_n.
+\]
+缩写 ``i.o.'' 表示 infinitely often。一个样本点属于该事件，当且仅当每个有限时刻之后仍有某个
+$A_n$ 发生，也就是属于无穷多个 $A_n$。
+\end{definition}
+
+\begin{theorem}[Borel--Cantelli I]\label{theorem:5-1-3-1}
+若 $\sum_{n=1}^\infty\Prob(A_n)<\infty$，则
+\[
+ \Prob(A_n\ \mathrm{i.o.})=0.
+\]
+此结论不要求事件独立。
+\end{theorem}
+
+\begin{proof}
+令 $B_N=\bigcup_{n\ge N}A_n$。由次可加性，
+\[
+ \Prob(B_N)\le\sum_{n\ge N}\Prob(A_n).
+\]
+右端是收敛非负级数的尾和，故随 $N\to\infty$ 趋于零。事件列 $(B_N)$ 递减且
+$\Prob(B_1)\le1<\infty$；测度从上连续给出
+\[
+ \Prob(A_n\ \mathrm{i.o.})
+ =\Prob\!\left(\bigcap_NB_N\right)
+ =\lim_{N\to\infty}\Prob(B_N)=0.
+\]
+\end{proof}
+
+\begin{theorem}[Borel--Cantelli II]\label{theorem:5-1-3-2}
+若事件 $(A_n)$ 相互独立且
+$\sum_{n=1}^\infty\Prob(A_n)=\infty$，则
+\[
+ \Prob(A_n\ \mathrm{i.o.})=1.
+\]
+\end{theorem}
+
+\begin{proof}
+记 $p_n=\Prob(A_n)$。相互独立性对补事件仍成立。固定 $N$，对 $M\ge N$ 有
+\begin{align*}
+ \Prob\!\left(\bigcap_{n=N}^M A_n^c\right)
+ &=\prod_{n=N}^M(1-p_n)\\
+ &\le\exp\!\left(-\sum_{n=N}^Mp_n\right),
+\end{align*}
+其中使用了 $1-u\le e^{-u}$（$0\le u\le1$）。对固定 $N$，发散级数的尾部仍发散，故右端
+随 $M\to\infty$ 趋于零。左侧事件随 $M$ 递减，且概率至多为一；测度从上连续给出
+\[
+ \Prob\!\left(\bigcap_{n=N}^\infty A_n^c\right)=0.
+\]
+取补集可得
+$\Prob(\bigcup_{n\ge N}A_n)=1$。最后，概率一事件的可数交仍有概率一，因为其补集包含于一列
+零概率集的可数并。因此
+\[
+ \Prob\!\left(\bigcap_{N=1}^\infty\bigcup_{n\ge N}A_n\right)=1.
+\]
+交内的事件正是 $\{A_n\ \mathrm{i.o.}\}$。
+\end{proof}
+
+\begin{proposition}[可和概率推出 a.s. 控制]\label{proposition:5-1-3-4}
+若 $a_n\ge0$ 且
+\[
+ \sum_{n=1}^\infty\Prob(|X_n|>a_n)<\infty,
+\]
+则几乎必然存在依赖于样本点的 $N<\infty$，使得对所有 $n\ge N$ 都有
+$|X_n|\le a_n$。
+\end{proposition}
+
+\begin{proof}
+对 $A_n=\{|X_n|>a_n\}$ 应用定理~\ref{theorem:5-1-3-1}，得到只有有限多个 $A_n$
+发生的事件具有概率一。这句话逐点展开正是所述最终控制。
+\end{proof}
+
+\begin{example}[抛硬币无限正面]\label{ex:5-1-3-1}
+设 $(X_n)$ 是独立 Rademacher 序列，$H_n=\{X_n=1\}$、$T_n=\{X_n=-1\}$。
+两族事件分别相互独立，并且
+\[
+ \sum_n\Prob(H_n)=\sum_n\Prob(T_n)=\sum_n\frac12=\infty.
+\]
+分别应用 Borel--Cantelli II，得到正面无限次出现的事件和反面无限次出现的事件都具有概率一；二者
+的交仍有概率一。因此几乎每条路径都会永远继续出现两种结果，而不是在某次之后固定下来。
+\end{example}
+
+\begin{example}[稀有事件的可和阈值]\label{ex:5-1-3-threshold}
+设 $U_n\sim\mathrm{Unif}(0,1)$ 相互独立，$\alpha>0$，并令
+\[
+ A_n=\{U_n\le n^{-\alpha}\}.
+\]
+由可测变换保持独立，$(A_n)$ 相互独立，且
+$\Prob(A_n)=n^{-\alpha}$。于是
+\[
+ \sum_n\Prob(A_n)=\sum_n n^{-\alpha}
+ \begin{cases}
+ <\infty,&\alpha>1,\\
+ =\infty,&0<\alpha\le1.
+ \end{cases}
+\]
+第一种情形由 Borel--Cantelli I 得 $A_n$ 只发生有限次；第二种情形由 Borel--Cantelli II 得
+$A_n$ 几乎必然发生无限次。$p$-级数在 $\alpha=1$ 的收敛阈值，在这里变成路径行为的相变。
+\end{example}
+
+\begin{example}[从可和尾界读出收敛速度]\label{ex:5-1-3-2}
+假设对每个正有理数 $\varepsilon$，都有
+\[
+ \sum_{n=1}^\infty\Prob(|X_n-X|>\varepsilon)<\infty.
+\]
+对每个 $k\ge1$，Borel--Cantelli I 给出概率一事件 $E_k$，使得在 $E_k$ 上
+$|X_n-X|\le1/k$ 最终成立。事件 $E=\bigcap_kE_k$ 仍有概率一。若 $\omega\in E$ 且
+$\varepsilon>0$，取 $k$ 使 $1/k<\varepsilon$，再取 $E_k$ 对应的最终指标，便有
+$|X_n(\omega)-X(\omega)|<\varepsilon$ 最终成立。因此 $X_n\to X$ a.s.
+\end{example}
+
+无穷独立系统还有另一种刚性。一个性质若删去任意有限初段后都不改变，那么它属于系统的尾部信息。
+
+\begin{definition}[尾 $\sigma$-代数]\label{def:5-1-3-2}
+对随机元序列 $(X_n)$，定义其尾 $\sigma$-代数
+\[
+ \mathcal T=\bigcap_{N=1}^\infty\sigma(X_N,X_{N+1},\ldots).
+\]
+$\mathcal T$ 中的事件称为尾事件。
+\end{definition}
+
+在规范乘积样本空间上，尾事件可以直观地理解为改变有限多个坐标后不变的事件。然而在一般样本空间
+上，“修改坐标”未必定义了另一个样本点；正式定义始终是上述 $\sigma$-代数之交。以下证明也只使用
+这个定义。
+
+\begin{lemma}[独立初段与尾段]\label{lemma:5-1-3-3}
+若 $(X_n)_{n\ge1}$ 相互独立，则对每个 $N\ge1$，
+\[
+ \sigma(X_1,\ldots,X_N)
+ \quad\text{与}\quad
+ \sigma(X_{N+1},X_{N+2},\ldots)
+\]
+独立。
+\end{lemma}
+
+\begin{proof}
+令 $\mathcal P_-$ 为所有形如
+\[
+ \bigcap_{j=1}^N\{X_j\in B_j\}
+\]
+的事件，其中 $B_j$ 在 $X_j$ 的状态空间中可测；允许 $B_j$ 为全空间。
+$\mathcal P_-$ 是生成 $\sigma(X_1,\ldots,X_N)$ 的 $\pi$-系统。
+令 $\mathcal P_+$ 为所有有限尾柱事件
+\[
+ \bigcap_{j=N+1}^{M}\{X_j\in B_j\},\qquad M\ge N+1,
+\]
+并包含 $\Omega$。它是生成 $\sigma(X_{N+1},X_{N+2},\ldots)$ 的 $\pi$-系统。
+
+若 $A\in\mathcal P_-$、$B\in\mathcal P_+$，相互独立性把构成 $A\cap B$ 的有限个坐标事件
+全部因子化；分别把初段、尾段内部的因子重新相乘，得到
+\[
+ \Prob(A\cap B)=\Prob(A)\Prob(B).
+\]
+对这两个生成 $\pi$-系统应用定理~\ref{theorem:5-1-2-1} 的二元情形，便得到两个完整
+$\sigma$-代数独立。
+\end{proof}
+
+\begin{theorem}[Kolmogorov 零一律]\label{theorem:5-1-3-3}
+若 $(X_n)_{n\ge1}$ 独立，则每个尾事件 $A\in\mathcal T$ 满足
+\[
+ \Prob(A)\in\{0,1\}.
+\]
+\end{theorem}
+
+\begin{proof}
+固定 $A\in\mathcal T$。对每个 $N$，有
+$A\in\sigma(X_{N+1},X_{N+2},\ldots)$，所以由
+引理~\ref{lemma:5-1-3-3}，$A$ 与 $\sigma(X_1,\ldots,X_N)$ 独立。
+
+令 $\mathcal P$ 为所有有限坐标柱事件；它是一个 $\pi$-系统，并生成
+\[
+ \mathcal H=\sigma(X_1,X_2,\ldots).
+\]
+上一步说明 $A$ 与每个 $B\in\mathcal P$ 独立。定义
+\[
+ \mathcal D=
+ \{B\in\mathcal H:\Prob(A\cap B)=\Prob(A)\Prob(B)\}.
+\]
+首先 $\Omega\in\mathcal D$。若 $B\in\mathcal D$，则
+\begin{align*}
+ \Prob(A\cap B^c)
+ &=\Prob(A)-\Prob(A\cap B)\\
+ &=\Prob(A)-\Prob(A)\Prob(B)
+ =\Prob(A)\Prob(B^c),
+\end{align*}
+故 $B^c\in\mathcal D$。若 $(B_n)$ 两两不交且 $B_n\in\mathcal D$，则
+\begin{align*}
+ \Prob\!\left(A\cap\bigcup_{n=1}^{\infty}B_n\right)
+ &=\sum_{n=1}^{\infty}\Prob(A\cap B_n)\\
+ &=\Prob(A)\sum_{n=1}^{\infty}\Prob(B_n)
+ =\Prob(A)\Prob\!\left(\bigcup_{n=1}^{\infty}B_n\right).
+\end{align*}
+故 $\mathcal D$ 是 $\lambda$-系统。它包含 $\mathcal P$，所以 $\pi$--$\lambda$ 定理给出
+$\mathcal D=\mathcal H$。
+
+尾事件 $A$ 本身属于 $\mathcal H$，故可以在定义 $\mathcal D$ 的等式中取 $B=A$。若
+$p=\Prob(A)$，便有
+\[
+ p=\Prob(A\cap A)=p^2.
+\]
+由于 $0\le p\le1$，等式 $p(1-p)=0$ 蕴含 $p=0$ 或 $p=1$。
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=8mm and 9mm]
+  \node[book node] (a1) {$A_1$};
+  \node[book node,right=of a1] (a2) {$A_2$};
+  \node[book node,right=of a2] (dots) {$\cdots$};
+  \node[book strong node,right=of dots] (an) {$A_N,A_{N+1},\ldots$};
+  \draw[decorate,decoration={brace,mirror,amplitude=4pt},BookAccent]
+    ([yshift=-3pt]an.south west)--([yshift=-3pt]an.south east)
+    node[midway,below=6pt,book label]{$B_N=\bigcup_{n\ge N}A_n$};
+  \node[book warm node,below=19mm of a2] (limsup)
+    {$\displaystyle\limsup_nA_n=\bigcap_N B_N$};
+  \draw[book accent arrow] (an.south)--(limsup.east);
+
+  \node[book node,below=of limsup] (finite) {有限坐标柱集};
+  \node[book strong node,right=of finite] (all) {$\sigma(X_1,X_2,\ldots)$};
+  \node[book warning node,right=of all] (self) {$A$ 与自身独立};
+  \node[book warm node,below=of self] (p) {$p=p^2$};
+  \draw[book arrow] (finite)--node[above,book label]{$\pi$--$\lambda$}(all);
+  \draw[book arrow] (all)--(self);
+  \draw[book accent arrow] (self)--(p);
+\end{tikzpicture}
+\caption{上极限事件不受删除有限个初项影响；独立序列的尾事件经生成类推广后与自身独立。}
+\label{fig:5-1-3-tail-zero-one}
+\end{figure}
+
+\begin{example}[三个尾事件]\label{ex:5-1-3-3}
+设 $(X_n)$ 为实值随机变量序列。
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item 事件 $\{\limsup_nX_n=+\infty\}$ 可写成
+  \[
+   \bigcap_{m=1}^\infty\bigcap_{N=1}^\infty
+   \bigcup_{n\ge N}\{X_n>m\}.
+  \]
+  对每个固定 $N_0$，删去式中 $n<N_0$ 的有限项不改变事件，且余式只用
+  $X_{N_0},X_{N_0+1},\ldots$，故它属于 $\mathcal T$。
+  \item 级数 $\sum_nX_n$ 收敛的事件由 Cauchy 判据写成
+  \[
+   \bigcap_{k=1}^\infty\bigcup_{N=1}^\infty
+   \bigcap_{q\ge p\ge N}
+   \left\{\left|\sum_{n=p}^qX_n\right|<\frac1k\right\}.
+  \]
+  对任意 $N_0$，可把外层所选 $N$ 限制为 $N\ge N_0$ 而不改变该事件，所以它属于每个
+  $\sigma(X_{N_0},X_{N_0+1},\ldots)$。
+  \item 经验平均 $n^{-1}\sum_{j=1}^nX_j$ 有有限极限的事件也是尾事件。固定 $N_0$ 后，原平均与
+  $n^{-1}\sum_{j=N_0}^nX_j$ 的差是固定有限和
+  $n^{-1}\sum_{j<N_0}X_j$，逐点趋于零。因此两列同时有或同时没有有限极限。对后一列记
+  $Y_n^{(N_0)}=n^{-1}\sum_{j=N_0}^nX_j$，其有有限极限的事件由 Cauchy 判据表示为
+  \[
+   \bigcap_{k=1}^{\infty}\bigcup_{M=N_0}^{\infty}
+   \bigcap_{p,q\ge M}
+   \left\{|Y_p^{(N_0)}-Y_q^{(N_0)}|<\frac1k\right\}.
+  \]
+  每个括号内的事件属于
+  $\sigma(X_{N_0},X_{N_0+1},\ldots)$，因而整个事件属于该 $\sigma$-代数。
+\end{enumerate}
+若序列独立，零一律说明这些事件的概率不能严格落在 $0$ 与 $1$ 之间。只有在另行证明其中一个事件
+具有正概率后，才可以把它的概率提升为一；零一律本身不负责证明正概率。
+\end{example}
+
+\begin{example}[为何第二部分需要相关性假设]\label{ex:5-1-3-4}
+具体取 $\Omega=\{0,1\}$ 上的均匀概率、$A=\{1\}$，并令 $A_n=A$ 对所有 $n$ 成立。则
+\[
+ \sum_n\Prob(A_n)=\infty,
+ \qquad
+ \{A_n\ \mathrm{i.o.}\}=A,
+\]
+所以无限发生事件的概率仍是 $1/2$。这里每个事件都与下一个完全重合；发散的概率和把同一份质量
+重复计算了无穷次。这个反例只撤去独立性，精确标出了 Borel--Cantelli II 中该假设的位置。
+\end{example}
+
+概率一不表示逐点无例外。例如在无限抛硬币的规范乘积空间中，“从某次以后永远正面”对应的路径
+确实存在。若 $H_n$ 是第 $n$ 次正面事件，则对每个 $N$，测度从上连续给出
+\[
+ \Prob\!\left(\bigcap_{n\ge N}H_n\right)
+ =\lim_{M\to\infty}2^{-(M-N+1)}=0.
+\]
+因此这些事件对 $N$ 的可数并仍为零概率。概率论允许这样的非空异常集；它只保证异常集能够被一个
+可测零集容纳。
+
+\begin{exercise}
+\begin{enumerate}
+  \item 在独立公平硬币模型中证明任意给定的有限正反面图样几乎必然出现无限多次。提示：取互不重叠
+  的等长分块，以恢复事件独立性。
+  \item 若 $\Prob(|X_n-X|>2^{-n})\le2^{-n}$，用
+  命题~\ref{proposition:5-1-3-4} 证明 $X_n\to X$ a.s.，并给出逐点最终误差界。
+  \item 固定 $c\in\R$，证明“$\sup_nX_n\le c$”未必是尾事件，而
+  “$\limsup_nX_n\le c$”是尾事件，并给出前一断言的两项确定性序列反例。
+  \item 补全定理~\ref{theorem:5-1-3-3} 中 $\mathcal D$ 对两两不交可数并封闭的计算。
+\end{enumerate}
+\end{exercise}
+
+独立性把信息块隔开；条件期望则研究一个信息块已经揭示之后，对其余未知量应当如何作可测预测。
+下一节将从 Radon--Nikodym 表示出发，把这种预测构造成一个 $L^1$ 算子。

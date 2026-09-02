@@ -1,0 +1,33 @@
+% !TeX program = xelatex
+\documentclass[a4paper,11pt,twoside,openright]{book}
+\input{preamble}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+  \centering
+  \vspace*{0.22\textheight}
+  {\color{BookAccent}\rule{0.62\textwidth}{0.8pt}\par}
+  \vspace{2.2em}
+  {\Huge\bfseries\color{BookInk}有限观测与无限对象\par}
+  \vspace{1.1em}
+  {\Large\color{BookAccent}实复分析与概率综合讲义\par}
+  \vspace{2.2em}
+  {\color{BookAccent}\rule{0.62\textwidth}{0.8pt}\par}
+  \vfill
+\end{titlepage}
+\input{frontmatter/preface}
+\tableofcontents
+
+\mainmatter
+\input{chapters/ch01/ch01}
+\input{chapters/ch02/ch02}
+\input{chapters/ch03/ch03}
+\input{chapters/ch04/ch04}
+\input{chapters/ch05/ch05}
+\input{chapters/ch06/ch06}
+\input{chapters/ch07/ch07}
+
+\backmatter
+\printindex
+\end{document}

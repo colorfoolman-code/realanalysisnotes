@@ -1,0 +1,1391 @@
+\section{概率收敛、弱收敛与紧性}\label{sec:05-03}
+
+一个随机变量序列可以在几乎每条样本路径上安定下来，也可以只让偏离极限的概率趋于零；它还可以在平均误差中收敛，或者仅仅让每一个有界连续观测量的平均值收敛。这四种说法保留的信息不同。把它们都写成“$X_n\to X$”固然省墨，却会把证明中真正需要的结构一起省掉。
+
+本节先把可靠的蕴含和失败的逆向放在同一张图里。随后我们处理两个升级问题：何时依概率收敛可以升级为矩收敛；何时一列分布至少有弱收敛子列。前一个问题的答案是统一控制大值尾部，后一个问题的答案是统一阻止质量逃向空间的远处。
+
+
+\subsection{随机变量的四种收敛与反例图谱}\label{subsec:5-3-1}
+\index{几乎必然收敛}\index{依概率收敛}\index{$L^p$ 收敛}\index{依分布收敛}
+
+先说明依分布收敛的一项局限。比较 $X_n$ 与 $X$ 的分布可以控制
+$\E f(X_n)$ 与 $\E f(X)$，却没有比较同一个 $\omega$ 上的 $X_n(\omega)$ 与
+$X(\omega)$；分布已经忘掉样本点怎样彼此配对。因此，依分布收敛一般不能推出依概率收敛，
+即使所有变量定义在同一个概率空间上。
+
+\begin{definition}[四种收敛]\label{def:5-3-1-1}
+设 $X_n,X$ 是同一概率空间上的实值随机变量，$1\le p<\infty$。
+\begin{enumerate}
+  \item 若存在 $N\in\mathcal F$，$\Prob(N)=0$，使得对每个 $\omega\notin N$ 都有 $X_n(\omega)\to X(\omega)$，则称 $X_n$ \emph{几乎必然收敛}于 $X$，记作 $X_n\to X$ a.s.；
+  \item 若对每个 $\varepsilon>0$，
+  \[
+    \Prob\bigl(|X_n-X|>\varepsilon\bigr)\longrightarrow0,
+  \]
+  则称 $X_n$ \emph{依概率收敛}于 $X$，记作 $X_n\xrightarrow{\Prob}X$；
+  \item 若 $X_n,X\in L^p$ 且
+  \[
+    \E|X_n-X|^p\longrightarrow0,
+  \]
+  则称 $X_n$ 在 $L^p$ 中收敛于 $X$；
+  \item 若对每个 $f\in C_b(\R)$ 都有
+  \[
+    \int_{\R}f\,\dd\Law(X_n)\longrightarrow
+    \int_{\R}f\,\dd\Law(X),
+  \]
+  则称 $X_n$ \emph{依分布收敛}于 $X$。
+\end{enumerate}
+前三项比较同一概率空间上的变量；第四项只比较推前测度。
+\end{definition}
+
+\begin{definition}[依分布符号]\label{def:5-3-1-2}
+若概率测度 $\mu_n,\mu$ 对每个 $f\in C_b(\R)$ 满足
+$\int f\,\dd\mu_n\to\int f\,\dd\mu$，记作 $\mu_n\Rightarrow\mu$。对随机变量写
+$X_n\Rightarrow X$，其含义是 $\Law(X_n)\Rightarrow\Law(X)$。因此 $X_n$ 与 $X$ 可以定义在不同的概率空间上。
+\end{definition}
+
+\begin{definition}[随机阶记号]\label{def:5-3-1-3}
+设数列 $a_n$ 对每个 $n$ 都满足 $a_n>0$。若对每个 $\eta>0$，存在 $M<\infty$ 与 $N$，使得
+\[
+  \sup_{n\ge N}\Prob\bigl(|X_n|>Ma_n\bigr)<\eta,
+\]
+则写 $X_n=O_\Prob(a_n)$。若 $X_n/a_n\xrightarrow{\Prob}0$，则写
+$X_n=o_\Prob(a_n)$。
+\end{definition}
+
+此处的 $O_\Prob$ 直接由尾概率定义。等到\cref{subsec:5-3-3} 定义概率测度族的紧性后，
+$X_n=O_\Prob(a_n)$ 就可以改写为归一化分布族 $\{\Law(X_n/a_n)\}$ 的紧性；目前不需要预借这层拓扑语言。
+
+\begin{example}[打字机序列]\label{ex:5-3-1-1}
+在 $([0,1),\Borel([0,1)),m)$ 上，对 $r\ge0$ 与 $0\le k<2^r$ 令
+\[
+ I_{r,k}=[k2^{-r},(k+1)2^{-r}),\qquad
+ X_{2^r+k}=\1_{I_{r,k}}.
+\]
+若第 $n$ 项位于第 $r$ 层，则
+\[
+ \Prob(|X_n|>1/2)=2^{-r}\longrightarrow0,
+ \qquad
+ \E|X_n|^p=2^{-r}\longrightarrow0
+\]
+对每个 $1\le p<\infty$ 成立。因此 $X_n\xrightarrow{\Prob}0$，甚至在每个有限 $L^p$ 中收敛。
+可是每个 $x\in[0,1)$ 在每一层恰好落入一个区间 $I_{r,k}$；沿整列看，$X_n(x)$ 在每层取一次 $1$，同时也取许多次 $0$。所以它在任何 $x\in[0,1)$ 都不收敛。这个例子同时否定“依概率 $\Rightarrow$ a.s.”与“$L^p\Rightarrow$ a.s.”。
+\end{example}
+
+\begin{example}[尖峰破坏矩收敛]\label{ex:5-3-1-2}
+在 $([0,1],\Borel([0,1]),m)$ 上令
+\[
+  X_n=n\1_{(0,1/n)}.
+\]
+对每个 $x>0$，当 $n>x^{-1}$ 时 $x\notin(0,1/n)$，故 $X_n(x)\to0$；在 $x=0$ 处各项也为零。因此 $X_n\to0$ a.s.，从而也依概率收敛。另一方面
+\[
+  \E|X_n|=n\,m(0,1/n)=1.
+\]
+所以 $X_n$ 不在 $L^1$ 中收敛于零。把高度改为 $n^{1/p}$，同样得到 a.s. 收敛而 $L^p$ 误差恒为一的例子。
+\end{example}
+
+\begin{example}[同分布不同配对]\label{ex:5-3-1-3}
+在一个承载两枚独立公平符号 $X,Y$ 的概率空间上，令 $X_n=Y$ 对每个 $n$ 成立。$X_n$ 与 $X$ 都服从 Rademacher 分布
+$\tfrac12(\delta_{-1}+\delta_1)$，故 $X_n\Rightarrow X$。但是独立性给出
+\[
+ \Prob(|X_n-X|>1)=\Prob(Y\ne X)=\frac12,
+\]
+所以 $X_n$ 不依概率收敛于 $X$。这里序列甚至没有随 $n$ 变化；失败完全来自耦合，而不是渐近计算。
+\end{example}
+
+\begin{proposition}[基本蕴含]\label{proposition:5-3-1-1}
+对 $1\le p<\infty$，有
+\[
+  X_n\longrightarrow X\text{ 于 }L^p
+  \quad\Longrightarrow\quad
+  X_n\xrightarrow{\Prob}X,
+\]
+以及
+\[
+  X_n\longrightarrow X\text{ a.s.}
+  \quad\Longrightarrow\quad
+  X_n\xrightarrow{\Prob}X
+  \quad\Longrightarrow\quad
+  X_n\Rightarrow X.
+\]
+上述箭头的逆向一般都不成立。
+\end{proposition}
+
+\begin{proof}
+若 $X_n\to X$ 于 $L^p$，则对任意 $\varepsilon>0$，Markov 不等式
+\cref{theorem:5-1-1-2} 给出
+\[
+ \Prob(|X_n-X|>\varepsilon)
+ \le \varepsilon^{-p}\E|X_n-X|^p\longrightarrow0.
+\]
+
+再设 $X_n\to X$ a.s.，固定 $\varepsilon>0$，并令
+\[
+ A_N=\bigcup_{n\ge N}\{|X_n-X|>\varepsilon\}.
+\]
+集合 $A_N$ 随 $N$ 递减，而
+$\bigcap_NA_N$ 是事件 $\{|X_n-X|>\varepsilon\ \text{i.o.}\}$。在 a.s. 收敛的共同满测集上，这一事件不发生，故 $\Prob(\bigcap_NA_N)=0$。概率测度从上连续，于是
+\[
+ \Prob(|X_n-X|>\varepsilon)
+ \le \Prob(A_n)\longrightarrow0
+ \qquad(n\to\infty).
+\]
+
+最后设 $X_n\xrightarrow{\Prob}X$。先证明任意子列 $(X_{n_j})$ 都有进一步子列 a.s. 收敛于 $X$。递归选取 $j_k$，使
+\[
+ \Prob\bigl(|X_{n_{j_k}}-X|>2^{-k}\bigr)<2^{-k}.
+\]
+Borel--Cantelli I（\cref{theorem:5-1-3-1}）表明这些事件只发生有限多次，所以
+$X_{n_{j_k}}\to X$ a.s.。对任意
+$f\in C_b(\R)$，连续性与 DCT 给
+\[
+ \E f(X_{n_{j_k}})\longrightarrow\E f(X).
+\]
+若原数列 $\E f(X_n)$ 不收敛于 $\E f(X)$，就存在 $\delta>0$ 及一个子列，使
+$|\E f(X_{n_j})-\E f(X)|\ge\delta$ 对全部 $j$ 成立；刚构造的进一步子列与此矛盾。因此每个 $f\in C_b(\R)$ 的测试积分都收敛，即 $X_n\Rightarrow X$。
+
+逆向失败分别由\cref{ex:5-3-1-1,ex:5-3-1-2,ex:5-3-1-3} 给出。
+\end{proof}
+
+\begin{theorem}[依概率子列原理]\label{theorem:5-3-1-2}
+$X_n\xrightarrow{\Prob}X$，当且仅当 $(X_n)$ 的每个子列都有一个进一步子列 a.s. 收敛于 $X$。
+\end{theorem}
+
+\begin{proof}
+正向的进一步子列已经在\cref{proposition:5-3-1-1} 的证明中构造：同时让坏事件的概率和阈值都按 $2^{-k}$ 下降，再用 Borel--Cantelli I。
+
+反之，若 $X_n$ 不依概率收敛于 $X$，则存在 $\varepsilon,\delta>0$ 和子列 $(X_{n_k})$，使
+\[
+  \Prob(|X_{n_k}-X|>\varepsilon)\ge\delta
+  \qquad(k\ge1).
+\]
+按假设，该子列有进一步子列 a.s. 收敛于 $X$。由\cref{proposition:5-3-1-1}，这个进一步子列又依概率收敛于 $X$，与上述统一下界矛盾。
+\end{proof}
+
+子列原理经常比定义更好用：要证明依概率收敛，可以对任意子列寻找 a.s. 收敛的进一步子列；要否定依概率收敛，则应找出一个坏子列，使任何进一步子列都无法摆脱同一概率下界。
+
+\begin{theorem}[连续映射定理：处处连续版]\label{theorem:5-3-1-3}
+若 $X_n\Rightarrow X$，且 $g:\R\to\R^m$ 连续，则
+$g(X_n)\Rightarrow g(X)$。
+\end{theorem}
+
+\begin{proof}
+任取 $f\in C_b(\R^m)$。复合函数 $f\circ g$ 属于 $C_b(\R)$，故
+\[
+ \E f(g(X_n))=\E (f\circ g)(X_n)\longrightarrow
+ \E(f\circ g)(X)=\E f(g(X)).
+\]
+这正是依分布收敛的定义。
+\end{proof}
+
+若 $g$ 只在一个 $\Law(X)$-零集之外连续，上述一行证明不再成立，因为 $f\circ g$ 未必连续。
+\cref{proposition:5-3-3-3} 将借助 Portmanteau 定理处理这种几乎处处连续的情形。
+
+\begin{remark}[Slutsky 公式所需的联合控制]\label{proposition:5-3-1-4}
+若 $X_n\Rightarrow X$、$Y_n\xrightarrow{\Prob}c$，且 $X_n,Y_n$ 定义在同一概率空间上，则
+\[
+ X_n+Y_n\Rightarrow X+c,
+ \qquad
+ X_nY_n\Rightarrow cX.
+\]
+这两个结论不能只由两个边缘分布分别收敛直接推出；关键是先证明
+$(X_n,Y_n)\Rightarrow(X,c)$。\cref{proposition:5-3-3-slutsky} 将用联合分布的紧性
+建立这一点，并由连续映射定理得到上述公式。
+\end{remark}
+
+一个不需要联合极限定理的特例可以直接验证。固定随机变量 $X$ 与有界随机变量 $Z$，令
+$Y_n=c+n^{-1}Z$。则 $f(X+Y_n)\to f(X+c)$ a.s.，并由 $|f(X+Y_n)|\le\|f\|_\infty$ 与 DCT 得
+$X+Y_n\Rightarrow X+c$。若把固定的 $X$ 换成只知道 $X_n\Rightarrow X$ 的序列，这个论证会在第一步停止：有界连续函数在整条实线上未必一致连续，$|Y_n-c|$ 小不能对所有可能的 $X_n$ 同时给出函数值误差小。真正缺少的是联合分布的紧性，而不是再写一次 DCT。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=18mm and 20mm]
+  \node[book strong node] (lp) {$L^p$ 收敛};
+  \node[book strong node,below=of lp] (as) {a.s. 收敛};
+  \node[book strong node,right=of lp,yshift=-9mm] (pr) {依概率};
+  \node[book strong node,right=of pr] (di) {依分布};
+  \draw[book accent arrow] (lp)--(pr);
+  \draw[book accent arrow] (as)--(pr);
+  \draw[book accent arrow] (pr)--(di);
+  \draw[book dashed arrow] (pr) to[bend left=18]
+    node[above,font=\scriptsize,align=center]{逆向失败：\\打字机} (as);
+  \draw[book dashed arrow] (di) to[bend left=18]
+    node[below,font=\scriptsize,align=center]{逆向失败：\\独立副本} (pr);
+  \draw[book dashed arrow] (as) to[bend right=20]
+    node[left,font=\scriptsize,align=right]{逆向失败：\\尖峰} (lp);
+\end{tikzpicture}
+\caption{四种收敛中始终可靠的箭头。打字机序列还说明 $L^p$ 收敛不推出 a.s. 收敛；尖峰说明 a.s. 收敛不推出 $L^p$ 收敛。}
+\label{fig:5-3-1-convergence-map}
+\end{figure}
+
+\begin{remark}[反例矩阵的读法]\label{rem:5-3-1-prob-to-law}
+图\ref{fig:5-3-1-convergence-map} 没有把 a.s. 收敛与 $L^p$ 收敛排成一条链，因为二者互不蕴含。依分布收敛则不比较同一 $\omega$ 上的值。以后证明大数律、中心极限定理或估计量的渐近性质时，应先问结论需要保留哪一种信息，再决定使用哪条箭头；把更弱拓扑写成更强拓扑不会让定理更有力，只会让证明出现缺口。
+\end{remark}
+
+\begin{exercise}[四种收敛的比较]\label{exercise:5-3-1-1}
+\begin{enumerate}
+  \item 对打字机序列逐项验证每个有限 $L^p$ 收敛，并证明它在每一点都不收敛。
+  \item 对固定 $X$ 与有界 $Z$，直接由 DCT 证明 $X+n^{-1}Z\Rightarrow X$。
+  \item 构造一个 a.s. 收敛到零但在指定 $L^p$ 中不收敛的非负序列。
+  \item 证明 $X_n=o_\Prob(a_n)$ 推出 $X_n=O_\Prob(a_n)$，并给出逆向失败的常数序列。
+\end{enumerate}
+\end{exercise}
+
+
+\subsection{一致可积、\Scheffe{} 与期望收敛}\label{subsec:5-3-2}
+\index{一致可积}\index{Scheffe@\Scheffe{} 引理}\index{全变差距离}
+
+\cref{ex:5-3-1-2} 中，$X_n\to0$ a.s.，但全部期望都等于一。坏集的概率只有 $1/n$，期望却把函数高度也计算进去。若要从概率收敛得到平均收敛，就必须排除“越罕见越巨大”的补偿机制。
+
+\begin{definition}[概率空间上的一致可积]\label{def:5-3-2-1}
+一族可积随机变量 $\mathcal X$ 称为\emph{一致可积}（uniformly integrable，简称 UI），若
+\[
+ \lim_{K\to\infty}\sup_{X\in\mathcal X}
+ \E\bigl[|X|\1_{\{|X|>K\}}\bigr]=0.
+\]
+\end{definition}
+
+由\cref{lemma:3-4-1-ui-equivalence}，在概率空间上这等价于
+\[
+ \sup_{X\in\mathcal X}\E|X|<\infty
+ \tag{5.3.1}\label{eq:5-3-ui-l1-bound}
+\]
+以及下列小事件条件：对每个 $\varepsilon>0$，存在 $\delta>0$，使
+\[
+ \Prob(A)<\delta
+ \quad\Longrightarrow\quad
+ \sup_{X\in\mathcal X}\E(|X|\1_A)<\varepsilon.
+ \tag{5.3.2}\label{eq:5-3-ui-small-events}
+\]
+为了记住两个量词的作用，不妨重做其中的关键估计。由尾部定义，可取 $K_0$ 使
+\[
+ \sup_{X\in\mathcal X}\E\bigl(|X|\1_{\{|X|>K_0\}}\bigr)<1.
+\]
+因而对每个 $X\in\mathcal X$，
+\[
+ \E|X|
+ \le K_0+\E\bigl(|X|\1_{\{|X|>K_0\}}\bigr)
+ <K_0+1,
+\]
+这给出\eqref{eq:5-3-ui-l1-bound}。再给定 $\varepsilon>0$，取 $K$ 使统一尾期望小于
+$\varepsilon/2$，并令 $\delta=\varepsilon/(2K)$。当 $\Prob(A)<\delta$ 时，
+\[
+ \E(|X|\1_A)
+ \le K\Prob(A)+\E\bigl(|X|\1_{\{|X|>K\}}\bigr)
+ <\varepsilon
+\]
+对全部 $X\in\mathcal X$ 同时成立，即\eqref{eq:5-3-ui-small-events}。
+
+反过来，假设 $C=\sup_X\E|X|<\infty$ 且小事件条件成立。给定 $\varepsilon>0$，取对应的
+$\delta>0$，再取 $K>C/\delta$。Markov 不等式给出
+\[
+ \Prob(|X|>K)\le\frac{\E|X|}{K}\le\frac CK<\delta.
+\]
+把 $A=\{|X|>K\}$ 代入小事件条件，得
+$\sup_X\E(|X|\1_{\{|X|>K\}})<\varepsilon$，这就恢复了统一尾控制。
+
+\begin{definition}[矩一致可积]\label{def:5-3-2-2}
+研究 $p$ 阶矩时，称 $(X_n)$ 的 $p$ 阶矩一致可积，是指随机变量族
+$\{|X_n|^p:n\ge1\}$ 一致可积。
+\end{definition}
+
+\begin{definition}[全变差距离]\label{def:5-3-2-3}
+概率测度 $\mu,\nu$ 的\emph{全变差距离}定义为
+\[
+ d_{\mathrm{TV}}(\mu,\nu)=\sup_A|\mu(A)-\nu(A)|
+ =\frac12|\mu-\nu|(S),
+\]
+其中上确界遍历可测集，$|\mu-\nu|$ 是有符号测度 $\mu-\nu$ 的全变差测度。若二者相对于同一测度 $\lambda$ 有密度 $p,q$，则
+\[
+ d_{\mathrm{TV}}(\mu,\nu)=\frac12\int|p-q|\,\dd\lambda.
+\]
+\end{definition}
+
+最后一个等式中的因子 $1/2$ 不能丢掉。令 $r=p-q$；由于 $\int r=0$，有
+$\int r^+=\int r^-=\frac12\int|r|$。对任意 $A$，
+$|\int_A r|\le\int r^+$，而取 $A=\{r\ge0\}$ 达到等号。
+
+\begin{example}[可计算的 UI 充分条件]\label{ex:5-3-2-1}
+若 $p>1$ 且 $C:=\sup_n\E|X_n|^p<\infty$，则在 $\{|X_n|>K\}$ 上
+$|X_n|\le K^{1-p}|X_n|^p$，因而
+\[
+ \sup_n\E\bigl[|X_n|\1_{\{|X_n|>K\}}\bigr]
+ \le C K^{1-p}\longrightarrow0.
+\]
+更一般地，设 $\Phi:[0,\infty)\to[0,\infty)$ 凸、非降，且
+$\Phi(t)/t\to\infty$。若 $C_\Phi:=\sup_n\E\Phi(|X_n|)<\infty$，则
+当 $K$ 足够大（此时 $\Phi(t)>0$ 对所有 $t>K$ 成立）时，
+\[
+ \E\bigl[|X_n|\1_{\{|X_n|>K\}}\bigr]
+ \le \left(\sup_{t>K}\frac{t}{\Phi(t)}\right)C_\Phi\longrightarrow0.
+\]
+这是 de la \ValleePoussin{} 判据的充分方向；这里不讨论其必要性。
+\end{example}
+
+\begin{example}[一致 $L^1$ 有界并不够]\label{ex:5-3-2-2}
+仍取 $X_n=n\1_{(0,1/n)}$。虽然 $\E|X_n|=1$ 对所有 $n$ 成立，但只要 $n>K$，
+\[
+ \E\bigl[|X_n|\1_{\{|X_n|>K\}}\bigr]=1.
+\]
+所以该族不 UI。它依概率收敛于零而期望不收敛，失败恰好被 UI 定义检测到。
+\end{example}
+
+\begin{theorem}[Vitali 概率版]\label{theorem:5-3-2-1}
+若 $X_n\xrightarrow{\Prob}X$，且 $(X_n)$ UI，则 $X\in L^1$，并且
+\[
+ \E|X_n-X|\longrightarrow0.
+\]
+特别地，$\E X_n\to\E X$。
+\end{theorem}
+
+\begin{proof}
+概率空间是有限测度空间，依概率收敛就是\cref{def:3-4-1-1} 的依测度收敛，而
+\cref{def:5-3-2-1} 与\cref{def:3-4-1-2} 是同一定义。因此\cref{theorem:3-4-1-2} 直接给出 $X\in L^1$ 与
+$\|X_n-X\|_1\to0$。再由积分三角不等式，
+\[
+ |\E X_n-\E X|\le\E|X_n-X|\longrightarrow0.
+\]
+\end{proof}
+
+\begin{proposition}[$L^p$ 升级]\label{proposition:5-3-2-2}
+设 $1\le p<\infty$。若 $X_n\xrightarrow{\Prob}X$，且
+$\{|X_n|^p:n\ge1\}$ UI，则 $X\in L^p$ 且 $X_n\to X$ 于 $L^p$。
+\end{proposition}
+
+\begin{proof}
+UI 蕴含 $C:=\sup_n\E|X_n|^p<\infty$。由依概率子列原理，从任意子列都能抽出进一步子列
+$X_{n_k}\to X$ a.s.；Fatou 引理给
+\[
+ \E|X|^p\le\liminf_k\E|X_{n_k}|^p\le C.
+\]
+所以 $X\in L^p$。
+
+令 $Z_n=|X_n-X|^p$。连续映射 $t\mapsto|t|^p$ 给出 $Z_n\xrightarrow{\Prob}0$。
+上一步已经证明 $X\in L^p$，现在可以利用点态不等式
+\[
+ Z_n\le2^{p-1}(|X_n|^p+|X|^p)
+\]
+先给一致 $L^1$ 界。给定 $\varepsilon>0$，$\{|X_n|^p\}$ 的 UI 小事件条件与固定可积函数 $|X|^p$ 的积分绝对连续性给出 $\delta>0$，使 $\Prob(A)<\delta$ 时
+\[
+ \sup_n\E(Z_n\1_A)
+ \le2^{p-1}\left(
+   \sup_n\E(|X_n|^p\1_A)+\E(|X|^p\1_A)
+ \right)<\varepsilon.
+\]
+由\eqref{eq:5-3-ui-l1-bound}--\eqref{eq:5-3-ui-small-events} 的等价形式，$(Z_n)$ UI。Vitali 概率版作用于 $Z_n\to0$，得到
+\[
+ \E|X_n-X|^p=\E Z_n\longrightarrow0.
+\]
+\end{proof}
+
+\begin{theorem}[\Scheffe{} 引理]\label{theorem:5-3-2-3}
+设 $f_n,f\ge0$ 可测，$f_n\to f$ a.e.，并且
+\[
+ \int f_n\longrightarrow\int f<\infty.
+\]
+则
+\[
+ \int|f_n-f|\longrightarrow0.
+\]
+\end{theorem}
+
+\begin{proof}
+有恒等式
+\[
+ |f_n-f|=f_n+f-2(f_n\wedge f).
+\]
+因为 $f_n\wedge f\to f$ a.e.，且 $0\le f_n\wedge f\le f\in L^1$，DCT 给
+$\int(f_n\wedge f)\to\int f$。代入恒等式并使用 $\int f_n\to\int f$，得到
+\[
+ \int|f_n-f|
+ =\int f_n+\int f-2\int(f_n\wedge f)\longrightarrow0.
+\]
+\end{proof}
+
+\begin{example}[密度与全变差的直接计算]\label{ex:5-3-2-3}
+在 $[0,1]$ 上令
+\[
+ p_n(x)=1+\frac1n\sin(2\pi x),\qquad p(x)=1.
+\]
+这些函数非负，积分都为一，且 $p_n\to p$ 处处。\Scheffe{} 引理给相应概率分布的全变差收敛；这里还可以把距离算完：
+\[
+ \int_0^1|p_n-p|\,\dd x
+ =\frac1n\int_0^1|\sin(2\pi x)|\,\dd x
+ =\frac{2}{\pi n},
+ \qquad
+ d_{\mathrm{TV}}(p_n\dd x,p\dd x)=\frac1{\pi n}.
+\]
+\end{example}
+
+\Scheffe{} 的“非负且总质量收敛”确实承担工作。若
+$g_n=n\1_{(0,1/n)}-n\1_{(1/n,2/n)}$，则 $g_n\to0$ a.e. 且 $\int g_n=0$，但
+$\int|g_n|=2$；去掉非负性，结论失败。若
+$f_n=1+n\1_{(0,1/n)}$、$f=1$，则 $f_n\to f$ a.e. 而
+$\int f_n=2\not\to1$，且 $\int|f_n-f|=1$；去掉总质量收敛，移动尖峰仍能携带固定质量。
+
+\begin{proposition}[$L^1$ 收敛的 UI 必要性]\label{proposition:5-3-2-4}
+若 $X_n\to X$ 于 $L^1$，则 $(X_n)$ UI，并且 $X_n\xrightarrow{\Prob}X$。因此，对一个已知依概率收敛于 $X$ 的序列，
+\[
+ X_n\to X\text{ 于 }L^1
+ \quad\Longleftrightarrow\quad
+ (X_n)\text{ UI}.
+\]
+\end{proposition}
+
+\begin{proof}
+$L^1$ 收敛蕴含依概率收敛已由 Markov 不等式证明。又有
+$\sup_n\|X_n\|_1<\infty$。给定 $\varepsilon>0$，先取 $N$ 使 $n\ge N$ 时
+$\|X_n-X\|_1<\varepsilon/2$。可积函数积分的绝对连续性给出 $\delta>0$，使 $\Prob(A)<\delta$ 时
+\[
+ \E(|X|\1_A)<\frac\varepsilon2,
+ \qquad
+ \max_{1\le n<N}\E(|X_n|\1_A)<\varepsilon;
+\]
+第二个条件只需对有限多个可积函数取最小的 $\delta$。于是对 $n\ge N$，
+\[
+ \E(|X_n|\1_A)
+ \le\|X_n-X\|_1+\E(|X|\1_A)<\varepsilon.
+\]
+故整族满足 UI 的小事件条件，再结合一致 $L^1$ 界即得 UI。最后一个等价的正向由 Vitali 概率版给出，反向就是刚证明的必要性。
+\end{proof}
+
+依分布收敛本身仍不足以比较期望。令 $X_n$ 以概率 $1/n$ 取值 $n$，其余时候取零，则
+$X_n\xrightarrow{\Prob}0$，因而 $X_n\Rightarrow0$，但 $\E X_n=1$。这不是期望“不连续”的神秘现象，而是测试函数 $x\mapsto x$ 不属于 $C_b(\R)$，同时该族不 UI。
+
+同一截断--尾部分解也适用于鞅的 $L^1$ 极限：依概率或 a.s. 收敛控制截断后的有界部分，UI
+统一控制条件期望族的尾部。这里所需的抽象工具正是
+\cref{theorem:5-3-2-1,proposition:5-3-2-2,proposition:5-3-2-4}。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[book line] (0,0)--(11,0);
+  \fill[BookAccent!8] (2,0) rectangle (9,2.0);
+  \fill[BookWarning!10] (0,0) rectangle (2,2.0);
+  \fill[BookWarning!10] (9,0) rectangle (11,2.0);
+  \draw[book line] (2,0)--(2,2.2);
+  \draw[book line] (9,0)--(9,2.2);
+  \node[book label,align=center] at (5.5,1.25) {截断部分：依概率收敛 $+$ 一致有界\\
+    $\Longrightarrow$ 平均误差小};
+  \node[book label,align=center] at (1,1.15) {左尾\\UI 剪除};
+  \node[book label,align=center] at (10,1.15) {右尾\\UI 剪除};
+  \draw[decorate,decoration={brace,amplitude=5pt},BookAccent] (2,-0.25)--(9,-0.25)
+    node[midway,below=6pt,font=\small]{截断区};
+\end{tikzpicture}
+\caption{Vitali 定理中的截断--尾部分工。图只记录误差分解；截断部分的估计与尾积分估计仍分别需要证明。}
+\label{fig:5-3-2-vitali-body-tail}
+\end{figure}
+
+\begin{exercise}[UI 与质量守恒]\label{exercise:5-3-2-1}
+\begin{enumerate}
+  \item 直接用尾积分定义证明：若 $\sup_n\E|X_n|^p<\infty$ 且 $p>1$，则 $(X_n)$ UI。
+  \item 证明 \Scheffe{} 引理，并从有密度的全变差公式推出事件概率的一致收敛。
+  \item 对 $X_n=n\1_{(0,1/n)}$ 验证 $X_n\Rightarrow0$，同时定位 UI 定义中失败的量词。
+  \item 设 $X_n\xrightarrow{\Prob}X$。证明 $X_n\to X$ 于 $L^p$ 当且仅当 $\{|X_n-X|^p\}$ UI。
+\end{enumerate}
+\end{exercise}
+\subsection{Portmanteau、紧性与 Prokhorov 定理}\label{subsec:5-3-3}
+\index{弱收敛}\index{紧性}\index{Portmanteau 定理}\index{Prokhorov 定理}
+
+依分布收敛把概率测度放进一个由 $C_b$ 测试函数产生的拓扑。定义很短，随后却有三个必须分别解决的问题：
+\begin{enumerate}
+  \item 函数积分的收敛怎样控制开集、闭集的概率；
+  \item 什么条件阻止一族概率把质量送到越来越远的地方；
+  \item 对角抽取所得的测试积分极限为什么来自可数可加概率，而不是一个仅仅有限可加的“伪积分”。
+\end{enumerate}
+Portmanteau 回答第一问，紧性刻画第二问；第三问需要把极限泛函表示成可数可加概率测度。
+
+\begin{definition}[概率族的紧性]\label{def:5-3-3-3}
+设 $S$ 为 Polish 空间，$\mathcal K$ 是由 $S$ 上 Borel 概率测度组成的族。若对每个
+$\varepsilon>0$，存在同一个紧集 $K_\varepsilon\subset S$，使
+\[
+ \sup_{\nu\in\mathcal K}\nu(K_\varepsilon^c)<\varepsilon,
+\]
+则称 $\mathcal K$ \emph{具有紧性}，也称它为\emph{紧概率族}。
+\end{definition}
+
+这里“同一个”的量词不能省略：紧集可以依赖 $\varepsilon$，但不能依赖
+$\nu\in\mathcal K$。
+
+\begin{proposition}[Polish 概率的紧逼近与 Radon 正则性]\label{proposition:5-3-3-polish-radon}
+设 $S$ 为 Polish 空间。每个 Borel 概率 $\mu$ 组成的单元素族都具有紧性：对每个 $\varepsilon>0$，存在紧集
+$K\subset S$ 使 $\mu(K)>1-\varepsilon$。此外，$\mu$ 是 Radon 概率，即每个 Borel 集都可由紧集从内逼近、由开集从外逼近。
+\end{proposition}
+
+\begin{proof}
+固定一个有界的兼容完备度量 $d$ 以及稠密列 $(x_j)_{j\ge1}$。这样的度量总能取得：若
+$d_0$ 兼容且完备，则 $d=d_0/(1+d_0)$ 诱导同一拓扑。函数
+$r\mapsto r/(1+r)$ 非降，且对 $a,b\geq0$ 有
+\[
+ \frac{a}{1+a}+\frac{b}{1+b}-\frac{a+b}{1+a+b}
+ =\frac{ab(2+a+b)}{(1+a)(1+b)(1+a+b)}\geq0,
+\]
+故 $d$ 仍满足三角不等式，确为度量。更具体地，对 $0<\delta<1$，
+\[
+ d(x,y)<\delta
+ \quad\Longrightarrow\quad
+ d_0(x,y)=\frac{d(x,y)}{1-d(x,y)}<\frac{\delta}{1-\delta}.
+\]
+因此 $d$-Cauchy 列也是 $d_0$-Cauchy 列，从而有 $d_0$-极限；两个度量拓扑相同，所以该极限也是
+$d$-极限，即 $d$ 完备。给定 $\varepsilon>0$。对每个
+$m\ge1$，开球族
+\[
+ \{B(x_j,2^{-m-2}):j\ge1\}
+\]
+覆盖 $S$。这些球的有限前段之并递增到 $S$，故测度从下连续性给出 $N_m$，使
+\[
+ \mu\left(\bigcup_{j=1}^{N_m}B(x_j,2^{-m-2})\right)
+ >1-\varepsilon2^{-m-1}.
+\]
+令
+\[
+ F_m=\bigcup_{j=1}^{N_m}\overline B(x_j,2^{-m-1}),
+ \qquad K=\bigcap_{m\ge1}F_m.
+\]
+每个 $F_m$ 闭，因此 $K$ 闭；并且
+\[
+ \mu(K^c)\le\sum_{m\ge1}\mu(F_m^c)
+ <\varepsilon\sum_{m\ge1}2^{-m-1}<\varepsilon.
+\]
+对每个 $m$，有限集 $\{x_1,\ldots,x_{N_m}\}$ 是 $K$ 的 $2^{-m-1}$-网，所以 $K$ 全有界。
+$K$ 是完备空间 $S$ 的闭子集，因而完备；完备且全有界的度量空间紧。紧性得证。
+
+下面证明正则性。若 $F$ 闭，先取上面构造的紧集 $K$ 使 $\mu(K^c)<\varepsilon$，则
+$F\cap K$ 是 $F$ 中的紧集，且
+\[
+ \mu(F\setminus(F\cap K))\le\mu(K^c)<\varepsilon.
+\]
+又令 $F^{1/n}=\{x:d(x,F)<1/n\}$。当 $F\ne\varnothing$ 时，
+$F^{1/n}\downarrow F$，故测度从上连续性给 $\mu(F^{1/n}\setminus F)\to0$；空集情形直接取空开集。
+所以闭集同时有紧内逼近与开外逼近。
+
+记 $\mathcal R$ 为同时具有这两种逼近的 Borel 集全体。它包含闭集。若 $A\in\mathcal R$，取开集
+$G\supset A$ 使 $\mu(G\setminus A)<\varepsilon/2$，再取全局紧集 $K$ 使
+$\mu(K^c)<\varepsilon/2$，则 $K\setminus G$ 是 $A^c$ 中的紧集，并且
+\[
+ \mu(A^c\setminus(K\setminus G))
+ \le\mu(K^c)+\mu(G\setminus A)<\varepsilon.
+\]
+另一方面，若 $C\subset A$ 紧且 $\mu(A\setminus C)<\varepsilon$，则开集
+$C^c\supset A^c$ 满足 $\mu(C^c\setminus A^c)<\varepsilon$。故 $\mathcal R$ 对补集封闭。
+
+最后设 $A_n\in\mathcal R$。分别取开集 $G_n\supset A_n$，使
+$\mu(G_n\setminus A_n)<\varepsilon2^{-n-1}$，则
+$G=\bigcup_nG_n$ 是 $\bigcup_nA_n$ 的开外逼近，误差小于 $\varepsilon$。
+又因 $\bigcup_{n\le N}A_n\uparrow\bigcup_nA_n$，可取 $N$ 使尾部造成的测度差小于
+$\varepsilon/2$；再对 $1\le n\le N$ 取紧集 $C_n\subset A_n$，使
+$\mu(A_n\setminus C_n)<\varepsilon/(2N)$。有限并 $\bigcup_{n\le N}C_n$ 是所需紧内逼近。
+所以 $\mathcal R$ 是包含闭集的 $\sigma$-代数，因而包含全部 Borel 集。
+\end{proof}
+
+\begin{example}[无限维中的紧质量盒]\label{ex:5-3-3-hilbert-tight}
+设 $(e_n)$ 是 $\ell^2$ 的标准正交基，$\xi_n$ 是同一概率空间上的实值随机变量，且
+$|\xi_n|\le1$ a.s.。令
+\[
+ X=\sum_{n\ge1}2^{-n}\xi_ne_n.
+\]
+除去一个共同零集后，级数逐样本绝对收敛于 $\ell^2$；其部分和是可测映射，故极限
+$X$ 也是 $\ell^2$-值随机元。它的分布集中在
+\[
+ K=\{x\in\ell^2:|\langle x,e_n\rangle|\le2^{-n}\text{ 对每个 }n\}
+\]
+中。$K$ 闭，且其尾部满足
+\[
+ \sup_{x\in K}\sum_{n>N}|\langle x,e_n\rangle|^2
+ \le\sum_{n>N}4^{-n}\longrightarrow0.
+\]
+给定 $\varepsilon>0$，先取 $N$ 使
+\[
+ \left(\sum_{n>N}4^{-n}\right)^{1/2}<\frac{\varepsilon}{2}.
+\]
+有限维盒
+\[
+ Q_N=\left\{(x_1,\ldots,x_N):|x_j|\le2^{-j},\ 1\le j\le N\right\}
+ \subset\R^N
+\]
+紧，故有有限 $\varepsilon/2$-网 $\{q^1,\ldots,q^M\}$。把每个 $q^r$ 在第 $N$ 个坐标后补零，得到
+$\widetilde q^{\,r}\in K$。对任意 $x\in K$，选 $r$ 使前 $N$ 个坐标与 $q^r$ 的欧氏距离小于
+$\varepsilon/2$，则
+\[
+ \|x-\widetilde q^{\,r}\|_{\ell^2}^2
+ <\frac{\varepsilon^2}{4}+\sum_{n>N}4^{-n}
+ <\frac{\varepsilon^2}{2}<\varepsilon^2.
+\]
+因此 $K$ 对每个 $\varepsilon$ 都有有限 $\varepsilon$-网，即 $K$ 全有界。又 $K$ 是完备空间 $\ell^2$ 的闭子集，因而完备；完备且全有界故紧。这个例子提醒我们：无限维闭球通常不紧，但一个概率仍可把全部质量放在更薄的紧集上。
+\end{example}
+
+\begin{definition}[Polish 空间上的弱收敛]\label{def:5-3-3-1}
+设 $S$ 为 Polish 空间，记 $\mathsf P(S)$ 为 $S$ 上全体 Borel 概率测度。使每个映射
+\[
+ \nu\longmapsto\int_S f\,\dd\nu,\qquad f\in C_b(S),
+\]
+连续的最弱拓扑称为 $\mathsf P(S)$ 上的\emph{弱拓扑}。对
+$\mu_n,\mu\in\mathsf P(S)$，若对每个 $f\in C_b(S)$，
+\[
+ \int_S f\,\dd\mu_n\longrightarrow\int_S f\,\dd\mu,
+\]
+则称 $\mu_n$ \emph{弱收敛}于 $\mu$，仍记作 $\mu_n\Rightarrow\mu$；这恰是上述弱拓扑中的
+序列收敛。由
+\cref{proposition:5-3-3-polish-radon}，这里的概率都是 Radon 概率。
+测试实值函数已经足够；若采用复值 $C_b(S)$，分别考察实部与虚部得到同一定义。
+\end{definition}
+
+在局部紧空间上只用 $C_c$ 测试得到的是\emph{模糊收敛}（vague convergence）；它不自动保留总质量。例如
+$\delta_n$ 在 $\R$ 上对每个 $f\in C_c(\R)$ 都满足 $\int f\,\dd\delta_n=f(n)\to0$，但零测度不是概率。这正是弱概率拓扑坚持使用 $C_b$ 的原因。
+
+\begin{definition}[相对弱紧]\label{def:5-3-3-2}
+设 $S$ 为 Polish 空间。若 $\mathcal K\subset\mathsf P(S)$ 的弱闭包在弱拓扑下紧，则称 $\mathcal K$
+\emph{相对弱紧}。在证明弱拓扑可度量后，这将等价于：$\mathcal K$ 中每个序列都有弱收敛子列。
+\end{definition}
+
+由\cref{proposition:5-3-3-polish-radon}，每个单独的 Polish 概率都有自己的紧逼近；这并不说明任意概率族可以共享一个紧集。
+
+\begin{definition}[$\mu$-连续集]\label{def:5-3-3-4}
+设 $S$ 为 Polish 空间、$\mu\in\mathsf P(S)$。若 Borel 集 $A\subset S$ 满足
+$\mu(\partial A)=0$，则称 $A$ 为
+\emph{$\mu$-连续集}。
+\end{definition}
+
+\begin{remark}[Prokhorov 定理的证明结构]\label{rem:5-3-3-four-stations}
+证明包含四个相互独立的环节。Portmanteau 把 $C_b$ 测试翻译成开闭集不等式；弱紧性给出共同
+紧逼近；Daniell 单调连续性排除有限可加的伪极限；最后由弱拓扑的度量化和对角抽取得到
+Prokhorov 定理。特别地，子列抽取之后仍须证明极限泛函对应可数可加概率。
+\end{remark}
+
+\begin{example}[移动 Dirac 质量]\label{ex:5-3-3-1}
+对度量空间 $S$，
+\[
+ \delta_{x_n}\Rightarrow\delta_x
+ \quad\Longleftrightarrow\quad x_n\to x.
+\]
+正向的逆否命题如下：若某子列满足 $d(x_{n_k},x)\ge\varepsilon$，则
+$f(y)=\min\{1,d(y,x)/\varepsilon\}\in C_b(S)$，并有
+$\int f\,\dd\delta_{x_{n_k}}=1$、$\int f\,\dd\delta_x=0$。反向则由
+$f(x_n)\to f(x)$ 对每个 $f\in C_b(S)$ 得到。
+
+在 $\R$ 上，$\delta_n$ 不是紧族，也没有弱收敛子列。事实上，对任意严格递增子列
+$(n_k)$，令 $a_k=0$（$k$ 偶）及 $a_k=1$（$k$ 奇），并在每个区间
+$[n_k,n_{k+1}]$ 上定义
+\[
+ f(x)=a_k+\frac{a_{k+1}-a_k}{n_{k+1}-n_k}(x-n_k),
+\]
+在 $(-\infty,n_1]$ 上令 $f=a_1$。这给出 $0\le f\le1$ 的连续函数，并且
+$\int f\,\dd\delta_{n_k}=f(n_k)=a_k$ 交替取零与一，所以该子列不可能弱收敛。
+\end{example}
+
+\begin{example}[模糊收敛丢失质量]\label{ex:5-3-3-3}
+对 $f\in C_c(\R)$，有 $f(n)=0$ 当 $n$ 足够大，所以 $\delta_n$ 模糊收敛于零测度。
+另一方面，常数函数 $1\in C_b(\R)$ 给
+$\int1\,\dd\delta_n=1\not\to0$。这项单行计算精确区分了模糊收敛与概率弱收敛。
+\end{example}
+
+\begin{theorem}[Portmanteau 定理]\label{theorem:5-3-3-1}
+设 $S$ 为 Polish 空间，$\mu_n,\mu\in\mathsf P(S)$。以下条件等价：
+\begin{enumerate}
+  \item $\mu_n\Rightarrow\mu$；
+  \item 对每个开集 $G$，
+  \[
+    \mu(G)\le\liminf_n\mu_n(G);
+  \]
+  \item 对每个闭集 $F$，
+  \[
+    \limsup_n\mu_n(F)\le\mu(F);
+  \]
+  \item 对每个 $\mu$-连续集 $A$，有 $\mu_n(A)\to\mu(A)$；
+  \item 对每个有界下半连续函数 $h:S\to\R$，
+  \[
+    \int h\,\dd\mu\le\liminf_n\int h\,\dd\mu_n.
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+先证 (1)$\Rightarrow$(2)。若 $G=S$，结论由概率总质量为一得到。若 $G\ne S$，令
+\[
+ \phi_k(x)=\min\{1,k\,d(x,G^c)\}.
+\]
+则 $\phi_k\in C_b(S)$、$0\le\phi_k\le\1_G$，且 $\phi_k\uparrow\1_G$。因此对每个固定 $k$，
+\[
+ \int\phi_k\,\dd\mu
+ =\lim_n\int\phi_k\,\dd\mu_n
+ \le\liminf_n\mu_n(G).
+\]
+令 $k\to\infty$ 并用 MCT，得到 (2)。
+
+(2) 与 (3) 等价，因为 $F^c$ 开且所有测度总质量为一。若 (2)、(3) 成立且
+$\mu(\partial A)=0$，则
+\[
+ \mu(A^\circ)\le\liminf_n\mu_n(A)
+ \le\limsup_n\mu_n(A)\le\mu(\overline A).
+\]
+而 $\overline A\setminus A^\circ\subset\partial A$，所以两端都等于 $\mu(A)$；这证明 (4)。
+
+以下由 (4) 推回 (1)。固定 $f\in C_b(S)$。经仿射变换可设 $0\le f\le1$。
+实数 $t$ 满足 $\mu(f^{-1}\{t\})>0$ 的至多可数，因为这些互不相交集合的正质量总和不超过一。
+给定 $\eta>0$，选取
+\[
+ t_0<t_1<\cdots<t_m
+\]
+使 $t_0<0<t_1$、$t_{m-1}<1<t_m$、相邻距离小于 $\eta$，且每个
+$\mu(f^{-1}\{t_j\})=0$。令
+$A_j=\{t_{j-1}<f\le t_j\}$。其边界包含于
+$f^{-1}\{t_{j-1},t_j\}$，故 $A_j$ 都是 $\mu$-连续集，并且它们分割 $S$。于是
+\[
+ \sum_j t_{j-1}\mu_n(A_j)
+ \le\int f\,\dd\mu_n
+ \le\sum_j t_j\mu_n(A_j).
+\]
+对 $n\to\infty$ 使用 (4)，上下和分别收敛到相应的 $\mu$-和，而两和之差小于
+$\eta\sum_j\mu(A_j)=\eta$。令 $\eta\downarrow0$，得到
+$\int f\,\dd\mu_n\to\int f\,\dd\mu$，即 (1)。
+
+还需连接 (2) 与 (5)。设 (2) 成立。给有界下半连续 $h$ 加一个常数并缩放，可先设
+$0\le h\le M$。下半连续性说明 $\{h>t\}$ 对每个 $t$ 都开。层蛋糕公式与 Fatou 引理给
+\[
+\begin{aligned}
+ \int h\,\dd\mu
+ &=\int_0^M\mu(h>t)\,\dd t\\
+ &\le\int_0^M\liminf_n\mu_n(h>t)\,\dd t\\
+ &\le\liminf_n\int_0^M\mu_n(h>t)\,\dd t
+ =\liminf_n\int h\,\dd\mu_n.
+\end{aligned}
+\]
+一般有界 $h$ 通过加常数还原。因此 (2)$\Rightarrow$(5)。反之，开集的指标函数
+$\1_G$ 是有界下半连续函数；把它代入 (5) 便得到 (2)。
+\end{proof}
+
+\begin{proposition}[弱紧族的一致紧逼近]\label{proposition:5-3-3-compact-tight}
+设 $S$ 为 Polish 空间，$\mathcal K\subset\mathsf P(S)$ 在弱拓扑下紧。则对每个
+$\varepsilon>0$，存在紧集 $K\subset S$，使
+\[
+ \inf_{\nu\in\mathcal K}\nu(K)>1-\varepsilon.
+\]
+\end{proposition}
+
+\begin{proof}
+取有界兼容完备度量 $d$。固定 $m\ge1$。对每个 $\mu\in\mathcal K$，
+\cref{proposition:5-3-3-polish-radon} 先给出紧集 $C_\mu$，使
+$\mu(C_\mu)>1-\varepsilon2^{-m-1}$。由 $C_\mu$ 的紧性，可从以其各点为中心、半径
+$2^{-m-1}$ 的开球覆盖中取有限子覆盖；把这些球之并记为 $G_\mu$。于是
+\[
+ \mu(G_\mu)>1-\varepsilon2^{-m-1}.
+\]
+对开集 $G$，映射 $\nu\mapsto\nu(G)$ 在弱拓扑下下半连续。的确，当 $G\ne S$ 时
+\[
+ \nu(G)=\sup_{k\ge1}\int\min\{1,kd(x,G^c)\}\,\dd\nu,
+\]
+右侧是连续函数族的逐点上确界；$G=S$ 时该映射恒为一。因此
+\[
+ U_\mu=\{\nu\in\mathcal K:\nu(G_\mu)>1-\varepsilon2^{-m-1}\}
+\]
+是 $\mu$ 在 $\mathcal K$ 中的开邻域。紧性给出有限子覆盖
+$U_{\mu_1},\ldots,U_{\mu_r}$。
+
+把 $G_{\mu_1},\ldots,G_{\mu_r}$ 中出现的全部球心合并为有限集 $E_m$，令
+\[
+ F_m=\bigcup_{x\in E_m}\overline B(x,2^{-m}).
+\]
+每个 $\nu\in\mathcal K$ 属于某个 $U_{\mu_i}$，且 $G_{\mu_i}\subset F_m$，故
+\[
+ \nu(F_m)>1-\varepsilon2^{-m-1}.
+\]
+令 $K=\bigcap_{m\ge1}F_m$。它闭，并在每个尺度有有限网；因此它在完备空间 $S$ 中紧。最后对每个
+$\nu\in\mathcal K$，
+\[
+ \nu(K^c)\le\sum_{m\ge1}\nu(F_m^c)
+ <\varepsilon\sum_{m\ge1}2^{-m-1}<\varepsilon.
+\]
+\end{proof}
+
+\begin{remark}[弱紧性与一致紧逼近]\label{rem:5-3-3-compact-tight-no-loop}
+上一命题的紧性假设位于概率测度空间 $\mathsf P(S)$，结论则是在原空间 $S$ 中找到共同紧集。
+有限子覆盖把每个概率各自的紧逼近统一成对整个弱紧族有效的逼近；这个论证只使用弱拓扑的定义
+和单个 Polish 概率的紧逼近。
+\end{remark}
+
+\begin{proposition}[弱拓扑的有界 Lipschitz 度量]\label{proposition:5-3-3-weak-metric}
+设 $S$ 为 Polish 空间，并固定 $S$ 上一个有界兼容完备度量 $d$。定义
+\[
+ \Lip_d(f)=\sup_{x\ne y}\frac{|f(x)-f(y)|}{d(x,y)},
+ \qquad
+ \mathrm{BL}_b(S;\R)=\{f:S\to\R:\|f\|_\infty+\Lip_d(f)<\infty\}.
+\]
+（常数函数的 Lipschitz 常数按零计算；本小节固定 $d$ 后也把 $\Lip_d$ 简写为
+$\Lip$。）再定义
+\[
+ d_{\mathrm{BL}}(\mu,\nu)=
+ \sup\left\{
+ \left|\int f\,\dd(\mu-\nu)\right|:
+ \|f\|_\infty+\Lip_d(f)\le1
+ \right\}.
+ \tag{5.3.3}\label{eq:5-3-bl-metric}
+\]
+则 $d_{\mathrm{BL}}$ 是 $\mathsf P(S)$ 上的度量，并且它诱导由 $C_b(S)$ 测试定义的弱拓扑。
+\end{proposition}
+
+\begin{proof}
+对称性与三角不等式从积分的相应性质得到。若
+$d_{\mathrm{BL}}(\mu,\nu)=0$，则所有有界 Lipschitz 函数在两测度下积分相同。对开集
+$G\ne S$，距离帽
+$\phi_k=\min\{1,kd(\,\cdot\,,G^c)\}$ 是有界 Lipschitz 函数，且
+$\phi_k\uparrow\1_G$；MCT 给 $\mu(G)=\nu(G)$。对 $G=S$，两者都取值一。
+全体开集对有限交封闭并生成 $\Borel(S)$，有限测度唯一性定理遂给 $\mu=\nu$。所以
+$d_{\mathrm{BL}}$ 的确是度量。
+
+先证明弱拓扑中的每个 $\mu$ 都有落在给定 $d_{\mathrm{BL}}$-球内的弱开邻域。
+记
+\[
+ \mathcal F_{\mathrm{BL}}
+ =\{f:\|f\|_\infty+\Lip_d(f)\le1\}.
+\]
+给定 $0<\eta<1/2$ 与 $r>0$，由紧逼近取紧集 $K$ 使 $\mu(K^c)<\eta$，并令
+$G=K^r=\{x:d(x,K)<r\}$。族 $\mathcal F_{\mathrm{BL}}|_K$ 一致有界且等度连续；
+\ArzelaAscoli{} 给出有限 $\eta$-网 $f_1|_K,\ldots,f_N|_K$，其中
+$f_j\in\mathcal F_{\mathrm{BL}}$。考虑弱开邻域
+\[
+ \mathcal U=\left\{\nu:
+ \nu(G)>1-2\eta,\quad
+ \left|\int f_j\,\dd(\nu-\mu)\right|<\eta
+ \ (1\le j\le N)\right\}.
+\]
+这里 $\nu\mapsto\nu(G)$ 下半连续，故 $\mathcal U$ 确为弱开。
+
+任取 $f\in\mathcal F_{\mathrm{BL}}$，选 $f_j$ 使
+$\sup_K|f-f_j|<\eta$。若 $x\in G$，选 $y\in K$ 使 $d(x,y)<r$，则
+\[
+ |f(x)-f_j(x)|
+ \le |f(x)-f(y)|+|f(y)-f_j(y)|+|f_j(y)-f_j(x)|
+ <\eta+2r.
+\]
+又 $|f-f_j|\le2$。因此对 $\nu\in\mathcal U$，
+\[
+\begin{aligned}
+ \left|\int f\,\dd(\nu-\mu)\right|
+ &\le \left|\int f_j\,\dd(\nu-\mu)\right|
+    +\int|f-f_j|\,\dd\nu+\int|f-f_j|\,\dd\mu\\
+ &<\eta+(\eta+2r)+4\eta+\eta+2\eta
+ =9\eta+2r.
+\end{aligned}
+\]
+其中 $\nu(G^c)<2\eta$，而在 $\mu$ 的积分中直接在 $K$ 与 $K^c$ 上分裂。
+先选 $\eta,r$ 使 $9\eta+2r$ 小于给定半径，就得到所需邻域。
+
+反过来，证明每个 $C_b$ 测试积分关于 $d_{\mathrm{BL}}$ 连续。固定
+$f\in C_b(S)$、$\mu\in\mathsf P(S)$，记 $M=\|f\|_\infty$。给定
+$0<\eta<1/2$，取紧集 $K$ 使 $\mu(K^c)<\eta$。有界 Lipschitz 函数在紧度量空间
+$K$ 上构成含常数并分离点的实函数代数；由 Stone--Weierstrass，可取
+$g_0:K\to\R$ 为 Lipschitz 函数且
+\[
+ \sup_K|f-g_0|<\eta.
+\]
+记 $L_0=\Lip(g_0)$，并用 McShane 公式
+\[
+ \widetilde g(x)=\inf_{y\in K}\bigl(g_0(y)+L_0\,d(x,y)\bigr)
+\]
+延拓。对 $x\in K$，Lipschitz 不等式给
+$g_0(y)+L_0d(x,y)\ge g_0(x)$，而取 $y=x$ 达到等号，所以
+$\widetilde g|_K=g_0$。三角不等式还给
+$|\widetilde g(x)-\widetilde g(x')|\le L_0d(x,x')$。再在
+$[-M-\eta,M+\eta]$ 之间截断，得到
+$g\in\mathrm{BL}_b(S)$，其在 $K$ 上仍等于 $g_0$。记 $L=\Lip(g)$。
+连续性与 $K$ 的紧性保证存在 $r_0>0$，使得只要 $y\in K$ 且
+$d(x,y)<r_0$，就有 $|f(x)-f(y)|<\eta$。否则可取
+$y_n\in K$、$x_n\in S$，满足 $d(x_n,y_n)<1/n$ 而
+$|f(x_n)-f(y_n)|\ge\eta$；从 $(y_n)$ 抽取收敛子列后，$(x_n)$ 收敛到同一极限，
+与 $f$ 的连续性矛盾。因此可取 $0<r\le r_0$，同时满足：若
+$y\in K$、$d(x,y)<r$，则 $|f(x)-f(y)|<\eta$，并且 $Lr<\eta$。
+于是 $\sup_{K^r}|f-g|<3\eta$。
+
+令 $\psi(x)=(1-d(x,K)/r)^+$。它有界 Lipschitz、在 $K$ 上等于一、在
+$(K^r)^c$ 上等于零。由\eqref{eq:5-3-bl-metric}，对每个有界 Lipschitz $u$，
+\[
+ \left|\int u\,\dd(\nu-\mu)\right|
+ \le(\|u\|_\infty+\Lip(u))\,d_{\mathrm{BL}}(\mu,\nu).
+ \tag{5.3.4}\label{eq:5-3-bl-scaled}
+\]
+因此当 $d_{\mathrm{BL}}(\mu,\nu)$ 足够小时，
+$\int\psi\,\dd\nu>1-2\eta$，从而 $\nu((K^r)^c)<2\eta$；同时
+$|\int g\,\dd(\nu-\mu)|<\eta$。在 $K^r$ 及其补集上分裂后，
+\[
+\begin{aligned}
+ \left|\int f\,\dd(\nu-\mu)\right|
+ &\le\left|\int g\,\dd(\nu-\mu)\right|
+   +\int|f-g|\,\dd\nu+\int|f-g|\,\dd\mu\\
+ &\le \eta+6\eta
+   +2(M+\|g\|_\infty)\bigl(\nu((K^r)^c)+\mu(K^c)\bigr),
+\end{aligned}
+\]
+截断还给出 $\|g\|_\infty\le M+\eta$。代入
+$\nu((K^r)^c)<2\eta$ 与 $\mu(K^c)<\eta$，上式右端不超过
+\[
+ 7\eta+6\eta(2M+\eta),
+\]
+因而随 $\eta\downarrow0$ 而趋零。故 $d_{\mathrm{BL}}$ 收敛蕴含全部
+$C_b$ 测试积分收敛。两个拓扑相同。
+\end{proof}
+
+
+\begin{proposition}[Daniell--\Caratheodory{} 表示步骤]\label{proposition:5-3-3-dc-step}
+设 $S$ 为 Polish 空间，固定一个有界兼容完备度量 $d$，并令
+\[
+ H=\{f:S\to\R:\|f\|_\infty+\Lip_d(f)<\infty\}
+   =\mathrm{BL}_b(S;\R).
+\]
+设
+$L:H\to\R$ 是正线性泛函，$L(1)=1$，并满足下列 Daniell 单调连续性：
+\[
+ 0\le f_k\downarrow0\text{ 点态}
+ \quad\Longrightarrow\quad
+ L(f_k)\downarrow0.
+ \tag{5.3.5}\label{eq:5-3-daniell-continuity}
+\]
+则存在唯一 Radon 概率 $\mu$，使
+\[
+ L(f)=\int f\,\dd\mu\qquad(f\in H).
+\]
+\end{proposition}
+
+\begin{proof}
+下面直接作 Daniell--\Caratheodory{} 构造。对任意 $A\subset S$ 定义
+\[
+ \mu^*(A)=\inf\left\{
+ \lim_{n\to\infty}L(g_n):
+ 0\le g_n\in H,\quad g_n\uparrow g,\quad g\ge\1_A
+ \right\},
+ \tag{5.3.6}\label{eq:5-3-dc-outer}
+\]
+其中极限函数 $g$ 允许取 $+\infty$，空下确界约定为 $+\infty$。有界
+Lipschitz 函数对有限和、乘积、最大值和正部运算封闭；以下出现的
+$\phi g_n$、$(1-g_n)^+$ 因而仍在 $H$ 中。
+零序列给 $\mu^*(\varnothing)=0$。常数序列 $1$ 给 $\mu^*(S)\le1$。
+反过来，若 $(g_n)$ 是 $S$ 的任一允许覆盖列，则
+$(1-g_n)^+\downarrow0$。由\eqref{eq:5-3-daniell-continuity} 与
+$1\le g_n+(1-g_n)^+$，
+\[
+ 1=L(1)\le L(g_n)+L((1-g_n)^+)\longrightarrow\lim_nL(g_n).
+\]
+所以 $\mu^*(S)=1$。定义还直接给出单调性。
+
+验证可列次可加性。设 $A=\bigcup_{k\ge1}A_k$，并先假设
+$\sum_k\mu^*(A_k)<\infty$。给定 $\varepsilon>0$，为每个 $k$ 取允许列
+$g_{k,n}\uparrow g_k\ge\1_{A_k}$，使
+\[
+ \lim_nL(g_{k,n})<\mu^*(A_k)+\varepsilon2^{-k}.
+\]
+这一可数次近优选择按第~1~章的约定使用 $\textsf{CC}$。把每列重复前若干项后可令双指标从
+$n\ge1$ 开始，并置
+\[
+ h_n=\sum_{k=1}^n g_{k,n}.
+\]
+则 $h_n\uparrow h$，且 $h\ge\1_A$。又因每个
+$L(g_{k,n})\le\lim_jL(g_{k,j})$，
+\[
+ \mu^*(A)\le\lim_nL(h_n)
+ \le\sum_{k\ge1}\bigl(\mu^*(A_k)+\varepsilon2^{-k}\bigr).
+\]
+令 $\varepsilon\downarrow0$ 得次可加性；若右侧无穷，结论自动成立。因此 $\mu^*$ 是概率外测度。
+
+它还是度量外测度。若 $A$ 或 $B$ 为空，正距离可加性已经由
+$\mu^*(\varnothing)=0$ 得到。以下设二者非空且 $d(A,B)=\delta>0$，令
+\[
+ \phi(x)=\min\{1,d(x,B)/\delta\}.
+\]
+则 $\phi=1$ 于 $A$，$\phi=0$ 于 $B$。对任一覆盖 $A\cup B$ 的允许列
+$g_n\uparrow g$，列 $\phi g_n$ 与 $(1-\phi)g_n$ 分别覆盖 $A,B$；线性给
+\[
+ \lim_nL(g_n)
+ =\lim_nL(\phi g_n)+\lim_nL((1-\phi)g_n)
+ \ge\mu^*(A)+\mu^*(B).
+\]
+与次可加性合并，得到
+$\mu^*(A\cup B)=\mu^*(A)+\mu^*(B)$。由度量外测度的 Borel 性
+命题~\ref{proposition:2-1-2-3}，所有 Borel 集都 $\mu^*$-可测。以下把 $\mu^*$ 在
+$\Borel(S)$ 上的限制记为 $\mu$；它是 Borel 概率。
+
+还须恢复泛函 $L$。先处理开集 $G$。若 $G\ne S$，距离帽
+\[
+ \phi_n(x)=\min\{1,nd(x,G^c)\}
+\]
+递增到 $\1_G$；$G=S$ 时取常数列一。它们在\eqref{eq:5-3-dc-outer} 中允许，故
+\[
+ \mu(G)\le
+ \sup\{L(f):0\le f\le1,\ f\in H,\ f=0\text{ 于 }G^c\}.
+ \tag{5.3.7}\label{eq:5-3-dc-open-lower}
+\]
+反之，固定右侧集合中的 $f$，并取任一覆盖 $G$ 的允许列 $g_n\uparrow g$。
+由于 $f=0$ 于 $G^c$ 且 $g\ge1$ 于 $G$，有 $(f-g_n)^+\downarrow0$。于是
+\[
+ L(f)\le L(g_n)+L((f-g_n)^+)\longrightarrow\lim_nL(g_n).
+\]
+对覆盖列取下确界，再对 $f$ 取上确界，得到
+\[
+ \mu(G)=
+ \sup\{L(f):0\le f\le1,\ f\in H,\ f=0\text{ 于 }G^c\}.
+ \tag{5.3.8}\label{eq:5-3-dc-open-formula}
+\]
+
+现取 $0\le f\in H$，选 $M>\|f\|_\infty$。令
+$\delta=2^{-m}$、$N_m=\lceil M/\delta\rceil$，并置开集
+$G_k=\{f>k\delta\}$，$1\le k<N_m$。点态有
+\[
+ \delta\sum_{k=1}^{N_m-1}\1_{G_k}
+ \le f
+ \le\delta+\delta\sum_{k=1}^{N_m-1}\1_{G_k}.
+ \tag{5.3.9}\label{eq:5-3-dc-layer-bounds}
+\]
+由\eqref{eq:5-3-dc-open-formula}，对每个 $k$ 可取
+$0\le q_k\le1$、$q_k=0$ 于 $G_k^c$，使
+$L(q_k)>\mu(G_k)-\varepsilon/N_m$。由于一个点上可能非零的 $q_k$
+数目不超过满足 $k\delta<f(x)$ 的指标数，
+$\delta\sum_kq_k\le f$。正性于是给
+\[
+ L(f)\ge
+ \delta\sum_{k=1}^{N_m-1}\mu(G_k)-\delta\varepsilon.
+ \tag{5.3.10}\label{eq:5-3-dc-lower-sum}
+\]
+
+为得反向估计，对每个 $G_k$ 取\eqref{eq:5-3-dc-outer} 中的允许列
+$g_{k,n}$，其成本小于 $\mu(G_k)+\varepsilon/N_m$。令
+$u_n=\delta+\delta\sum_kg_{k,n}$。由
+\eqref{eq:5-3-dc-layer-bounds}，$(f-u_n)^+\downarrow0$，从而
+\[
+ L(f)\le\lim_nL(u_n)
+ \le\delta+\delta\sum_{k=1}^{N_m-1}\mu(G_k)+\delta\varepsilon.
+ \tag{5.3.11}\label{eq:5-3-dc-upper-sum}
+\]
+同一层集上下和也把 $\int f\,\dd\mu$ 夹在
+\eqref{eq:5-3-dc-lower-sum}--\eqref{eq:5-3-dc-upper-sum} 的主项之间。
+先令 $\varepsilon\downarrow0$，再令 $\delta=2^{-m}\downarrow0$，得到
+$L(f)=\int f\,\dd\mu$。一般实值 $f\in H$ 由
+$f=f^+-f^-$ 得到表示。
+
+由\cref{proposition:5-3-3-polish-radon}，$\mu$ 是 Radon 概率。若另一概率也表示
+$L$，则\eqref{eq:5-3-dc-open-formula} 说明二者在所有开集上相同；有限测度唯一性给二者相等。
+\end{proof}
+
+\begin{example}[单调连续性排除的伪极限]\label{ex:5-3-3-ultrafilter-limit}
+在 $S=\N$ 上取离散度量 $d(m,n)=\1_{\{m\ne n\}}$。每个有界函数都是 Lipschitz 函数，所以
+$\mathrm{BL}_b(S)=\ell^\infty$。取第~1~章所述的一个自由超滤子 $\mathcal U$，并定义
+\[
+ L(x)=\lim_{n\to\mathcal U}x_n,\qquad x\in\ell^\infty.
+\]
+有界数列的闭值域紧，故超滤极限存在；加法和数乘的连续性说明 $L$ 正、线性且 $L(1)=1$。
+它很像概率积分，却不来自可数可加概率。令
+\[
+ f_k(n)=\1_{\{n\ge k\}}.
+\]
+对每个固定 $n$，有 $f_k(n)\downarrow0$；但每个余有限尾集都属于自由超滤子，所以
+$L(f_k)=1$ 对所有 $k$ 成立。Daniell 单调连续性正好排除了这个伪极限。
+
+这个例子也说明，仅要求“有一个函数在某个紧集上等于一且截断误差小”不够：恒取函数
+$1$ 会使该条件没有内容。Prokhorov 证明中必须使用同一个真正的紧集控制原概率列，并在其上用
+Dini 定理验证\eqref{eq:5-3-daniell-continuity}。
+\end{example}
+
+\begin{theorem}[Prokhorov 定理]\label{theorem:5-3-3-2}
+设 $S$ 为 Polish 空间。概率族 $\mathcal K\subset\mathsf P(S)$ 相对弱紧，当且仅当
+$\mathcal K$ 具有紧性。
+\end{theorem}
+
+\begin{proof}
+先设 $\mathcal K$ 相对弱紧。其弱闭包 $\overline{\mathcal K}^{\,w}$ 紧，
+\cref{proposition:5-3-3-compact-tight} 给出对整个闭包有效的共同紧集，因而
+$\mathcal K$ 具有紧性。
+
+反过来设 $\mathcal K$ 具有紧性，并固定一个有界兼容完备度量 $d$；以下的
+$\Lip$ 与 $\mathrm{BL}_b$ 都相对于这个 $d$。取 $\mathcal K$ 中任意序列 $(\mu_n)$。对每个 $m$，选紧集
+$K_m'$ 使
+\[
+ \sup_n\mu_n((K_m')^c)<2^{-m}.
+\]
+以有限并替换后可设 $K_m\uparrow$，且仍有
+$\sup_n\mu_n(K_m^c)<2^{-m}$。这一步没有假设 $S$ 有紧耗尽；一般 Polish 空间未必
+$\sigma$-紧，$K_m$ 只追踪这列概率的大部分质量。
+
+我们构造可数测试族。对整数 $A,B,m\ge1$，$K_m$ 上满足
+$\|f\|_\infty\le A$、$\Lip(f)\le B$ 的函数族在 $C(K_m)$ 中一致有界、等度连续，
+因而由\cref{theorem:1-3-2-2}（\ArzelaAscoli{} 紧域定理）知该族全有界。对每个精度 $1/q$ 取一个有限网；把网中函数用
+McShane 公式
+\[
+ \widetilde g(x)=\inf_{y\in K_m}\bigl(g(y)+B\,d(x,y)\bigr)
+\]
+延拓到 $S$，再截断到 $[-A,A]$。与
+\cref{proposition:5-3-3-weak-metric} 证明中的计算相同，该延拓在
+$K_m$ 上等于 $g$，且 Lipschitz 常数不超过 $B$；截断也不增大该常数。所得函数保持
+$K_m$ 上的值。遍历 $A,B,m,q$ 得到一个可数族 $\mathcal D\subset\mathrm{BL}_b(S)$。
+它的性质是：每个有界 Lipschitz $f$ 在每个 $K_m$ 上都可由
+$\mathcal D$ 中具有共同取值界的函数一致逼近。
+
+对 $\mathcal D$ 作对角抽取，得到子列 $(\mu_{n_j})$，使
+$\int g\,\dd\mu_{n_j}$ 对每个 $g\in\mathcal D$ 都收敛。固定任意
+$f\in\mathrm{BL}_b(S)$，取整数 $A,B$ 使
+$\|f\|_\infty\le A$、$\Lip(f)\le B$。给定 $\varepsilon>0$，先取 $m$ 使
+$4A2^{-m}<\varepsilon$，再取 $g\in\mathcal D$，使
+$\|g\|_\infty\le A$ 且 $\sup_{K_m}|f-g|<\varepsilon$。于是
+\[
+\begin{aligned}
+ \left|\int f\,\dd\mu_{n_j}-\int f\,\dd\mu_{n_\ell}\right|
+ &\le
+ \left|\int g\,\dd\mu_{n_j}-\int g\,\dd\mu_{n_\ell}\right|\\
+ &\quad+2\varepsilon
+   +2A\bigl(\mu_{n_j}(K_m^c)+\mu_{n_\ell}(K_m^c)\bigr).
+\end{aligned}
+\]
+先令 $j,\ell\to\infty$，再令 $\varepsilon\downarrow0$，可知每个有界 Lipschitz
+测试积分都有极限。定义
+\[
+ L(f)=\lim_{j\to\infty}\int f\,\dd\mu_{n_j},
+ \qquad f\in\mathrm{BL}_b(S;\R).
+\]
+$L$ 正、线性且 $L(1)=1$。
+
+关键是验证 Daniell 单调连续性。若 $0\le f_k\downarrow0$，记
+$M=\|f_1\|_\infty$。给定 $\varepsilon>0$，由原列的紧性取紧集 $K$，使
+$\sup_j\mu_{n_j}(K^c)<\varepsilon/(M+1)$。Dini 定理给
+$\sup_K f_k\downarrow0$，故
+\[
+ 0\le L(f_k)
+ =\lim_j\int f_k\,\dd\mu_{n_j}
+ \le \sup_K f_k+M\sup_j\mu_{n_j}(K^c).
+\]
+先令 $k\to\infty$，再令 $\varepsilon\downarrow0$，得到 $L(f_k)\downarrow0$。
+\cref{proposition:5-3-3-dc-step} 因而产生唯一 Radon 概率 $\mu$，满足
+$L(f)=\int f\,\dd\mu$ 对每个有界 Lipschitz $f$ 成立。
+
+目前得到的是逐个 Lipschitz 测试函数的积分收敛，还需把它升级为
+$d_{\mathrm{BL}}$ 中对整个单位球的一致收敛。给定 $\eta>0$，原列的紧性与
+$\mu$ 的紧逼近给出同一个紧集 $K$，使
+\[
+ \sup_j\mu_{n_j}(K^c)<\eta,\qquad \mu(K^c)<\eta
+\]
+（取两个紧集的有限并）。有界 Lipschitz 单位球限制到 $K$ 后由
+\ArzelaAscoli{} 有有限 $\eta$-网 $f_1,\ldots,f_N$。这些网点的积分都已收敛。
+对任一单位球函数 $f$ 选 $f_i$ 使 $\sup_K|f-f_i|<\eta$；在 $K^c$ 上使用
+$|f-f_i|\le2$，得到
+\[
+ \left|\int f\,\dd(\mu_{n_j}-\mu)\right|
+ \le
+ \left|\int f_i\,\dd(\mu_{n_j}-\mu)\right|+6\eta
+\]
+当 $j$ 足够大时对所有 $f$ 同时成立。故
+$d_{\mathrm{BL}}(\mu_{n_j},\mu)\to0$，由
+\cref{proposition:5-3-3-weak-metric}，$\mu_{n_j}\Rightarrow\mu$。
+所以 $\mathcal K$ 中每个序列都有弱收敛子列。
+
+最后把序列结论升级为闭包紧性。弱拓扑由 $d_{\mathrm{BL}}$ 度量。若
+$(\lambda_n)$ 是 $\overline{\mathcal K}^{\,w}$ 中的序列，对每个 $n$ 选
+$\nu_n\in\mathcal K$，使 $d_{\mathrm{BL}}(\lambda_n,\nu_n)<1/n$。
+序列 $(\nu_n)$ 有收敛子列，相应的 $(\lambda_n)$ 子列收敛到同一极限。因此闭包序列紧；
+由度量空间的序列判别\cref{theorem:1-2-1-4}，序列紧等价于紧，故
+$\mathcal K$ 相对弱紧。
+\end{proof}
+
+\begin{example}[中心极限定理中的紧性]\label{ex:5-3-3-2}
+设 $X_1,X_2,\ldots$ i.i.d.，$\E X_1=0$、$\E X_1^2=1$，并令
+$Z_n=n^{-1/2}\sum_{k=1}^nX_k$。独立性给出 $\E Z_n^2=1$，所以对每个 $R>0$，
+\[
+ \sup_n\Prob(|Z_n|>R)\leq R^{-2}.
+\]
+因此分布族 $(\Law(Z_n))$ 具有紧性，Prokhorov 定理保证每个子列都有弱收敛的进一步子列。若再证明
+$\varphi_{Z_n}(t)\to e^{-t^2/2}$，特征函数唯一性便把每个子列极限都识别为 $N(0,1)$。
+\cref{subsec:5-4-3}中的 \Levy{} 连续性定理把这两步合并成一个通用判据。
+\end{example}
+
+\begin{proposition}[几乎处处连续的推前]\label{proposition:5-3-3-3}
+设 $S,T$ 为 Polish 空间，$g:S\to T$ Borel 可测，并令 $D_g$ 为 $g$ 的不连续点集。
+若 $\mu_n\Rightarrow\mu$ 且 $\mu(D_g)=0$，则
+\[
+ g_*\mu_n\Rightarrow g_*\mu.
+\]
+\end{proposition}
+
+\begin{proof}
+任取闭集 $F\subset T$。若
+$x\in\overline{g^{-1}(F)}\setminus D_g$，则存在 $x_k\in g^{-1}(F)$ 收敛到 $x$；
+$g$ 在 $x$ 连续，故 $g(x_k)\to g(x)$，而 $F$ 闭，所以 $g(x)\in F$。因此
+\[
+ \overline{g^{-1}(F)}
+ \subset g^{-1}(F)\cup D_g.
+\]
+Portmanteau 的闭集不等式给
+\[
+\begin{aligned}
+ \limsup_n(g_*\mu_n)(F)
+ &=\limsup_n\mu_n(g^{-1}(F))\\
+ &\le\limsup_n\mu_n(\overline{g^{-1}(F)})\\
+ &\le\mu(\overline{g^{-1}(F)})
+ \le\mu(g^{-1}(F))+\mu(D_g)\\
+ &=(g_*\mu)(F).
+\end{aligned}
+\]
+再次使用 Portmanteau，即得推前弱收敛。
+\end{proof}
+
+处处连续映射定理是这个命题中 $D_g=\varnothing$ 的特例；它在
+\cref{theorem:5-3-1-3} 中已经由定义给出更短的证明。新命题真正增加的是：不连续点允许存在，但极限分布不能在那里放质量。
+
+\begin{proposition}[Slutsky 定理]\label{proposition:5-3-3-slutsky}
+设 $X_n\Rightarrow X$、$Y_n\xrightarrow{\Prob}c$，且 $X_n,Y_n$ 定义在同一概率空间上。
+则
+\[
+ (X_n,Y_n)\Rightarrow(X,c).
+\]
+因此
+\[
+ X_n+Y_n\Rightarrow X+c,\qquad
+ X_nY_n\Rightarrow cX.
+\]
+\end{proposition}
+
+\begin{proof}
+记 $\alpha_n=\Law(X_n)$、$\beta_n=\Law(Y_n)$ 与
+$\lambda_n=\Law(X_n,Y_n)$。由
+\cref{proposition:5-3-1-1}，$\beta_n\Rightarrow\delta_c$。
+一个收敛列连同其极限在任意拓扑空间中都是紧的：包含极限的开集最终包含整条序列，剩余只有有限项。
+所以
+\[
+ \{\alpha_n:n\ge1\}\cup\{\Law(X)\},
+ \qquad
+ \{\beta_n:n\ge1\}\cup\{\delta_c\}
+\]
+分别是弱紧集。由\cref{proposition:5-3-3-compact-tight}，给定
+$\varepsilon>0$，存在紧集 $K,L\subset\R$，使
+\[
+ \sup_n\alpha_n(K^c)<\varepsilon/2,\qquad
+ \sup_n\beta_n(L^c)<\varepsilon/2.
+\]
+$K\times L$ 紧，且
+\[
+ \lambda_n((K\times L)^c)
+ \le\alpha_n(K^c)+\beta_n(L^c)<\varepsilon.
+\]
+故 $(\lambda_n)$ 具有紧性。
+
+任取 $(\lambda_n)$ 的一个子列。Prokhorov 定理给出进一步子列弱收敛于某个
+$\lambda\in\mathsf P(\R^2)$。坐标投影连续，故该极限的两个边缘分别为
+$\Law(X)$ 与 $\delta_c$。第二边缘为 $\delta_c$ 意味着
+\[
+ \lambda(\R\times(\R\setminus\{c\}))=0,
+\]
+即 $\lambda$ 集中在 $\R\times\{c\}$。对任意 $h\in C_b(\R^2)$，
+$x\mapsto h(x,c)$ 属于 $C_b(\R)$，于是由第一边缘
+\[
+ \int_{\R^2}h(x,y)\,\lambda(\dd x,\dd y)
+ =\int_\R h(x,c)\,\Law(X)(\dd x).
+\]
+所以 $\lambda$ 唯一等于映射 $x\mapsto(x,c)$ 对 $\Law(X)$ 的推前，即
+$\Law(X,c)$。
+
+我们已经证明每个子列都有进一步子列弱收敛到同一个 $\Law(X,c)$。
+由于弱拓扑由 $d_{\mathrm{BL}}$ 度量，若原列不收敛，就能选出一条与该极限距离至少为某个
+$\eta>0$ 的子列；它的任何进一步收敛子列都不能以 $\Law(X,c)$ 为极限，矛盾。因此
+$(X_n,Y_n)\Rightarrow(X,c)$。
+
+最后把连续映射 $(x,y)\mapsto x+y$ 与 $(x,y)\mapsto xy$ 代入
+\cref{proposition:5-3-3-3}，得到两个标量结论。
+\end{proof}
+
+\begin{proposition}[矩界推出紧性]\label{proposition:5-3-3-4}
+设 $\mathcal K\subset\mathsf P(\R^d)$。若存在 $p>0$ 与 $C<\infty$，使
+\[
+ \sup_{\mu\in\mathcal K}\int_{\R^d}|x|^p\,\dd\mu(x)\le C,
+\]
+则 $\mathcal K$ 具有紧性。
+\end{proposition}
+
+\begin{proof}
+给定 $R>0$，对每个 $\mu\in\mathcal K$，Markov 不等式给
+\[
+ \mu(\overline B(0,R)^c)
+ =\mu(|x|^p>R^p)
+ \le R^{-p}\int|x|^p\,\dd\mu
+ \le CR^{-p}.
+\]
+给定 $\varepsilon>0$，取 $R>(C/\varepsilon)^{1/p}$。闭球
+$\overline B(0,R)$ 在有限维欧氏空间中紧，并且对全族留下的集外质量小于
+$\varepsilon$。
+\end{proof}
+
+\begin{corollary}[弱收敛列不会逃逸]\label{corollary:5-3-3-tight-sequence}
+设 $S$ 为 Polish 空间，且 $\mu_n,\mu\in\mathsf P(S)$。若 $\mu_n\Rightarrow\mu$，则
+\[
+ \{\mu_n:n\ge1\}\cup\{\mu\}
+\]
+是紧概率族。
+\end{corollary}
+
+\begin{proof}
+收敛列连同其极限在弱拓扑中紧；对这个紧集应用
+\cref{proposition:5-3-3-compact-tight}。
+\end{proof}
+
+特别地，\cref{def:5-3-1-3} 中
+\[
+ X_n=O_\Prob(a_n)
+\]
+当且仅当归一化分布的整族
+$\{\Law(X_n/a_n):n\ge1\}$ 具有紧性。事实上，$O_\Prob$ 定义对每个误差水平先控制一条尾列；
+剩下的有限多个分布各自可由紧集逼近，扩大同一个紧区间即可把它们一并纳入。反之，整族
+具有紧性时可在定义中取 $N=1$。在 $\R$ 上，紧区间 $[-M,M]$ 正好把定义中的尾概率写成
+$\Prob(|X_n/a_n|>M)$。随机阶记号因而不是另一个极限概念，而是概率分布族的统一紧性估计。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \begin{scope}
+    \draw[book line] (0,0) ellipse (2.6 and 1.6);
+    \node[book strong node,minimum width=2.8cm,minimum height=1.3cm] at (0,0)
+      {共同紧集 $K$\\质量 $>1-\varepsilon$};
+    \node[book label,align=center] at (0,2.05) {紧性：同一个 $K$ 控制整族};
+    \draw[book accent arrow] (2.9,0.9)--(1.7,0.45);
+    \node[book label,align=left] at (4.0,1.15) {集外质量\\统一小};
+  \end{scope}
+  \begin{scope}[xshift=7.7cm]
+    \draw[book line] (-2.5,0)--(2.5,0);
+    \draw[book line] (-0.8,-0.15)--(-0.8,1.7);
+    \draw[book line] (0.9,-0.15)--(0.9,1.7);
+    \draw[BookAccent,semithick] plot[smooth] coordinates {
+      (-2.3,0) (-1.4,0) (-0.8,0.15) (-0.3,0.85) (0.2,1.35)
+      (0.9,1.55) (1.5,1.55) (2.3,1.55)
+    };
+    \node[book label] at (-1.55,1.2) {$G^c$};
+    \node[book label] at (1.55,1.85) {$G$};
+    \node[book label,align=center] at (0,-0.65) {$\min\{1,kd(x,G^c)\}\uparrow\1_G$};
+  \end{scope}
+\end{tikzpicture}
+\caption{左：Prokhorov 的质量控制。右：Portmanteau 中从下逼近开集指标的距离帽。有限网只在共同紧集上工作，图外质量由紧性控制。}
+\label{fig:5-3-3-tight-portmanteau}
+\end{figure}
+
+弱收敛与紧性由此形成一条可执行路线。要证明一列分布有极限点，先找统一紧集；在
+$\R^d$ 中常用矩界完成这一步。Prokhorov 只给存在性，随后仍需用特征函数、矩、方程或其他决定类识别所有可能的极限。反过来，一旦弱收敛已经成立，
+\cref{corollary:5-3-3-tight-sequence} 会自动提供以后估计中所需的统一截断。
+经验测度、数值近似的分布与随机过程的路径分布都遵循这条“先证紧性、再识别极限”的路线；路径空间上的紧性还需要第~6~章建立增量模量，不能仅由本节的有限维矩界替代。
+
+\begin{remark}[边界条件不能省略]\label{rem:5-3-3-boundaries}
+\begin{enumerate}
+  \item 模糊收敛允许概率质量逃逸，不能替代概率弱收敛；
+  \item 紧性是对整族的统一量词，不是“每个成员各自紧”；
+  \item Prokhorov 的此种形式使用 Polish 结构：可分性提供可数对角测试，完备性把全有界闭集变成紧集；
+  \item Daniell 单调连续性承担可数可加性。没有它，超滤极限可以通过全部有限线性检验；
+  \item Prokhorov 只产生子列，不识别极限；唯一性仍需新的观测工具。
+\end{enumerate}
+\end{remark}
+
+\begin{exercise}[Portmanteau 与紧性]\label{exercise:5-3-3-1}
+\begin{enumerate}
+  \item 证明 $\delta_{x_n}\Rightarrow\delta_x$ 当且仅当 $x_n\to x$，并给出
+  $\delta_n$ 在 $\R$ 上不是紧族的量词证明。
+  \item 由 Portmanteau 定理证明：若 $A$ 是 $\mu$-连续集且
+  $\mu_n\Rightarrow\mu$，则 $\mu_n(A)\to\mu(A)$。
+  \item 设 $\sup_n\E|X_n|^p<\infty$，其中 $p>0$。证明
+  $\{\Law(X_n)\}$ 具有紧性，并计算使集外质量小于给定 $\varepsilon$ 所需的半径。
+  \item 设 $g:S\to T$ 的不连续点集为 $D_g$。补全
+  $\overline{g^{-1}(F)}\subset g^{-1}(F)\cup D_g$ 的逐点证明，并由闭集版
+  Portmanteau 重证\cref{proposition:5-3-3-3}。
+  \item 在离散空间 $\N$ 上验证
+  $f_k=\1_{\{n\ge k\}}\downarrow0$，并解释为什么任意可数可加概率都满足
+  $\int f_k\downarrow0$，而自由超滤极限不满足。
+\end{enumerate}
+\end{exercise}
+
+现在我们已经能控制两种“逃逸”：UI 防止期望质量集中到越来越高的尖峰，紧性防止分布的质量逃到越来越远的空间位置。下一节把这些工具用于独立和：先以指数矩得到集中不等式，再证明大数律，最后用特征函数识别中心极限定理的唯一极限。

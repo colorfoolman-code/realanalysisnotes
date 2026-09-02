@@ -1,0 +1,1783 @@
+\section{光滑逼近、分布与 Sobolev 空间}\label{sec:04-03}
+
+\subsection{Mollifier、截断与光滑逼近}\label{subsec:4-3-1}
+\index{mollifier}\index{光滑逼近}\index{近似恒等}
+
+许多形式计算要求对积分中的函数求导，而被积函数可能没有经典导数。自然的处理方法是在小球内作
+加权平均，但这需要分别证明三个结论：积分有定义，微分可以转移到核上，以及平均尺度趋于零时平均
+在指定拓扑中收敛到原函数。若函数只定义在开集上，还必须保证靠近边界的平均窗口不越出定义域。
+
+Friedrichs 光滑化把这种小尺度加权平均组织成可重复使用的方法：先在光滑对象上完成微分与积分
+运算，再通过范数收敛返回原对象。其正确使用依赖对支撑、尺度与收敛方式的明确控制。
+
+先从最简单的跳跃开始。在一维中，取支撑于
+$[-\varepsilon,\varepsilon]$、积分为 $1$ 的非负偶核 $\rho_\varepsilon$，并把
+$f=\1_{(0,1)}$ 看成 $\R$ 上的函数，则
+\begin{equation}\label{eq:4-3-step-mollification}
+ (f*\rho_\varepsilon)(x)
+ =\int_{x-1}^{x}\rho_\varepsilon(y)\dd y.
+\end{equation}
+当 $\varepsilon<x<1-\varepsilon$ 时右端等于 $1$；在 $(0,\varepsilon)$ 与
+$(1-\varepsilon,1)$ 中，它分别从 $1/2$ 过渡到 $1$、从 $1$ 过渡到 $1/2$。竖直跳跃被摊进
+宽度至多 $2\varepsilon$ 的过渡层，但远离跳点的数值没有改变。
+
+\begin{definition}[标准 mollifier]\label{def:4-3-1-1}
+令
+\[
+ \eta(t)=
+ \begin{cases}e^{-1/t},&t>0,\\0,&t\leq0,
+ \end{cases}
+ \qquad
+ \rho(x)=c_n\eta(1-|x|^2),
+\]
+其中
+\[
+ c_n^{-1}=\int_{|x|<1}\exp\!\left(-\frac1{1-|x|^2}\right)\dd x.
+\]
+则 $\rho\in C_c^\infty(\R^n)$、$\rho\geq0$、$\supp\rho\subset\overline{B(0,1)}$ 且
+$\int\rho=1$。对 $\varepsilon>0$ 定义
+\[
+ \rho_\varepsilon(x)=\varepsilon^{-n}\rho(x/\varepsilon).
+\]
+称 $(\rho_\varepsilon)$ 为标准 mollifier 族。
+\end{definition}
+
+这里的光滑性并非来自对分段公式的乐观判断。对每个 $k\geq0$，$\eta^{(k)}(t)$ 在 $t>0$
+上等于 $e^{-1/t}$ 乘以 $t^{-1}$ 的一个多项式。确切地，存在多项式 $P_k$，使
+\[
+ \eta^{(k)}(t)=e^{-1/t}P_k(t^{-1})\qquad(t>0).
+\]
+这可归纳证明：$P_0=1$，若 $s=t^{-1}$，则
+\[
+ \frac{\dd}{\dd t}\bigl(e^{-s}P_k(s)\bigr)
+ =e^{-s}s^2\bigl(P_k(s)-P_k'(s)\bigr),
+\]
+故 $P_{k+1}(s)=s^2(P_k(s)-P_k'(s))$ 仍为多项式。又对每个 $N\ge0$，令 $s=1/t$ 得
+\[
+ t^{-N}e^{-1/t}=s^Ne^{-s}\longrightarrow0\qquad(t\downarrow0).
+\]
+因而每个 $\eta^{(k)}(t)$ 在 $t\downarrow0$ 时趋于零。更具体地，若已定义
+$\eta^{(k-1)}(0)=0$，则
+\[
+ \frac{\eta^{(k-1)}(t)-\eta^{(k-1)}(0)}t
+ =e^{-1/t}t^{-1}P_{k-1}(t^{-1})\longrightarrow0;
+\]
+当 $t<0$ 时相应差商恒为零。因此从 $k=1$ 起归纳可知，$\eta$ 在零点的每阶双侧导数都存在且等于零。所以上述
+$\rho$ 的确是光滑紧支撑函数。换元还给出
+\[
+ \int\rho_\varepsilon=1,\qquad
+ \supp\rho_\varepsilon\subset\overline{B(0,\varepsilon)}.
+\]
+
+\begin{example}[阶跃函数平滑]\label{ex:4-3-1-1}
+公式 \eqref{eq:4-3-step-mollification} 给出了完整计算。若 $x\notin\{0,1\}$，则对充分小的
+$\varepsilon$，卷积值已经等于 $\1_{(0,1)}(x)$。在两个跳点，由 $\rho$ 的偶对称性，
+卷积值趋于 $1/2$，而不是所选代表在该点的值。因而点态极限首先识别的是 Lebesgue 点，不能用来
+恢复零测集上的任意赋值。
+\end{example}
+
+\begin{example}[Dirac 质量的平滑]\label{ex:4-3-1-2}
+$\rho_\varepsilon$ 本身是总质量为一、支撑收缩到零的光滑密度。下一小节定义分布卷积后，将由定义
+直接得到 $\delta_0*\rho_\varepsilon=\rho_\varepsilon$。此处只需观察右端的显式公式。
+\end{example}
+
+若 $f$ 只定义在开集内，卷积窗口必须完整留在域中。
+
+\begin{definition}[卷积平滑]\label{def:4-3-1-2}
+设 $\Omega\subset\R^n$ 开，$f\in L^1_{\mathrm{loc}}(\Omega)$。当
+$\dist(x,\Omega^c)>\varepsilon$ 时，定义
+\[
+ f_\varepsilon(x)
+ =\int_{B(0,\varepsilon)}f(x-y)\rho_\varepsilon(y)\dd y.
+\]
+若 $f$ 已定义在整个 $\R^n$，则也写作 $f*\rho_\varepsilon$。
+\end{definition}
+
+\begin{definition}[内部耗尽]\label{def:4-3-1-3}
+对 $\varepsilon>0$，置
+\[
+ \Omega_\varepsilon
+ =\{x\in\Omega:\dist(x,\Omega^c)>\varepsilon, |x|<\varepsilon^{-1}\}.
+\]
+这是开集，并且 $\overline{\Omega_\varepsilon}$ 是 $\Omega$ 中的紧集。若
+$0<\varepsilon'<\varepsilon$，则 $\Omega_\varepsilon\subset\Omega_{\varepsilon'}$，且
+$\bigcup_{k\geq1}\Omega_{1/k}=\Omega$。
+\end{definition}
+
+最后一句可由 Heine--Borel 定理验证：闭包既闭又有界，而距离条件在取闭包后变成
+$\dist(x,\Omega^c)\geq\varepsilon$，所以闭包仍包含于 $\Omega$。因此
+$\overline{\Omega_\varepsilon}\Subset\Omega$。
+
+以后使用标准多重指标记号：若
+$\alpha=(\alpha_1,\ldots,\alpha_n)\in\mathbb N_0^n$，则
+$|\alpha|=\alpha_1+\cdots+\alpha_n$，并令
+\[
+ \partial^\alpha
+ =\partial_1^{\alpha_1}\cdots\partial_n^{\alpha_n}.
+\]
+$\alpha=0$ 时把 $\partial^\alpha$ 读作恒等运算。
+
+\begin{proposition}[卷积光滑性]\label{proposition:4-3-1-1}
+若 $f\in L^1_{\mathrm{loc}}(\R^n)$、$\psi\in C_c^\infty(\R^n)$，则
+$f*\psi\in C^\infty(\R^n)$，且对每个多重指标 $\alpha$，
+\[
+ \partial^\alpha(f*\psi)=f*(\partial^\alpha\psi).
+ \tag{4.3.1}\label{eq:4-3-convolution-differentiate}
+\]
+若 $f$ 只定义在 $\Omega$，同一结论在所有卷积窗口紧含于 $\Omega$ 的区域成立。
+\end{proposition}
+
+\begin{proof}
+把卷积写成
+\[
+ (f*\psi)(x)=\int f(y)\psi(x-y)\dd y.
+\]
+固定 $x_0$，取闭球 $K$ 使 $x$ 在 $x_0$ 的一个邻域中变化时，所有
+$x-\supp\psi$ 都包含在 $K$ 中。于是积分只涉及 $f\1_K\in L^1$。以第一坐标为例，均值定理给出
+\[
+ \left|\frac{\psi(x+he_1-y)-\psi(x-y)}h\right|
+ \leq\|\partial_1\psi\|_\infty
+\]
+（$h\ne0$），而差商逐点趋于 $\partial_1\psi(x-y)$。因此
+$|f(y)|\|\partial_1\psi\|_\infty\1_K(y)$ 是可积支配函数，支配收敛定理给出
+\[
+ \partial_1(f*\psi)(x)=\int f(y)\partial_1\psi(x-y)\dd y.
+\]
+同一支配论证还说明右端关于 $x$ 连续。把 $\psi$ 依次换成它的各阶偏导，归纳即得
+\eqref{eq:4-3-convolution-differentiate}。若论域是 $\Omega$，固定卷积窗口紧含于 $\Omega$ 的点
+$x_0$，再取其一个足够小的邻域 $U$，使
+\[
+ \bigcup_{x\in U}(x-\supp\psi)\subset K\Subset\Omega.
+\]
+上面的所有差商便都由 $|f|\1_K$ 乘相应核导数的一致界支配，所以同一结论在该区域成立。
+\end{proof}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[x=1.15cm,y=1.15cm]
+    \draw[->,BookInk!75] (-.3,0)--(6.35,0) node[right] {$x$};
+    \draw[->,BookInk!75] (0,-.15)--(0,2.15);
+    \draw[BookWarning,semithick] (0,0)--(1,0)--(1,1.55)--(2.35,1.55)--(2.35,.55)--(3.4,.55)--(3.4,1.25)--(4.7,1.25)--(4.7,0)--(6,0);
+    \draw[BookAccent,very thick,smooth] plot coordinates {(.45,.03) (.8,.15) (1.05,.75) (1.35,1.35) (1.8,1.48) (2.15,1.25) (2.45,.85) (2.8,.65) (3.2,.72) (3.5,1.0) (4.25,1.15) (4.65,.72) (5,.15) (5.4,.03)};
+    \draw[BookWarm,semithick] (5.45,0)--(5.45,1.85);
+    \draw[BookWarm,decorate,decoration={brace,amplitude=4pt}] (5.05,1.65)--(5.85,1.65)
+      node[midway,above=5pt,font=\small] {卷积窗口};
+    \node[font=\small,text=BookWarning] at (2.05,1.9) {粗糙函数};
+    \node[font=\small,text=BookAccent] at (3.75,.35) {平滑后};
+    \node[font=\small,text=BookWarm,anchor=west] at (5.55,1.15) {域的边界};
+  \end{tikzpicture}
+  \caption{核在内部滑过粗糙函数时产生光滑平均；若竖线代表域的边界，靠近它的窗口会越界。}
+  \label{fig:4-3-1-mollifier-window}
+\end{figure}
+
+近似问题的核心是平移连续性。下面先证明所需的 $L^p$ 版本。
+
+\begin{lemma}[$L^p$ 中的平移连续性]\label{lemma:4-3-1-translation}
+若 $1\leq p<\infty$、$f\in L^p(\R^n)$，并记 $\tau_yf(x)=f(x-y)$，则
+\[
+ \|\tau_yf-f\|_p\longrightarrow0\qquad(y\to0).
+\]
+\end{lemma}
+
+\begin{proof}
+若 $f\in C_c(\R^n)$，取一个有限测度紧集 $K$，使 $|y|<1$ 时
+$\supp(\tau_yf-f)\subset K$。紧支撑连续函数一致连续，故
+\[
+ \|\tau_yf-f\|_p^p
+ \leq |K|\,\|\tau_yf-f\|_\infty^p\longrightarrow0.
+\]
+对一般 $f\in L^p$，由定理~\ref{theorem:3-3-3-1} 取 $g\in C_c(\R^n)$ 使
+$\|f-g\|_p<\delta$。Lebesgue 测度平移不变，因而
+\[
+ \|\tau_yf-f\|_p
+ \leq\|\tau_y(f-g)\|_p+\|\tau_yg-g\|_p+\|g-f\|_p
+ <2\delta+\|\tau_yg-g\|_p.
+\]
+先令 $y\to0$，再令 $\delta\downarrow0$，结论成立。
+\end{proof}
+
+\begin{lemma}[积分平均的 Minkowski 估计]\label{lemma:4-3-1-integral-minkowski}
+设 $1\leq p\leq\infty$，$F:\R^n\times\R^m\to\C$ 联合可测，并且
+$y\mapsto\|F(\,\cdot,y)\|_{L^p(\R^n)}$ 可积。则
+\[
+ \left\|\int_{\R^m}F(\,\cdot,y)\dd y\right\|_{L^p(\R^n)}
+ \leq\int_{\R^m}\|F(\,\cdot,y)\|_{L^p(\R^n)}\dd y.
+ \tag{4.3.2a}\label{eq:4-3-integral-minkowski}
+\]
+左端的积分对 a.e. $x$ 绝对存在。
+\end{lemma}
+
+\begin{proof}
+当 $p=1$ 时，逐点三角不等式与 Tonelli 定理给出
+\[
+ \int\left|\int F(x,y)\dd y\right|\dd x
+ \leq\iint|F(x,y)|\dd y\dd x
+ =\int\|F(\,\cdot,y)\|_1\dd y.
+\]
+当 $p=\infty$ 时，令
+$a(y)=\|F(\,\cdot,y)\|_\infty$。可测集
+\[
+ N=\{(x,y):|F(x,y)|>a(y)\}
+\]
+的每个 $y$--截面都是零测集，故 Tonelli 与 Fubini 定理说明：对几乎每个 $x$，
+$|F(x,y)|\leq a(y)$ 对几乎每个 $y$ 成立。因此原积分对这样的 $x$ 绝对存在，并且
+\[
+ \left|\int F(x,y)\dd y\right|
+ \leq\int a(y)\dd y.
+\]
+取本性上确界即得所需估计。这里的 Fubini 步骤给出了一个与 $y$ 无关的 $x$--零集。
+
+若 $1<p<\infty$，先把 $F$ 截断为有界且支撑于有限测度矩形的函数。以 $p'$ 表示共轭指数，
+$L^p$ 对偶表示与 Fubini 定理给出
+\begin{align*}
+ \left\|\int F(\,\cdot,y)\dd y\right\|_p
+ &=\sup_{\|g\|_{p'}\leq1}
+   \left|\iint F(x,y)\overline{g(x)}\dd x\dd y\right|\\
+ &\leq\int\sup_{\|g\|_{p'}\leq1}
+       \left|\int F(x,y)\overline{g(x)}\dd x\right|\dd y
+ \leq\int\|F(\,\cdot,y)\|_p\dd y.
+\end{align*}
+对一般 $F$，令
+\[
+ G_N(x,y)=|F(x,y)|\1_{B_{\R^n}(0,N)\times B_{\R^m}(0,N)}(x,y)
+             \1_{\{|F(x,y)|\leq N\}}.
+\]
+则 $G_N\uparrow |F|$，而上述估计与
+$\|G_N(\,\cdot,y)\|_p\leq\|F(\,\cdot,y)\|_p$ 给出
+\[
+ \left\|\int G_N(\,\cdot,y)\dd y\right\|_p
+ \leq\int\|F(\,\cdot,y)\|_p\dd y.
+\]
+由单调收敛与 Fatou 引理，$x\mapsto\int|F(x,y)|\dd y$ 属于 $L^p$，并满足同一范数界。
+所以原积分 a.e. 绝对存在；再用
+$|\int F(x,y)\dd y|\leq\int|F(x,y)|\dd y$ 即得结论。
+\end{proof}
+
+\begin{theorem}[近似恒等]\label{theorem:4-3-1-2}
+若 $1\leq p<\infty$ 且 $f\in L^p(\R^n)$，则
+\[
+ \|f*\rho_\varepsilon-f\|_p\longrightarrow0.
+ \tag{4.3.2}\label{eq:4-3-mollifier-lp}
+\]
+若 $f\in C_0(\R^n)$，则收敛在一致范数中成立。若
+$f\in L^p_{\mathrm{loc}}(\Omega)$，则对每个 $K\Subset\Omega$，
+\[
+ \|f*\rho_\varepsilon-f\|_{L^p(K)}\longrightarrow0
+\]
+（$\varepsilon$ 充分小时左端在 $K$ 上有定义）。
+\end{theorem}
+
+\begin{proof}
+先设 $f\in L^p(\R^n)$。由 $\int\rho_\varepsilon=1$，逐点有
+\[
+ f*\rho_\varepsilon-f
+ =\int\rho_\varepsilon(y)(\tau_yf-f)\dd y.
+\]
+引理~\ref{lemma:4-3-1-integral-minkowski} 给出
+\[
+ \|f*\rho_\varepsilon-f\|_p
+ \leq\int\rho_\varepsilon(y)\|\tau_yf-f\|_p\dd y
+ \leq\sup_{|y|\leq\varepsilon}\|\tau_yf-f\|_p.
+\]
+最后一项由引理~\ref{lemma:4-3-1-translation} 趋于零。
+
+若 $f\in C_0$，则 $f$ 在 $\R^n$ 上一致连续。确实，可先在一个大闭球上用紧致性，再在球外利用
+$f(x)\to0$。因此同一恒等式给出
+\[
+ \|f*\rho_\varepsilon-f\|_\infty
+ \leq\sup_{|y|\leq\varepsilon}\|\tau_yf-f\|_\infty\longrightarrow0.
+\]
+
+最后取 $K\Subset\Omega$，再取 $\chi\in C_c(\Omega)$，使 $\chi=1$ 于 $K$ 的某个开邻域。
+函数 $g=\chi f$ 的零延拓属于 $L^p(\R^n)$。当 $\varepsilon$ 小于该邻域宽度时，
+$f*\rho_\varepsilon=g*\rho_\varepsilon$ 于 $K$，故局部结论由全局结论得到。
+\end{proof}
+
+$p=\infty$ 不能补进定理。令 $H=\1_{(0,\infty)}$；对每个 $\varepsilon>0$，在
+$0<x<\varepsilon$ 的一个正测度区间上，$H*\rho_\varepsilon(x)$ 严格介于 $0$ 与 $1$，并且
+当 $x\downarrow0$ 时趋于 $1/2$。所以
+$\|H*\rho_\varepsilon-H\|_\infty\geq1/2$。因此跳跃函数排除了 $L^\infty$ 范数收敛。
+
+\begin{example}[边界泄漏]\label{ex:4-3-1-3}
+把 $(0,1)$ 上的常数函数 $1$ 零延拓为 $\widetilde f=\1_{(0,1)}$。公式
+\eqref{eq:4-3-step-mollification} 表明，当 $0<x<\varepsilon$ 时
+\[
+ (\widetilde f*\rho_\varepsilon)(x)
+ =\int_{-\varepsilon}^{x}\rho_\varepsilon(y)\dd y<1,
+\]
+并且 $x\downarrow0$ 时趋于 $1/2$。零延拓的卷积在每个内部紧集上仍逼近 $1$，却不保持边界附近的
+常值。若问题要求零边界条件，零延拓可能正合适；若要求保持非零边界数据，就必须另作延拓或只在内部卷积。
+\end{example}
+
+\begin{proposition}[Lebesgue 点收敛]\label{proposition:4-3-1-4}
+若 $f\in L^1_{\mathrm{loc}}(\R^n)$，则在 $f$ 的每个 Lebesgue 点 $x$，
+\[
+ f*\rho_\varepsilon(x)\longrightarrow f(x).
+\]
+\end{proposition}
+
+\begin{proof}
+由 $0\leq\rho\leq\|\rho\|_\infty$ 及支撑条件，
+\begin{align*}
+ |f*\rho_\varepsilon(x)-f(x)|
+ &\leq \|\rho\|_\infty\varepsilon^{-n}
+       \int_{B(0,\varepsilon)}|f(x-y)-f(x)|\dd y\\
+ &=|B(0,1)|\|\rho\|_\infty
+   \frac1{|B(x,\varepsilon)|}\int_{B(x,\varepsilon)}|f(z)-f(x)|\dd z.
+\end{align*}
+Lebesgue 点的定义使最后一项趋于零。
+\end{proof}
+
+这里的尺度上界不能删去。令 $a_k=2^{-k}$、$r_k=2^{-3k-4}$，并在 $\R$ 上置
+\[
+ f=\1_{\bigcup_{k\geq1}(-a_k-r_k,-a_k+r_k)},\qquad f(0)=0.
+\]
+若 $2^{-(m+1)}<r\leq2^{-m}$，则
+\[
+ \frac1{2r}\int_{-r}^{r}|f(t)|\dd t
+ \leq \frac{\sum_{k\geq m-1}2r_k}{2^{-(m+1)}}
+ =\frac{\sum_{k\ge m-1}2^{-3k-3}}{2^{-(m+1)}}
+ =\frac{16}{7}\,2^{-2m}\longrightarrow0;
+\]
+所以零是 $f$ 的 Lebesgue 点。另一方面，取非负 $\kappa_k\in C_c^\infty$，使
+$\int\kappa_k=1$ 且
+$\supp\kappa_k\subset(a_k-r_k,a_k+r_k)\subset(-2a_k,2a_k)$。于是
+\[
+ (f*\kappa_k)(0)=\int f(-y)\kappa_k(y)\dd y=1.
+\]
+这些核非负、质量一且支撑收缩到零，却始终集中在稀疏尖峰上。Lebesgue 点只控制无权球平均；标准
+mollifier 的 $\varepsilon^{-n}$ 上界则把加权平均控制在相应球平均之下，从而排除这种偏心集中。
+
+下面同时处理边界距离、紧支撑与光滑性。
+
+\begin{theorem}[光滑紧支撑函数的稠密性]\label{theorem:4-3-1-3}
+对任意开集 $\Omega\subset\R^n$ 与 $1\leq p<\infty$，
+$C_c^\infty(\Omega)$ 在 $L^p(\Omega)$ 中稠密。
+\end{theorem}
+
+\begin{proof}
+固定 $f\in L^p(\Omega)$ 与 $\delta>0$。有限 Radon 测度
+$\nu(E)=\int_E|f|^p\dd x$ 的内正则性给出紧集 $K\Subset\Omega$，使
+$\int_{\Omega\setminus K}|f|^p<\delta^p$。由欧氏空间的局部 Urysohn 构造，取
+$\chi\in C_c(\Omega)$，$0\leq\chi\leq1$ 且 $\chi=1$ 于 $K$。令 $g=\chi f$ 并零延拓到
+$\R^n$，则
+\[
+ \|g-f\|_{L^p(\Omega)}^p
+ =\int_{\Omega\setminus K}|1-\chi|^p|f|^p\dd x<\delta^p.
+\]
+$S=\supp g\subset\supp\chi$ 是 $\Omega$ 中的紧集。取
+$0<\varepsilon<\tfrac12\dist(S,\Omega^c)$。命题~\ref{proposition:4-3-1-1} 说明
+$g*\rho_\varepsilon$ 光滑，而
+\[
+ \supp(g*\rho_\varepsilon)
+ \subset S+\overline{B(0,\varepsilon)}\Subset\Omega.
+\]
+再由定理~\ref{theorem:4-3-1-2} 选取足够小的 $\varepsilon$，使
+$\|g*\rho_\varepsilon-g\|_p<\delta$。于是
+$g*\rho_\varepsilon\in C_c^\infty(\Omega)$，且它到 $f$ 的 $L^p$ 距离小于 $2\delta$。
+\end{proof}
+
+上述定理讨论 $L^p$ 范数中的稠密性。Sobolev 范数中的情形有所不同：稍后将证明
+$C^\infty(\Omega)\cap W^{1,p}(\Omega)$ 在 $W^{1,p}(\Omega)$ 中稠密，而
+$C_c^\infty(\Omega)$ 的 Sobolev 范数闭包定义为 $W_0^{1,p}(\Omega)$，它一般真小于
+$W^{1,p}(\Omega)$。卷积本身并不消除边界条件。
+
+在 \S4.4 中，热核将提供另一类光滑化：固定正时间时卷积产生经典空间导数，而时间趋于零时近似
+恒等恢复初值。
+
+\begin{exercise}
+证明对每个多重指标 $\alpha$，
+$\|\partial^\alpha\rho_\varepsilon\|_1
+=\varepsilon^{-|\alpha|}\|\partial^\alpha\rho\|_1$。再据此估计
+$\|\partial^\alpha(f*\rho_\varepsilon)\|_p$，其中 $f\in L^p$。
+\end{exercise}
+
+\begin{exercise}
+设 $f\in C_0(\R^n)$。不引用本节定理的 $C_0$ 部分，直接从“在大球内一致连续、在大球外一致小”
+证明 $\|f*\rho_\varepsilon-f\|_\infty\to0$。
+\end{exercise}
+
+\begin{exercise}
+从函数 $\eta(t)=e^{-1/t}\1_{(0,\infty)}(t)$ 出发，逐阶验证定义
+\ref{def:4-3-1-1} 中的 $\rho$ 属于 $C_c^\infty(\R^n)$，并核对归一化常数确实使
+$\int\rho=1$。
+\end{exercise}
+
+\begin{exercise}
+设 $f\in L^1_{\mathrm{loc}}(\R^n)$、$\psi\in C_c^\infty(\R^n)$。为差商找出一个固定的
+$L^1$ 支配函数，完整证明
+$\partial^\alpha(f*\psi)=f*(\partial^\alpha\psi)$。
+\end{exercise}
+
+\begin{exercise}
+沿“先截断到紧集，再选择小于边界距离的卷积尺度”的路线，独立证明
+$C_c^\infty(\Omega)$ 在 $L^p(\Omega)$ 中稠密，$1\leq p<\infty$。
+\end{exercise}
+
+平滑近似让导数从粗糙函数转移到光滑核上。若进一步把核换成任意光滑紧支撑的“探针”，我们就能
+把这次转移本身定义为导数；这正是分布语言的起点。
+
+\subsection{分布、弱导数与测试函数对偶}\label{subsec:4-3-2}
+\index{分布}\index{测试函数}\index{弱导数}
+
+令 $H=\1_{(0,\infty)}$。原点以外，$H$ 的经典导数为零；若把导数简单地取为零，跳跃信息便会
+被遗漏。另一方面，对每个 $\varphi\in C_c^\infty(\R)$，分部积分的形式计算给出
+\[
+ -\int_\R H(x)\varphi'(x)\dd x
+ =-\int_0^\infty\varphi'(x)\dd x=\varphi(0).
+ \tag{4.3.3}\label{eq:4-3-heaviside-motivation}
+\]
+右端只依赖测试函数在跳点的值。这提示我们：与其强迫导数逐点存在，不如把对象定义成它对所有光滑
+紧支撑观测的响应。
+
+Schwartz 分布理论把这种“由全部测试响应刻画对象”的想法系统化。以下采用逐紧集的半范数估计表述
+连续性，这足以定义弱导数、卷积与分布收敛。
+
+\begin{definition}[测试函数与分布]\label{def:4-3-2-1}
+记 $\mathcal D(\Omega)=C_c^\infty(\Omega)$。一个\emph{分布}是线性泛函
+$T:\mathcal D(\Omega)\to\C$，并且对每个紧集 $K\Subset\Omega$，存在常数
+$C_K>0$ 与非负整数 $m_K$，使
+\[
+ |\langle T,\varphi\rangle|
+ \leq C_K\sum_{|\alpha|\leq m_K}\|\partial^\alpha\varphi\|_\infty,
+ \qquad \supp\varphi\subset K.
+ \tag{4.3.4}\label{eq:4-3-distribution-continuity}
+\]
+全体分布记为 $\mathcal D'(\Omega)$。
+\end{definition}
+
+固定 $K$ 时，测试函数列 $\varphi_k$ 收敛到零，意指它们的支撑都包含于 $K$，且每个阶数
+$\alpha$ 都满足 $\|\partial^\alpha\varphi_k\|_\infty\to0$。估计
+\eqref{eq:4-3-distribution-continuity} 立即推出
+$\langle T,\varphi_k\rangle\to0$。
+
+\begin{definition}[正则分布]\label{def:4-3-2-2}
+若 $f\in L^1_{\mathrm{loc}}(\Omega)$，定义
+\[
+ \langle T_f,\varphi\rangle=\int_\Omega f(x)\varphi(x)\dd x.
+\]
+称 $T_f$ 为 $f$ 诱导的正则分布。
+\end{definition}
+
+这确实满足定义：若 $\supp\varphi\subset K$，则
+\[
+ |\langle T_f,\varphi\rangle|
+ \leq\left(\int_K|f|\right)\|\varphi\|_\infty.
+\]
+更重要的是，这个嵌入不丢失 a.e. 信息。
+
+\begin{lemma}[测试函数识别局部可积函数]\label{lemma:4-3-2-regular-injective}
+若 $u\in L^1_{\mathrm{loc}}(\Omega)$ 且
+$\int u\varphi=0$ 对每个 $\varphi\in\mathcal D(\Omega)$ 成立，则 $u=0$ a.e.
+因而 $T_f=T_g$ 当且仅当 $f=g$ a.e.
+\end{lemma}
+
+\begin{proof}
+固定 $K\Subset\Omega$。对每个 $0<\varepsilon<\dist(K,\Omega^c)$ 及 $x\in K$，函数
+$y\mapsto\rho_\varepsilon(x-y)$ 属于 $\mathcal D(\Omega)$，故
+\[
+ (u*\rho_\varepsilon)(x)
+ =\int u(y)\rho_\varepsilon(x-y)\dd y=0.
+\]
+在稍大的紧邻域上截断 $u$ 后，定理~\ref{theorem:4-3-1-2} 的局部 $L^1$ 结论给出当
+$\varepsilon\downarrow0$ 时 $u*\rho_\varepsilon\to u$ 于 $L^1(K)$。每个充分小的 $\varepsilon$
+对应的左端都恒为零，故 $u=0$ a.e. 于 $K$。用
+$\Omega_{1/k}$ 耗尽 $\Omega$ 即得全局结论。
+\end{proof}
+
+\begin{definition}[分布导数与弱导数]\label{def:4-3-2-3}
+对 $T\in\mathcal D'(\Omega)$，定义
+\[
+ \langle\partial_jT,\varphi\rangle
+ =-\langle T,\partial_j\varphi\rangle.
+ \tag{4.3.5}\label{eq:4-3-distribution-derivative}
+\]
+若 $f,g\in L^1_{\mathrm{loc}}(\Omega)$ 且 $\partial_jT_f=T_g$，则称 $g$ 是 $f$ 的第 $j$ 个
+\emph{弱导数}，仍记作 $\partial_jf$。
+\end{definition}
+
+负号来自经典分部积分：紧支撑测试函数使边界项消失。该定义还允许继续求任意阶分布导数。
+
+\begin{proposition}[分布导数永远存在]\label{proposition:4-3-2-1}
+每个分布都可以任意次微分；对多重指标 $\alpha,\beta$，
+\[
+ \partial^\alpha\partial^\beta T=\partial^{\alpha+\beta}T.
+\]
+特别地，分布的混合偏导与求导次序无关。
+\end{proposition}
+
+\begin{proof}
+若 $T$ 在紧集 $K$ 上满足阶数 $m$ 的估计，则
+\[
+ |\langle\partial_jT,\varphi\rangle|
+ =|\langle T,\partial_j\varphi\rangle|
+ \leq C_K\sum_{|\alpha|\leq m}\|\partial^{\alpha+e_j}\varphi\|_\infty,
+\]
+所以 $\partial_jT$ 仍是分布。反复应用定义可作任意次微分。又因测试函数的经典偏导交换，
+\[
+ \langle\partial_i\partial_jT,\varphi\rangle
+ =\langle T,\partial_j\partial_i\varphi\rangle
+ =\langle T,\partial_i\partial_j\varphi\rangle
+ =\langle\partial_j\partial_iT,\varphi\rangle.
+\]
+邻位交换给出任意求导次序的结论。
+\end{proof}
+
+\begin{example}[Heaviside 函数]\label{ex:4-3-2-1}
+由 \eqref{eq:4-3-heaviside-motivation}，
+\[
+ \langle\partial T_H,\varphi\rangle=\varphi(0).
+\]
+定义 $\langle\delta_0,\varphi\rangle=\varphi(0)$，便得到
+$\partial T_H=\delta_0$。点值泛函满足
+$|\varphi(0)|\leq\|\varphi\|_\infty$，所以它的确是分布。它不是正则分布：若
+$T_g=\delta_0$，则在每个不含零的开区间上测试可得 $g=0$ a.e.，因而 $g=0$ a.e. 于
+$\R$；但取 $\varphi(0)=1$ 又会给 $\langle T_g,\varphi\rangle=1$，矛盾。因此 $H$ 没有
+局部可积的弱导数。
+\end{example}
+
+\begin{example}[绝对值]\label{ex:4-3-2-2}
+在 $(-\infty,0)$ 与 $(0,\infty)$ 分别积分，得到
+\begin{align*}
+ -\int_\R|x|\varphi'(x)\dd x
+ &=-\int_{-\infty}^0\varphi(x)\dd x+
+   \int_0^\infty\varphi(x)\dd x
+ =\int_\R \sgn(x)\varphi(x)\dd x.
+\end{align*}
+因此 $(|x|)'=\sgn x$ 是弱导数。再次求分布导数，
+\[
+ -\int_\R\sgn(x)\varphi'(x)\dd x=2\varphi(0),
+\]
+故 $(|x|)''=2\delta_0$。
+\end{example}
+
+\begin{theorem}[弱导数唯一性]\label{theorem:4-3-2-2}
+若 $g,h\in L^1_{\mathrm{loc}}(\Omega)$ 都是 $f$ 的第 $j$ 个弱导数，则 $g=h$ a.e.
+更一般地，正则分布的代表在 a.e. 意义下唯一。
+\end{theorem}
+
+\begin{proof}
+由定义，$T_g=\partial_jT_f=T_h$，故
+$\int(g-h)\varphi=0$ 对每个测试函数成立。应用引理
+\ref{lemma:4-3-2-regular-injective} 即得 $g=h$ a.e.
+\end{proof}
+
+分布也可以用测试核平滑，但必须先说明平移后的核何时仍留在论域内。对
+$x\in\Omega_\varepsilon^\circ:=\{x:\dist(x,\Omega^c)>\varepsilon\}$，定义
+\[
+ (T*\rho_\varepsilon)(x)
+ =\langle T,\rho_\varepsilon(x-\,\cdot)\rangle.
+ \tag{4.3.6}\label{eq:4-3-distribution-convolution}
+\]
+
+\begin{proposition}[卷积与分布导数]\label{proposition:4-3-2-3}
+函数 \eqref{eq:4-3-distribution-convolution} 在 $\Omega_\varepsilon^\circ$ 上属于
+$C^\infty$，并且
+\[
+ \partial^\alpha(T*\rho_\varepsilon)
+ = (\partial^\alpha T)*\rho_\varepsilon.
+ \tag{4.3.7}\label{eq:4-3-distribution-convolution-derivative}
+\]
+\end{proposition}
+
+\begin{proof}
+固定 $x_0\in\Omega_\varepsilon^\circ$。当 $x$ 在 $x_0$ 的充分小邻域中变化时，所有
+$y\mapsto\rho_\varepsilon(x-y)$ 的支撑都落在某个固定 $K\Subset\Omega$。对每个 $m$，经典
+Taylor 公式说明差商
+\[
+ \frac{\rho_\varepsilon(x+he_j-\,\cdot)-
+       \rho_\varepsilon(x-\,\cdot)}h
+\]
+连同其 $m$ 阶以内的各偏导，在 $K$ 上一致趋于
+$\partial_j\rho_\varepsilon(x-\,\cdot)$。分布连续性估计遂允许在配对外取极限，得到
+\[
+ \partial_j(T*\rho_\varepsilon)(x)
+ =\langle T,\partial_{x_j}\rho_\varepsilon(x-\,\cdot)\rangle.
+\]
+反复使用同一论证给出光滑性。另一方面，
+\begin{align*}
+ ((\partial_jT)*\rho_\varepsilon)(x)
+ &=\langle\partial_jT,\rho_\varepsilon(x-\,\cdot)\rangle\\
+ &=-\langle T,\partial_{y_j}\rho_\varepsilon(x-y)\rangle
+ =\langle T,\partial_{x_j}\rho_\varepsilon(x-y)\rangle.
+\end{align*}
+两个负号在最后一步抵消。归纳得到 \eqref{eq:4-3-distribution-convolution-derivative}。
+\end{proof}
+
+由分布卷积的定义，例~\ref{ex:4-3-1-2} 中的恒等式现在可写为
+\[
+ (\delta_0*\rho_\varepsilon)(x)
+ =\langle\delta_0,\rho_\varepsilon(x-\,\cdot)\rangle
+ =\rho_\varepsilon(x).
+\]
+
+\begin{remark}[基本解的卷积形式]\label{ex:4-3-2-3}
+若能找到分布 $\Phi$ 满足 $\Delta\Phi=\delta_0$，那么形式上
+$u=\Phi*f$ 会满足 $\Delta u=f$。这条思路把微分方程的逆运算改写成卷积。要使该计算严格成立，
+还需分别确定卷积的可定义性、基本解的具体形式与边界条件；这些问题将在 Fourier 与热核理论中处理。
+\end{remark}
+
+若 $T_k,T\in\mathcal D'(\Omega)$，称 $T_k$ 在\emph{分布意义下收敛}于 $T$，并写作
+$T_k\to T$ in $\mathcal D'(\Omega)$，如果对每个 $\varphi\in\mathcal D(\Omega)$ 都有
+\[
+ \langle T_k,\varphi\rangle\longrightarrow
+ \langle T,\varphi\rangle.
+\]
+这个定义只要求对每个测试函数的配对收敛，并不蕴含正则分布代表的逐点收敛或 $L^p$ 范数收敛。
+
+\begin{theorem}[分布收敛与弱导数闭性]\label{theorem:4-3-2-4}
+若 $f_k\to f$ 于 $L^1_{\mathrm{loc}}(\Omega)$，则对每个
+$\varphi\in\mathcal D(\Omega)$，
+\[
+ \langle T_{f_k},\varphi\rangle\longrightarrow\langle T_f,\varphi\rangle.
+\]
+若对每个 $j=1,\ldots,n$ 另有 $g_{k,j}\to g_j$ 于 $L^1_{\mathrm{loc}}$，且
+$\partial_jT_{f_k}=T_{g_{k,j}}$，则对每个 $j$ 都有 $\partial_jT_f=T_{g_j}$。
+
+此外，设 $1<p<\infty$，$T_{f_k}\to T_f$ 于分布意义，并仍有
+$\partial_jT_{f_k}=T_{g_{k,j}}$ 对每个 $j=1,\ldots,n$ 成立。若每个 $j$ 都满足
+$\sup_k\|g_{k,j}\|_{L^p(\Omega)}<\infty$，则存在一个共同子列及
+$g_j\in L^p(\Omega)$（$j=1,\ldots,n$），使对每个 $j$ 与每个
+$\psi\in L^{p'}(\Omega)$，
+\[
+ \int g_{k_\ell,j}\psi\longrightarrow\int g_j\psi,
+\]
+并且 $\partial_jT_f=T_{g_j}$。
+\end{theorem}
+
+\begin{proof}
+若 $K=\supp\varphi$，则
+\[
+ \left|\int(f_k-f)\varphi\right|
+ \leq\|\varphi\|_\infty\|f_k-f\|_{L^1(K)}\longrightarrow0.
+\]
+同样，$\partial_j\varphi$ 有界且紧支撑，所以在
+\[
+ \int g_{k,j}\varphi=-\int f_k\partial_j\varphi
+\]
+中两边分别取极限，便得
+$\int g_j\varphi=-\int f\partial_j\varphi$。
+
+证明加强部分。$L^{p'}(\Omega)$ 可分，取可数稠密集
+$\{\psi_m:m\geq1\}$。对每个 $j,m$，\Holder{} 不等式使数列
+$\int g_{k,j}\psi_m$ 有界。由于 $j$ 只有有限多个，逐次抽取并对 $(j,m)$ 取对角子列，可令这些
+数列同时收敛。以下固定 $j$。在
+$\operatorname{span}\{\psi_m\}$ 上定义极限泛函 $L$；若
+$M=\sup_k\|g_{k,j}\|_p$，则
+\[
+ |L(\psi)|\leq M\|\psi\|_{p'}.
+\]
+所以 $L$ 唯一延拓为 $L^{p'}$ 上的连续线性泛函。由
+$L^{p'}$ 对偶表示定理~\ref{theorem:3-3-3-3}，存在 $h_j\in L^p$，使
+\[
+ L(\psi)=\int\psi\,\overline{h_j}.
+\]
+置 $g_j=\overline{h_j}$，便有 $L(\psi)=\int g_j\psi$ 且
+$\|g_j\|_p=\|h_j\|_p\leq M$。给定一般
+$\psi\in L^{p'}$，先以某个稠密族元素逼近 $\psi$，再用上面的统一界控制两端误差，得到
+\[
+ \int g_{k_\ell,j}\psi\to\int g_j\psi.
+\]
+最后取 $\psi=\varphi\in\mathcal D(\Omega)$，并在弱导数等式中令 $\ell\to\infty$；分布收敛处理
+右端，刚得的标量积分收敛处理左端，于是 $\partial_jT_f=T_{g_j}$。因 $j$ 任意，结论对全部坐标
+同时成立。
+\end{proof}
+
+\begin{example}[$p=1$ 端点的测度极限]\label{ex:4-3-2-4}
+在 $(-1,1)$ 上定义
+\[
+ u_k(x)=
+ \begin{cases}
+ 0,&x\leq0,\\
+ kx,&0<x<1/k,\\
+ 1,&x\geq1/k.
+ \end{cases}
+\]
+则 $\|u_k-H\|_1=1/(2k)\to0$，而
+$u_k'=k\1_{(0,1/k)}$ 且 $\|u_k'\|_1=1$。对测试函数 $\varphi$，
+\[
+ \int k\1_{(0,1/k)}(x)\varphi(x)\dd x
+ =\int_0^1\varphi(t/k)\dd t\longrightarrow\varphi(0).
+\]
+因此导数在分布意义下趋于 $\delta_0$，而不是某个 $L^1$ 函数。这里
+$u_k\to H$ 只发生在 $L^1$ 中，绝不是在 $W^{1,1}$ 中；仅有 $L^1$ 范数有界不能代替上一
+定理所需的标量积分子列紧性。导数质量集中时，$BV$ 正是容纳极限的更大空间。
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[node distance=18mm and 20mm]
+    \node[book warning node] (T) {粗糙对象 $T$};
+    \node[book node,left=of T] (phi) {测试函数 $\varphi$};
+    \node[book strong node,right=of T] (num) {数值 $\langle T,\varphi\rangle$};
+    \node[book warm node,below=of phi] (dphi) {$\partial_j\varphi$};
+    \node[book strong node,below=of T] (dT) {$\partial_jT$};
+    \draw[book arrow] (phi)--(T);
+    \draw[book arrow] (T)--(num);
+    \draw[book arrow] (phi)--node[left,font=\small] {$\partial_j$}(dphi);
+    \draw[book accent arrow] (T)--node[right,font=\small] {定义}(dT);
+    \draw[book arrow] (dphi)--(dT);
+    \node[font=\small,text=BookWarm,below=3mm of dT]
+      {$\langle\partial_jT,\varphi\rangle=-\langle T,\partial_j\varphi\rangle$};
+  \end{tikzpicture}
+  \caption{分布只接受光滑测试；求导把微分箭头移到测试函数并增加负号。}
+  \label{fig:4-3-2-distribution-black-box}
+\end{figure}
+
+分布与函数的乘法也有明确边界。若 $a\in C^\infty(\Omega)$，可以定义
+$\langle aT,\varphi\rangle=\langle T,a\varphi\rangle$。但 $H\delta_0$ 没有由现有等价关系决定的
+天然含义：Heaviside 的两个代表只在零点取值不同，诱导同一个正则分布；形式写成
+$H(0)\delta_0$ 却会因这个不可观测点值而改变。准确的结论不是“分布从不能相乘”，而是一般分布之间
+没有与 a.e. 等价及上述运算同时相容的规范乘法。
+
+论域也必须写清。若把 $(0,1)$ 上的常数函数 $1$ 只看作该开区间内的正则分布，其分布导数为零；
+若先零延拓
+到 $\R$，所得 $\1_{(0,1)}$ 的分布导数却是 $\delta_0-\delta_1$。域内求导不会看见域外跳跃，
+零延拓则会把边界跳跃变成边界测度。后面 $W_0^{1,p}$ 的闭包定义正是控制这种延拓行为的一种方式。
+
+分布导数在弱解中把微分方程改写为对所有测试函数成立的积分恒等式。它还自然产生稠密定义的无界
+微分算子；第~7 章建立 Fourier 变换后，分布微分将对应频率变量中的乘法。
+
+\begin{exercise}
+直接由定义证明 $\partial^\alpha\delta_0$ 满足
+$\langle\partial^\alpha\delta_0,\varphi\rangle
+=(-1)^{|\alpha|}\partial^\alpha\varphi(0)$，并验证它满足分布连续性估计。
+\end{exercise}
+
+\begin{exercise}
+设 $f_k\to f$ 于 $L^1_{\mathrm{loc}}$。证明对每个固定 $\varepsilon>0$，
+$f_k*\rho_\varepsilon\to f*\rho_\varepsilon$ 在卷积可定义的每个内部紧集上一致收敛。
+\end{exercise}
+
+\begin{exercise}
+直接计算 $|x|$ 的一阶与二阶分布导数，并逐项核对第二阶结果中的系数与符号。
+\end{exercise}
+
+\begin{exercise}
+只用定义~\ref{def:4-3-2-3} 与测试函数经典混合偏导的交换性，证明任意分布的混合偏导交换。
+\end{exercise}
+
+\begin{exercise}
+设 $f_k\to f$ 于 $L^1_{\mathrm{loc}}(\Omega)$。对固定测试函数给出完整估计，证明
+$T_{f_k}\to T_f$ 于分布意义。
+\end{exercise}
+
+\begin{exercise}
+从 $-\int_0^\infty\varphi'$ 出发重新证明 $H'=\delta_0$，并说明为何这个导数不能由
+$L^1_{\mathrm{loc}}$ 函数表示。
+\end{exercise}
+
+若一个函数的分布导数仍由 $L^p$ 函数表示，便可以同时测量函数和导数的大小。下一小节研究由此得到的
+一阶 Sobolev 空间；分布导数的闭性将直接给出其完备性。
+
+\subsection{一阶 Sobolev 空间、\Poincare{} 与紧性}\label{subsec:4-3-3}
+\index{Sobolev 空间}\index{Poincare@\Poincare{} 不等式}\index{Rellich--Kondrachov 定理}
+
+经典可微性把要求放在每一点；能量估计通常只能给出
+$u,\partial_1u,\ldots,\partial_n u$ 的积分控制。绝对值函数与阶跃函数说明这不是同一种粗糙：前者
+只有一个折角，分布导数仍是有界函数；后者有跳跃，导数已变成 Dirac 测度。
+
+Sobolev 空间把“函数与弱导数同时受积分控制”组织成完备空间，\Poincare{} 不等式负责消除加法常数，
+Rellich--Kondrachov 定理则在次临界范围把能量界转成紧性。三者解决的是不同问题；把它们并列在
+同一小节，正是为了看清完备、范数控制与紧性之间不能互相替代。
+
+\begin{example}[绝对值函数]\label{ex:4-3-3-1}
+由例~\ref{ex:4-3-2-2}，$u(x)=|x|$ 在 $(-1,1)$ 上的弱导数为 $\sgn x$。因此对每个
+$1\leq p<\infty$，$u$ 与 $u'$ 都属于 $L^p(-1,1)$，尽管 $u$ 在零点没有经典导数。
+\end{example}
+
+\begin{example}[跳跃不在 $W^{1,p}$]\label{ex:4-3-3-2}
+Heaviside 函数在 $(-1,1)$ 上的分布导数是 $\delta_0$。引理
+\ref{lemma:4-3-2-regular-injective} 说明它不可能同时是某个 $L^p$ 函数诱导的分布。因此跳跃函数
+不属于下面定义的任何 $W^{1,p}(-1,1)$。这给出 $BV$ 允许跳跃而一阶 Sobolev 空间排除跳跃的
+基本区别。
+\end{example}
+
+本小节除专门指出的端点外，始终取 $1\leq p<\infty$。
+
+\begin{definition}[Sobolev 空间]\label{def:4-3-3-1}
+设 $\Omega\subset\R^n$ 开。$W^{1,p}(\Omega)$ 由所有满足下列条件的 a.e. 等价类组成：
+$u\in L^p(\Omega)$，且每个分布偏导 $\partial_ju$ 都由某个 $L^p(\Omega)$ 函数表示。赋予范数
+\[
+ \|u\|_{W^{1,p}(\Omega)}
+ =\|u\|_{L^p(\Omega)}+
+  \sum_{j=1}^n\|\partial_ju\|_{L^p(\Omega)}.
+ \tag{4.3.8}\label{eq:4-3-sobolev-norm}
+\]
+并记 $\nabla u=(\partial_1u,\ldots,\partial_n u)$。
+\end{definition}
+
+\begin{definition}[$W_0^{1,p}$]\label{def:4-3-3-2}
+$W_0^{1,p}(\Omega)$ 是 $C_c^\infty(\Omega)$ 在范数
+\eqref{eq:4-3-sobolev-norm} 下的闭包。
+\end{definition}
+
+这个定义不需要预先建立边界迹，并以内部光滑逼近表达齐次边界条件。
+
+\begin{definition}[平均零规范化]\label{def:4-3-3-3}
+若 $0<|\Omega|<\infty$ 且 $u\in L^1(\Omega)$，记
+\[
+ u_\Omega=\frac1{|\Omega|}\int_\Omega u(x)\dd x.
+\]
+\end{definition}
+
+常数的梯度为零，所以任何只用 $\nabla u$ 控制 $u$ 的不等式都必须先固定常数自由度；减去
+$u_\Omega$ 是最自然的一种规范化。
+
+\begin{theorem}[$W^{1,p}$ 完备]\label{theorem:4-3-3-1}
+对每个开集 $\Omega\subset\R^n$ 与 $1\leq p<\infty$，
+$W^{1,p}(\Omega)$ 是 Banach 空间。
+\end{theorem}
+
+\begin{proof}
+设 $(u_k)$ 在 $W^{1,p}$ 中 Cauchy。$L^p$ 的完备性给出
+$u,g_1,\ldots,g_n\in L^p(\Omega)$，使
+\[
+ u_k\to u,\qquad \partial_ju_k\to g_j
+ \quad\text{于 }L^p(\Omega).
+\]
+每个紧集有限测度，\Holder{} 不等式说明这些收敛也发生在 $L^1_{\mathrm{loc}}$ 中。对
+$\varphi\in C_c^\infty(\Omega)$，
+\[
+ \int g_j\varphi
+ =\lim_{k\to\infty}\int(\partial_ju_k)\varphi
+ =-\lim_{k\to\infty}\int u_k\partial_j\varphi
+ =-\int u\partial_j\varphi.
+\]
+故 $g_j=\partial_ju$ 是弱导数，$u\in W^{1,p}$。各分量的 $L^p$ 收敛再给
+$\|u_k-u\|_{W^{1,p}}\to0$。
+\end{proof}
+
+一维中，弱导数会恢复一个真正的绝对连续代表。端点值属于这个代表，而不属于原来任意选择的
+$L^1$ 代表。
+
+这里还需固定复值情形的含义。称 $F:[a,b]\to\C$ 绝对连续，是指 $\Re F$ 与 $\Im F$
+都绝对连续；等价地，可在定义~\ref{def:4-2-3-1} 中把绝对值理解为复数模。后一种表述推出
+前一种，因为 $|\Delta\Re F|,|\Delta\Im F|\le|\Delta F|$；反过来用
+$|z|\le|\Re z|+|\Im z|$，分别把允许误差取为 $\varepsilon/2$ 即得。因而
+\cref{theorem:4-2-3-1,theorem:4-2-3-2} 对复值函数逐分量成立。
+
+\begin{proposition}[一维 Sobolev 的绝对连续代表]\label{proposition:4-3-3-ac-representative}
+若 $u\in W^{1,1}(a,b)$，则存在唯一的绝对连续函数 $\widetilde u:[a,b]\to\C$，使
+$\widetilde u=u$ a.e.，并且
+\[
+ \widetilde u(x)=c+\int_a^xu'(t)\dd t.
+ \tag{4.3.9}\label{eq:4-3-ac-representative}
+\]
+\end{proposition}
+
+\begin{proof}
+令 $F(x)=\int_a^xu'(t)\dd t$。对实部与虚部分别应用 Lebesgue 基本定理
+\ref{theorem:4-2-3-1}，$F$ 绝对连续且 $F'=u'$ a.e.。于是
+$v=u-F$ 的分布导数为零。
+
+固定闭区间 $I\Subset(a,b)$。对充分小的 $\varepsilon$，命题
+\ref{proposition:4-3-2-3} 给
+$(v*\rho_\varepsilon)'=v'*\rho_\varepsilon=0$ 于 $I$，所以
+$v*\rho_\varepsilon$ 在 $I$ 上是常数。又由局部近似恒等，
+$v*\rho_\varepsilon\to v$ 于 $L^1(I)$。常数函数空间在 $L^1(I)$ 中闭，故 $v$ a.e. 等于
+$I$ 上的一个常数。两个相交内区间上的常数必须一致；以可数个相交内区间耗尽 $(a,b)$，得到
+$v=c$ a.e.。于是 $c+F$ 是所求绝对连续代表。
+
+若两个连续函数 a.e. 相等而在某点不同，则其差的绝对值在该点附近有正下界，因而不同的点集有
+正测度，矛盾。故代表唯一。
+\end{proof}
+
+\begin{example}[一维代表]\label{ex:4-3-3-3}
+若 $u\in W^{1,1}(a,b)$，公式 \eqref{eq:4-3-ac-representative} 给
+\[
+ \widetilde u(y)-\widetilde u(x)=\int_x^yu'(t)\dd t.
+\]
+特别地，$\widetilde u(a)=c$ 是绝对连续代表的端点值。随意改变原 $L^1$ 代表在 $a$ 点的数值并不
+改变 Sobolev 元素，也不改变这个由内部数据连续延拓得到的 $c$。
+\end{example}
+
+在高维中，一维结论仍沿几乎每条坐标线成立。下面记录之后反射延拓所需的精确形式。
+
+\begin{lemma}[坐标线上的绝对连续性]\label{lemma:4-3-3-acl}
+设 $Q=I_1\times\cdots\times I_n\Subset\Omega$，$u\in W^{1,p}(\Omega)$。固定 $j$。
+对几乎每个横截坐标 $\widehat x_j\in\prod_{i\ne j}I_i$，截面
+$t\mapsto u(x_1,\ldots,t,\ldots,x_n)$ 有绝对连续代表，其一维导数 a.e. 等于
+$\partial_ju$ 的相应截面。
+\end{lemma}
+
+\begin{proof}
+先固定 $u$ 与各个 $\partial_ju$ 的 Lebesgue 可测代表；由前述完备化代表结论，也可把它们取成
+Borel 代表。于是下面出现在积空间上的函数都具有真正的乘积可测代表，Fubini 截面不是对
+a.e. 等价类作未定义的逐点取值。
+取 $\alpha\in C_c^\infty(\prod_{i\ne j}I_i)$ 与
+$\beta\in C_c^\infty(I_j)$。弱导数定义与 Fubini 定理给出
+\[
+ \int\alpha(\widehat x_j)
+ \left[\int u(\widehat x_j,t)\beta'(t)\dd t
+       +\int\partial_ju(\widehat x_j,t)\beta(t)\dd t\right]
+ \dd\widehat x_j=0.
+\]
+固定 $\beta$。由于上式对每个 $\alpha$ 成立，局部可积函数识别引理说明方括号对几乎每个
+$\widehat x_j$ 为零。为取得与 $\beta$ 无关的零集，取紧区间
+$J_m\Subset I_j$ 递增耗尽 $I_j$；对每个 $m$，在所有支撑包含于 $J_m$ 的光滑函数中取一个关于
+$C^1(J_m)$ 范数的可数稠密子集，再对 $m$ 取并，得到可数族 $\mathcal B$。同时由 Fubini 定理，
+删去一个零集后，$u(\widehat x_j,\cdot)$ 与
+$\partial_ju(\widehat x_j,\cdot)$ 都属于 $L^1(I_j)$。再删去 $\mathcal B$ 中各测试函数对应零集的
+可数并。
+
+现在固定保留下来的 $\widehat x_j$ 与任意 $\beta\in C_c^\infty(I_j)$。取某个 $J_m$，使其内部包含
+$\supp\beta$，并选 $\beta_\ell\in\mathcal B$，使
+$\beta_\ell\to\beta$、$\beta_\ell'\to\beta'$ 在 $J_m$ 上一致。于是
+\begin{align*}
+ &\left|\int u(\beta_\ell'-\beta')\right|
+ +\left|\int\partial_ju(\beta_\ell-\beta)\right|\\
+ &\qquad\leq
+ \|u(\widehat x_j,\cdot)\|_{L^1(I_j)}
+       \|\beta_\ell'-\beta'\|_\infty
+ +\|\partial_ju(\widehat x_j,\cdot)\|_{L^1(I_j)}
+       \|\beta_\ell-\beta\|_\infty
+ \longrightarrow0.
+\end{align*}
+因此截面恒等式对所有 $\beta$ 同时成立，该截面的分布导数就是
+$\partial_ju$ 的相应截面。命题
+\ref{proposition:4-3-3-ac-representative} 给出所述绝对连续代表。
+\end{proof}
+
+下一步要在开域内同时平滑函数与全部弱导数。卷积尺度不能统一选择：域可能无界，边界距离也可能沿
+不同位置趋于零。局部有限单位分解正是为每一块保留独立尺度。
+
+\begin{lemma}[光滑单位分解的局部构造]\label{lemma:4-3-3-smooth-partition}
+每个开集 $\Omega\subset\R^n$ 有一族局部有限的
+$\theta_k\in C_c^\infty(\Omega)$，满足 $0\leq\theta_k\leq1$ 与
+$\sum_{k\geq1}\theta_k=1$。还可同时取局部有限的相对紧开集 $O_k$，使
+$\supp\theta_k\subset O_k\Subset\Omega$。若预先给定一个可数开覆盖 $(V_j)$，还可使每个 $k$ 都有某个
+$j(k)$ 满足 $\supp\theta_k\Subset V_{j(k)}$；同一个 $V_j$ 可以对应多个指标 $k$。
+\end{lemma}
+
+\begin{proof}
+取 $U_k=\Omega_{1/k}$（$k\geq1$）。由定义~\ref{def:4-3-1-3}，
+$\overline U_k\subset U_{k+1}$ 且 $\bigcup_kU_k=\Omega$；并约定
+$U_j=\varnothing$ 当 $j\leq0$。壳层
+$A_k=\overline U_k\setminus U_{k-2}$ 是紧集，并可由有限多个闭球覆盖，而这些球的二倍闭球仍包含在
+$U_{k+1}\setminus\overline U_{k-3}$ 内；若给定了覆盖 $(V_j)$，还可逐球要求其二倍闭球包含在
+某个 $V_j$ 内。对其中一个闭球 $K=\overline{B(c,r)}$，其二倍闭球已包含在上述指定开集内。令
+$G=B(c,3r/2)$，并取 $0<\delta<r/2$，置
+\[
+ \phi_K=\1_G*\rho_\delta.
+\]
+于是 $0\leq\phi_K\leq1$。若 $x\in K$ 且 $y\in\supp\rho_\delta$，则
+$|x-y-c|\leq r+|y|<3r/2$，所以
+\[
+ \phi_K(x)=\int\rho_\delta(y)\dd y=1.
+\]
+另一方面
+\[
+ \supp\phi_K\subset\overline G+\overline{B(0,\delta)}
+ \subset B(c,2r),
+\]
+故其支撑紧含于预先指定的开集；卷积求导公式给
+$\phi_K\in C_c^\infty$。
+保留每个球对应的函数并把所有壳层中的函数逐一排列成 $(\phi_\ell)$；这样在给定覆盖时，每个
+$\phi_\ell$ 的支撑仍紧含于选定的某个 $V_{j(\ell)}$。每个壳层只有有限项，而第 $k$ 个壳层所生
+函数的支撑连同某个稍大的相对紧开邻域都位于
+$U_{k+1}\setminus\overline U_{k-3}$，所以这些邻域组成局部有限族；把它们依次记为 $O_\ell$。
+具体地，若某个点的一个邻域包含于 $U_m$，则该邻域不再与 $k\geq m+3$ 的上述壳层邻域相交，
+而较小的 $k$ 只有有限多个。另一方面，每个点按其首次落入某个 $U_k$ 的指标属于相应 $A_k$，
+故闭球确实覆盖整个 $\Omega$。因此每个 $x\in\Omega$ 至少落在一个相应闭球上，对该指标有
+$\phi_\ell(x)=1$，从而局部有限和
+\[
+ S(x)=\sum_\ell\phi_\ell(x)\geq1.
+\]
+于是 $S$ 是严格正的光滑函数。置 $\theta_\ell=\phi_\ell/S$，则
+$0\leq\theta_\ell\leq1$ 且
+$\sum_\ell\theta_\ell=S/S=1$。由于每一点附近只有有限项，求和、除法与求导均为通常的有限运算。
+\end{proof}
+
+\begin{proposition}[Meyers--Serrin 光滑稠密]\label{proposition:4-3-3-1}
+对任意开集 $\Omega\subset\R^n$ 与 $1\leq p<\infty$，
+$C^\infty(\Omega)\cap W^{1,p}(\Omega)$ 在 $W^{1,p}(\Omega)$ 中稠密。
+\end{proposition}
+
+\begin{proof}
+取引理~\ref{lemma:4-3-3-smooth-partition} 的单位分解及局部有限开邻域 $(O_k)$，并记
+$K_k=\supp\theta_k\Subset O_k$。先验证乘积法则。
+若 $v_k=\theta_ku$，则对测试函数 $\varphi$，
+\begin{align*}
+ \int v_k\partial_j\varphi
+ &=\int u\partial_j(\theta_k\varphi)-\int u(\partial_j\theta_k)\varphi\\
+ &=-\int\bigl(\theta_k\partial_ju+u\partial_j\theta_k\bigr)\varphi.
+\end{align*}
+故
+\[
+ \partial_jv_k=\theta_k\partial_ju+u\partial_j\theta_k,\qquad
+ v_k\in W^{1,p}(\Omega),\quad \supp v_k\subset K_k.
+ \tag{4.3.10}\label{eq:4-3-sobolev-product}
+\]
+把 $v_k$ 零延拓到 $\R^n$。为核对零延拓没有产生边界测度，取
+$\chi_k\in C_c^\infty(\Omega)$ 在 $K_k$ 的一个邻域上等于一。对
+$\Phi\in C_c^\infty(\R^n)$，弱导数等式应用于 $\chi_k\Phi$，并利用
+$v_k$ 及其弱导数都支撑于 $K_k$，得到
+\[
+ \int_{\R^n}\widetilde v_k\,\partial_j\Phi
+ =-\int_{\R^n}\widetilde{\partial_jv_k}\,\Phi.
+\]
+故零延拓仍属于 $W^{1,p}(\R^n)$，其弱导数是原弱导数的零延拓。由命题
+\ref{proposition:4-3-2-3} 或直接测试计算，
+\[
+ \partial_j(v_k*\rho_\delta)=(\partial_jv_k)*\rho_\delta.
+\]
+定理~\ref{theorem:4-3-1-2} 同时应用于 $v_k$ 与各个 $\partial_jv_k$，给出
+$v_k*\rho_\delta\to v_k$ 于 $W^{1,p}(\R^n)$。
+
+给定 $\varepsilon>0$，逐块选择 $\delta_k>0$，使
+\[
+ \delta_k<\tfrac12\dist(K_k,\Omega^c),\qquad
+ \delta_k<\dist(K_k,O_k^c),\qquad
+ \|v_k*\rho_{\delta_k}-v_k\|_{W^{1,p}(\R^n)}
+ <2^{-k}\varepsilon,
+\]
+于是膨胀支撑 $K_k+\overline{B(0,\delta_k)}$ 包含于 $O_k$，因而仍局部有限。记
+\[
+ e_k=v_k*\rho_{\delta_k}-v_k.
+\]
+上式给出
+\[
+ \sum_{k=1}^\infty\|e_k\|_{W^{1,p}(\Omega)}
+ \leq\sum_{k=1}^\infty\|e_k\|_{W^{1,p}(\R^n)}
+ <\varepsilon.
+\]
+$W^{1,p}(\Omega)$ 的完备性因而说明 $\sum_ke_k$ 在该空间中收敛。另一方面，支撑的局部有限性说明
+这个空间极限作为分布恰等于逐点局部有限和。于是
+\[
+ w=\sum_{k=1}^\infty v_k*\rho_{\delta_k}
+\]
+在每个点附近只是有限和，故 $w\in C^\infty(\Omega)$。又因
+$u=\sum_kv_k$ a.e.，所以在分布意义以及 $W^{1,p}$ 中
+$w-u=\sum_ke_k$。因此
+\[
+ \|w-u\|_{W^{1,p}(\Omega)}
+ \leq\sum_{k=1}^\infty
+ \|v_k*\rho_{\delta_k}-v_k\|_{W^{1,p}(\R^n)}<\varepsilon.
+\]
+这证明稠密性。
+\end{proof}
+
+命题中的近似函数不要求紧支撑。若要求近似函数具有紧支撑，其闭包恰是定义
+\ref{def:4-3-3-2} 中的 $W_0^{1,p}$；例如有界区间上的常数一不能由
+$C_c^\infty$ 在 $W^{1,p}$ 中逼近，因为稍后的 \Poincare{} 不等式会迫使这种逼近的函数范数也随
+导数范数趋于零。
+
+\begin{example}[长盒上的尺度依赖]\label{ex:4-3-3-long-box}
+令 $\Omega_L=(0,L)\times(0,1)^{n-1}$，$u(x)=x_1-L/2$。对 $x_1$ 积分可知
+$u_{\Omega_L}=0$，而 $|\nabla u|=1$。直接缩放 $x_1=Lt$ 得
+\[
+ \|u\|_p^p=L^{p+1}\int_0^1|t-1/2|^p\dd t,\qquad
+ \|\nabla u\|_p^p=L.
+\]
+两者之比等于只依赖 $p$ 的常数乘以 $L$。因此 \Poincare{} 常数必须依赖于区域的尺度，不能仅依赖
+$n,p$。
+\end{example}
+
+先在区间上看常数自由度如何被删掉。由绝对连续代表，若 $I=(a,b)$、$\ell=b-a$，则
+\begin{align*}
+ |u(x)-u_I|
+ &\leq\frac1\ell\int_I|u(x)-u(y)|\dd y
+ \leq\int_I|u'(t)|\dd t.
+\end{align*}
+因此
+\begin{equation}\label{eq:4-3-interval-poincare}
+ \|u-u_I\|_{L^p(I)}
+ \leq \ell^{1/p}\|u'\|_{L^1(I)}
+ \leq \ell\|u'\|_{L^p(I)}.
+\end{equation}
+高维凸域仍可沿线段积分，但若直接换元，会出现看似不可积的 $t^{-n}$。把哪些线段经过同一点重新
+计数后，奇性恰好合并成一个可积势核。
+
+\begin{lemma}[凸域中的势核估计]\label{lemma:4-3-3-convex-potential}
+设 $\Omega\subset\R^n$ 是有界凸开集，$D=\diam\Omega$。若
+$u\in C^1(\Omega)$ 且 $u,\nabla u\in L^p(\Omega)$，则对 a.e. $x\in\Omega$，
+\[
+ |u(x)-u_\Omega|
+ \leq \frac{D^n}{n|\Omega|}
+ \int_\Omega\frac{|\nabla u(z)|}{|x-z|^{n-1}}\dd z.
+ \tag{4.3.11}\label{eq:4-3-convex-potential}
+\]
+当 $n=1$ 时把核 $|x-z|^{1-n}$ 读作 $1$。
+\end{lemma}
+
+\begin{proof}
+由凸性，连接 $x,y\in\Omega$ 的线段留在 $\Omega$，故
+\[
+ |u(x)-u(y)|
+ \leq |x-y|\int_0^1|\nabla u(x+t(y-x))|\dd t.
+\]
+对 $y$ 平均，并固定 $x,t$ 作换元 $z=x+t(y-x)$。此时
+$\dd y=t^{-n}\dd z$、$|x-y|=t^{-1}|x-z|$，且
+$x+t(\Omega-x)\subset\Omega$。反过来，若某个 $z$ 出现在该缩小域中，则
+$|x-z|=t|x-y|\leq tD$，所以 $t\geq|x-z|/D$。Tonelli 定理于是给出
+\begin{align*}
+ |u(x)-u_\Omega|
+ &\leq\frac1{|\Omega|}\int_0^1
+   \int_{x+t(\Omega-x)}|x-z|t^{-n-1}|\nabla u(z)|\dd z\dd t\\
+ &\leq\frac1{|\Omega|}\int_\Omega |x-z||\nabla u(z)|
+   \int_{|x-z|/D}^1t^{-n-1}\dd t\dd z\\
+ &=\frac1{n|\Omega|}\int_\Omega |x-z||\nabla u(z)|
+   \left[\left(\frac{D}{|x-z|}\right)^n-1\right]\dd z\\
+ &\leq\frac{D^n}{n|\Omega|}
+   \int_\Omega\frac{|\nabla u(z)|}{|x-z|^{n-1}}\dd z.
+\end{align*}
+对角线是零测集，不影响积分。
+\end{proof}
+
+\begin{theorem}[\Poincare{} 不等式]\label{theorem:4-3-3-2}
+设 $\Omega\subset\R^n$ 是有界凸域，$1\leq p<\infty$。存在常数
+$C=C(n,p,\Omega)$，使每个 $u\in W^{1,p}(\Omega)$ 满足
+\[
+ \|u-u_\Omega\|_{L^p(\Omega)}
+ \leq C\|\nabla u\|_{L^p(\Omega)}.
+ \tag{4.3.12}\label{eq:4-3-poincare-mean}
+\]
+此外，存在 $C_0=C_0(n,p,\Omega)$，使每个 $u\in W_0^{1,p}(\Omega)$ 满足
+\[
+ \|u\|_{L^p(\Omega)}\leq C_0\|\nabla u\|_{L^p(\Omega)}.
+ \tag{4.3.13}\label{eq:4-3-poincare-zero}
+\]
+\end{theorem}
+
+\begin{proof}
+先设 $u\in C^\infty(\Omega)\cap W^{1,p}(\Omega)$。把
+$g=|\nabla u|\1_\Omega$ 零延拓到 $\R^n$，并令
+$K(w)=|w|^{1-n}\1_{B(0,D)}(w)$。引理
+\ref{lemma:4-3-3-convex-potential} 的右端不超过常数乘
+$\int K(w)g(x-w)\dd w$。而
+\[
+ \|K\|_1
+ =|S^{n-1}|\int_0^D r^{1-n}r^{n-1}\dd r
+ =|S^{n-1}|D<\infty.
+\]
+对非负简单函数先用有限和的 Minkowski 不等式，再以单调收敛逼近，可得
+\begin{align*}
+ \left\|\int K(w)g(\,\cdot-w)\dd w\right\|_{L^p(\R^n)}
+ &\leq\int K(w)\|g(\,\cdot-w)\|_p\dd w\\
+ &=\|K\|_1\|g\|_p.
+\end{align*}
+于是 \eqref{eq:4-3-poincare-mean} 对光滑 $u$ 成立。命题
+\ref{proposition:4-3-3-1} 给出 $u_k\to u$ 于 $W^{1,p}$；\Holder{} 不等式还给
+$(u_k)_\Omega\to u_\Omega$，故令 $k\to\infty$ 即得一般情形。
+
+再证 \eqref{eq:4-3-poincare-zero}。零边界版本不能由平均零版本直接删除 $u_\Omega$ 得到。取有界开盒
+$Q$，使 $\overline\Omega\subset Q$；$Q$ 是凸域且 $A=Q\setminus\Omega$ 有正测度。若
+$u\in C_c^\infty(\Omega)$，把它零延拓为 $\widetilde u\in C_c^\infty(Q)$。已证的平均版本给出
+\[
+ \|\widetilde u-(\widetilde u)_Q\|_{L^p(Q)}
+ \leq C_Q\|\nabla\widetilde u\|_{L^p(Q)}.
+\]
+由于 $\widetilde u=0$ 于 $A$，
+\[
+ |(\widetilde u)_Q|\,|A|^{1/p}
+ =\|\widetilde u-(\widetilde u)_Q\|_{L^p(A)}
+ \leq C_Q\|\nabla\widetilde u\|_p.
+\]
+故
+\[
+ \|u\|_{L^p(\Omega)}
+ \leq C_Q\left(1+\frac{|Q|^{1/p}}{|A|^{1/p}}\right)
+       \|\nabla u\|_{L^p(\Omega)}.
+\]
+最后按定义以 $C_c^\infty(\Omega)$ 中的序列逼近任意 $u\in W_0^{1,p}$。零延拓后的函数和弱导数
+在 $L^p(Q)$ 中分别收敛，因此极限正是 $u$ 的零延拓；令序列趋于极限便得结论。
+\end{proof}
+
+连通性不可省略。若 $\Omega$ 是两个不交开球之并，取函数在一个分量上为零、另一个分量上为一，
+则弱梯度为零而 $u-u_\Omega$ 不为零。对一般有界连通 Lipschitz 域，\Poincare{} 仍成立，但需要
+边界坐标图或链式覆盖；上面的核心定理只声称凸域版本。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \draw[book region] plot[smooth cycle,tension=.8] coordinates
+      {(0,0) (1.1,-.65) (3.3,-.5) (4.7,.3) (4.1,1.8) (2.2,2.15) (.45,1.45)};
+    \coordinate (x) at (.7,.45);
+    \coordinate (y) at (4.0,1.45);
+    \fill[BookInk] (x) circle (1.7pt) node[below left,font=\small] {$x$};
+    \fill[BookInk] (y) circle (1.7pt) node[above right,font=\small] {$y$};
+    \draw[BookAccent,very thick] (x)--(y);
+    \fill[BookWarm] ($(x)!.58!(y)$) circle (1.7pt)
+      node[below right,font=\small] {$z=x+t(y-x)$};
+    \draw[BookWarm,decorate,decoration={brace,amplitude=4pt}]
+      ($(x)+(0,-.25)$)--($(y)+(0,-.25)$)
+      node[midway,below=5pt,font=\small] {$u(y)-u(x)=\int\nabla u\cdot\dd z$};
+    \node[font=\small,text=BookAccent] at (2.45,2.5) {对所有 $y$ 平均，常数方向消失};
+  \end{tikzpicture}
+  \caption{凸性保证连接 $x,y$ 的整条线段留在域内；沿线积分并对 $y$ 平均产生可积势核。}
+  \label{fig:4-3-3-poincare-segments}
+\end{figure}
+
+沿线段积分还有一个更直接的定量结果，它既控制 mollifier 误差，也将成为紧性准则的输入。
+
+\begin{proposition}[平移估计]\label{proposition:4-3-3-3}
+暂记 $\tau_hu(x)=u(x-h)$。若 $u\in W^{1,p}(\R^n)$、$1\leq p<\infty$，则
+\[
+ \|\tau_hu-u\|_{L^p(\R^n)}
+ \leq |h|\,\|\,|\nabla u|\,\|_{L^p(\R^n)}.
+ \tag{4.3.14}\label{eq:4-3-translation-estimate}
+\]
+\end{proposition}
+
+\begin{proof}
+若 $u\in C^\infty(\R^n)\cap W^{1,p}$，则
+\[
+ u(x-h)-u(x)=-\int_0^1h\cdot\nabla u(x-th)\dd t.
+\]
+积分型 Minkowski 不等式、Cauchy--Schwarz 与平移不变性给出
+\[
+ \|\tau_hu-u\|_p
+ \leq |h|\int_0^1\|\nabla u(\,\cdot-th)\|_p\dd t
+ =|h|\|\nabla u\|_p.
+\]
+对一般 $u$，用命题~\ref{proposition:4-3-3-1} 在 $\R^n$ 上取
+$u_k\to u$ 于 $W^{1,p}$。平移是 $L^p$ 等距，故左端与右端都可令 $k\to\infty$。
+\end{proof}
+
+若 $p=1$ 且 $u\geq0$、$\int u=1$，那么 $u(x)\dd x$ 与
+$u(x-h)\dd x$ 是两个概率测度。此时直接把总变差距离定义为密度差的一半，
+\[
+ d_{\mathrm{TV}}
+ =\frac12\|\tau_hu-u\|_1
+ \leq\frac{|h|}{2}\|\nabla u\|_1.
+\]
+若 $X$ 具有密度 $u$，则这两个测度分别是 $\mathcal L(X+h)$ 与 $\mathcal L(X)$。因此上式也给出
+随机向量平移前后分布的总变差估计。
+
+下面两项选读结果说明一阶能量还能提供更强的可积性或连续性。为建立它们，先给出 Lipschitz 边界上
+所需的延拓机制。称有界开集 $\Omega$ 为 Lipschitz 域，如果每个
+边界点附近经过刚性坐标变换后，都存在长方体 $U'\times(-a,a)$ 与 Lipschitz 函数
+$\phi:U'\to\R$，使
+\[
+ \Omega\cap(U'\times(-a,a))
+ =\{(x',x_n):x_n>\phi(x')\}
+\]
+（缩小长方体后理解）。边界紧致性允许只取有限张图。
+
+连续性结论还需要固定所用的函数空间。若 $K\subset\R^n$ 紧、$0<\alpha\le1$，定义
+\begin{equation*}
+ [u]_{C^{0,\alpha}(K)}
+ :=\sup_{\substack{x,y\in K\\x\ne y}}
+   \frac{|u(x)-u(y)|}{|x-y|^\alpha},
+ \qquad
+ \|u\|_{C^{0,\alpha}(K)}
+ :=\|u\|_\infty+[u]_{C^{0,\alpha}(K)}.
+\end{equation*}
+记 $C^{0,\alpha}(K)$ 为上述范数有限的连续函数空间，并约定
+$C^{0,0}(K)=C(K)$、$\|u\|_{C^{0,0}}=\|u\|_\infty$。例如在 $[0,1]$ 上，
+$u(x)=x^\alpha$ 满足
+$|x^\alpha-y^\alpha|\le|x-y|^\alpha$，故属于 $C^{0,\alpha}$；若
+$\beta>\alpha$，则
+$|u(x)-u(0)|/|x|^\beta=x^{\alpha-\beta}\to\infty$，所以一般不能把指数提高。
+
+\begin{lemma}[一阶 Sobolev 的 Lipschitz 延拓]\label{lemma:4-3-3-lipschitz-extension}
+若 $\Omega$ 是有界 Lipschitz 域且 $1\leq p<\infty$，则存在线性算子
+\[
+ E:W^{1,p}(\Omega)\longrightarrow W^{1,p}(\R^n)
+\]
+与固定球 $B(0,R)$，使 $Eu=u$ a.e. 于 $\Omega$、
+$\supp Eu\subset\overline{B(0,R)}$，并且
+\[
+ \|Eu\|_{W^{1,p}(\R^n)}\leq C_{\Omega,p}\|u\|_{W^{1,p}(\Omega)}.
+ \tag{4.3.15}\label{eq:4-3-extension-bound}
+\]
+\end{lemma}
+
+\begin{proof}
+先处理支撑紧含于一张边界图柱的一块函数；取两个嵌套图柱并乘一个在内柱上等于一的光滑截断，便可
+设这一块在横向边界与柱的上下边界附近为零，只有图面 $s=0$ 可以与其支撑相交。最后的有限单位分解
+会把一般函数化成这样的块。令
+\[
+ F(x',s)=(x',s+\phi(x')).
+\]
+对每个固定 $x'$，这是竖直方向的平移，所以 Fubini 定理给
+$\int |v\circ F|^p=\int|v|^p$（在对应长方体中）。Lipschitz 函数 $\phi$ 限制在每条坐标线上
+仍为 Lipschitz，因而由一维微积分基本定理几乎处处可微，且相应导数的绝对值不超过 Lipschitz
+常数 $L$。
+对每个 $i<n$，Fubini 定理把坐标线上的零测例外集合并成 $U'$ 中的零测集；因此
+$\partial_i\phi$ 几乎处处存在且 $|\partial_i\phi|\leq L$。若 $v$ 光滑，则对固定其余坐标，
+映射
+\[
+ r\longmapsto v(x'+re_i,s+\phi(x'+re_i))
+\]
+是一个 $C^1$ 函数与一维绝对连续函数的复合，一维链式法则给出
+\[
+ \partial_i(v\circ F)=(\partial_iv)\circ F
+   +(\partial_nv)\circ F\,\partial_i\phi\quad(i<n),
+ \qquad
+ \partial_n(v\circ F)=(\partial_nv)\circ F.
+ \tag{4.3.16}\label{eq:4-3-flatten-chain}
+\]
+Fubini 定理把这些逐线恒等式变成弱导数恒等式。再利用固定 $x'$ 时
+$s\mapsto s+\phi(x')$ 的 Jacobian 为一，得到
+\[
+ \|v\circ F\|_{W^{1,p}}\leq C(n,L)\|v\|_{W^{1,p}}.
+\]
+对一般 $v\in W^{1,p}$，先由 Meyers--Serrin 命题
+\ref{proposition:4-3-3-1} 在图内以光滑函数逼近；上式说明复合列在平坦半长方体中 Cauchy，
+而竖直变量替换还给出
+$\|(v_m-v)\circ F\|_p=\|v_m-v\|_p$，所以该极限确是 $v\circ F$ 的 a.e. 等价类。
+式~\eqref{eq:4-3-flatten-chain} 随后由弱导数闭性成立。
+
+在平坦坐标中，把 $w(x',s)$ 从 $s>0$ 偶反射为
+\[
+ \mathcal Rw(x',s)=w(x',|s|).
+\]
+先看切向导数。把测试积分分成 $s>0$ 与 $s<0$ 两部分，并在后一部分作代换 $s\mapsto-s$；
+随后对 $x_i$ 使用 $w$ 的弱导数定义，得到
+\[
+ \partial_i\mathcal Rw(x',s)=
+ \begin{cases}\partial_iw(x',s),&s>0,\\
+                \partial_iw(x',-s),&s<0,
+ \end{cases}
+\qquad i<n.
+\]
+再把引理~\ref{lemma:4-3-3-acl} 用在竖直直线上。一维绝对连续代表的偶延拓仍绝对连续，故
+$\partial_n$ 在 $s<0$ 一侧等于 $-(\partial_nw)(x',-s)$，且界面上没有 Dirac 项。逐项换元给出
+\[
+ \|\mathcal Rw\|_{L^p}^p=2\|w\|_{L^p}^p,\qquad
+ \|\partial_j\mathcal Rw\|_{L^p}^p
+ =2\|\partial_jw\|_{L^p}^p\quad(1\leq j\leq n),
+\]
+于是 $\|\mathcal Rw\|_{W^{1,p}}=2^{1/p}\|w\|_{W^{1,p}}$。再以
+\[
+ F^{-1}(x',x_n)=(x',x_n-\phi(x'))
+\]
+送回原坐标。对 $F^{-1}$ 重复 \eqref{eq:4-3-flatten-chain} 的逐坐标计算（把
+$\phi$ 换成 $-\phi$）得到反向估计
+$\|z\circ F^{-1}\|_{W^{1,p}}\leq C(n,L)\|z\|_{W^{1,p}}$，故得到单张图上的有界反射延拓。
+
+最后用有限张边界图 $U_1,\ldots,U_N$ 与一个相对紧的内部开集 $U_0\Subset\Omega$
+覆盖 $\overline\Omega$。这里需要的是环境空间中的有限单位分解，而不是支撑紧含于 $\Omega$ 的
+单位分解：先缩小为仍覆盖 $\overline\Omega$ 的开集 $V_i$，使
+$\overline V_i\subset U_i$；再取 $\chi_i\in C_c^\infty(U_i)$，满足
+$0\leq\chi_i\leq1$ 且 $\chi_i=1$ 于 $\overline V_i$。函数
+$S=\sum_{i=0}^N\chi_i$ 在 $\overline\Omega$ 的某个开邻域 $W$ 上严格为正。取开集
+$W_1$ 与函数 $\zeta\in C_c^\infty(W)$，使
+\[
+ \overline\Omega\subset W_1,\qquad \overline W_1\Subset W,
+ \qquad \zeta=1\quad\hbox{于 }W_1.
+\]
+在 $W$ 上置 $\theta_i=\zeta\chi_i/S$，并在 $W$ 外置零。因为
+$\supp\zeta\Subset W$，这些零延拓都是全空间的光滑紧支撑函数；在 $\Omega\subset W_1$ 上有
+\[
+ \sum_{i=0}^N\theta_i=\zeta\frac{\sum_i\chi_i}{S}=1.
+\]
+这个截断步骤也保证没有在 $\{S=0\}$ 的边界留下未定义的比值。
+
+内部块 $\theta_0u$ 的支撑紧含于 $U_0\Subset\Omega$，故可零延拓。对 $i\geq1$，
+$\supp\theta_i\Subset U_i$；缩小图柱后，上述平坦化与反射在包含
+$\supp\theta_i\cap\overline\Omega$ 的邻域中给出 $\theta_i u$ 的局部延拓。再取
+$\zeta_i\in C_c^\infty(U_i)$，使它在该支撑的一个邻域上等于一，并把局部延拓乘以
+$\zeta_i$ 后零延拓到全空间。这样得到线性算子 $E_i$，满足
+\[
+ E_i(\theta_i u)=\theta_i u\quad\hbox{a.e. 于 }\Omega,
+ \qquad
+ \|E_i(\theta_i u)\|_{W^{1,p}(\R^n)}
+ \leq C_i\|u\|_{W^{1,p}(\Omega)}.
+\]
+这里的估计依次使用乘积法则~\eqref{eq:4-3-sobolev-product}、平坦化的双向估计、反射估计和
+再次乘截断的乘积法则。定义
+\[
+ Eu=\widetilde{\theta_0u}+\sum_{i=1}^NE_i(\theta_i u),
+\]
+其中第一项表示零延拓。有限三角不等式给出
+\eqref{eq:4-3-extension-bound}；在 $\Omega$ 内各块之和为 $u$。所有截断支撑的有限并包含在某个
+固定球中，故 $Eu$ 具有与 $u$ 无关的固定紧支撑。
+\end{proof}
+
+延拓把区域上的估计化为 $\R^n$ 上的估计。在整空间中，关键端点估计只需一维微积分、Fubini 与
+广义 \Holder{} 不等式。
+
+\begin{lemma}[欧氏 Sobolev 与 Morrey 核心估计]\label{lemma:4-3-3-euclidean-sobolev}
+设 $u\in C_c^\infty(\R^n)$。
+\begin{enumerate}
+  \item 若 $n\geq2$，则
+  \[
+   \|u\|_{L^{n/(n-1)}}\leq C_n\|\nabla u\|_{L^1}.
+   \tag{4.3.17}\label{eq:4-3-sobolev-l1}
+  \]
+  \item 若 $1<p<n$、$p^*=np/(n-p)$，则
+  \[
+   \|u\|_{L^{p^*}}\leq C_{n,p}\|\nabla u\|_{L^p}.
+   \tag{4.3.18}\label{eq:4-3-sobolev-p}
+  \]
+  \item 若 $p>n$、$\alpha=1-n/p$，则
+  \[
+   |u(x)-u(y)|\leq C_{n,p}|x-y|^\alpha\|\nabla u\|_{L^p}
+   \quad(x,y\in\R^n).
+   \tag{4.3.19}\label{eq:4-3-morrey}
+  \]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+对第一项，沿第 $i$ 条坐标轴积分，得到
+\[
+ |u(x)|\leq g_i(\widehat x_i),\qquad
+ g_i(\widehat x_i)=\int_\R|\partial_i u(x_1,\ldots,t,\ldots,x_n)|\dd t.
+\]
+所以
+\[
+ |u(x)|^{n/(n-1)}
+ \leq\prod_{i=1}^n g_i(\widehat x_i)^{1/(n-1)}.
+\]
+反复应用 Fubini 与普通 \Holder{} 给出
+\[
+ \int_{\R^n}\prod_{i=1}^ng_i(\widehat x_i)^{1/(n-1)}\dd x
+ \leq\prod_{i=1}^n
+ \left(\int_{\R^{n-1}}g_i\right)^{1/(n-1)}.
+ \tag{4.3.20}\label{eq:4-3-coordinate-holder}
+\]
+具体归纳如下。$n=2$ 时两个因子分别只依赖另一个坐标，Fubini 直接给等号。设结论已对
+$n-1$ 个变量成立。先固定 $x'=(x_1,\ldots,x_{n-1})$，对 $x_n$ 积分；因 $g_n$ 与 $x_n$
+无关，对其余 $n-1$ 个因子使用指数 $n-1$ 的 \Holder{}，得到
+\[
+ g_n(x')^{1/(n-1)}
+ \prod_{i=1}^{n-1}G_i(x'_{\widehat i})^{1/(n-1)},
+ \qquad
+ G_i(x'_{\widehat i})=\int_\R g_i(x'_{\widehat i},x_n)\dd x_n.
+\]
+这里 $G_i$ 是 $n-2$ 个变量的函数，不依赖 $x_i$。再在 $\R^{n-1}$ 上用 \Holder{}，指数分别取
+$n-1$ 与 $(n-1)/(n-2)$，上式的积分不超过
+\[
+ \left(\int g_n\right)^{1/(n-1)}
+ \left(\int_{\R^{n-1}}
+       \prod_{i=1}^{n-1}G_i^{1/(n-2)}\right)^{(n-2)/(n-1)}.
+\]
+归纳假设把第二个因子控制为
+$\prod_{i=1}^{n-1}(\int G_i)^{1/(n-1)}$；Fubini 又给
+$\int G_i=\int g_i$。这就证明 \eqref{eq:4-3-coordinate-holder}。由于
+$\int g_i=\|\partial_i u\|_1$，取相应次方并用几何平均不超过算术平均，得到
+\eqref{eq:4-3-sobolev-l1}。
+
+设 $1<p<n$，令 $\gamma=p(n-1)/(n-p)>1$。把第一项应用于
+$v_\delta=(|u|^2+\delta^2)^{\gamma/2}-\delta^\gamma$。对实值或复值 $u$，逐坐标链式法则与
+$|\partial_i|u||\le |\partial_i u|$（在 $u\ne0$ 处直接计算，在 $u=0$ 处取连续正则化）给出
+\[
+ |\nabla v_\delta|
+ \le \gamma |u|(|u|^2+\delta^2)^{\gamma/2-1}|\nabla u|.
+\]
+当 $1<\gamma\le2$ 时，右侧不超过
+$\gamma|u|^{\gamma-1}|\nabla u|$；当 $\gamma>2$ 且 $0<\delta\le1$ 时，它在 $u$ 的固定紧支撑上
+被 $C_u|\nabla u|$ 支配。故令 $\delta\downarrow0$ 时，左侧用 Fatou 引理，右侧用支配收敛定理，
+再用 \Holder{} 不等式，得到
+\begin{align*}
+ \|u\|_{\gamma n/(n-1)}^\gamma
+ &\leq C_n\gamma\int|u|^{\gamma-1}|\nabla u|\\
+ &\leq C_n\gamma\|\nabla u\|_p
+       \|u\|_{(\gamma-1)p'}^{\gamma-1}.
+\end{align*}
+直接计算
+$\gamma n/(n-1)=(\gamma-1)p'=p^*$。若 $u\not\equiv0$，约去
+$\|u\|_{p^*}^{\gamma-1}$；若 $u=0$ 结论成立。于是得到
+\eqref{eq:4-3-sobolev-p}。
+
+最后设 $p>n$。先把定理~\ref{theorem:4-3-3-2} 的 $p=1$ 情形从单位球缩放到
+$B=B(x,r)$：对 $v(z)=u(x+rz)$ 应用单位球不等式，再作变量替换，得到
+\[
+ \frac1{|B|}\int_B|u-u_B|
+ \leq C_nr\frac1{|B|}\int_B|\nabla u|
+ \leq C_{n,p}r^{1-n/p}\|\nabla u\|_{L^p(B)}.
+ \tag{4.3.21}\label{eq:4-3-ball-average}
+\]
+记 $B_k=B(x,2^{-k}r)$。由于 $|B_k|/|B_{k+1}|=2^n$，
+\eqref{eq:4-3-ball-average} 给出
+\[
+ \begin{aligned}
+ |u_{B_{k+1}}-u_{B_k}|
+ &\le \frac1{|B_{k+1}|}\int_{B_{k+1}}|u-u_{B_k}|\\
+ &\le 2^n\frac1{|B_k|}\int_{B_k}|u-u_{B_k}|
+ \le C_{n,p}(2^{-k}r)^\alpha\|\nabla u\|_{L^p(B_k)}.
+ \end{aligned}
+\]
+对 $k\geq0$ 求和；几何级数收敛，而光滑性给
+$u_{B_k}\to u(x)$，故
+\[
+ |u(x)-u_{B(x,r)}|\leq C r^\alpha\|\nabla u\|_p.
+\]
+若 $r=|x-y|>0$，令
+$B_x=B(x,2r)$、$B_y=B(y,2r)$ 与 $B_*=B(x,4r)$；于是
+$B_x\cup B_y\subset B_*$，且 $|B_*|/|B_x|=|B_*|/|B_y|=2^n$。上式分别控制
+$|u(x)-u_{B_x}|$ 与 $|u(y)-u_{B_y}|$。此外，对 $C=B_x$ 或 $B_y$，
+\[
+ |u_C-u_{B_*}|
+ \le\frac1{|C|}\int_C|u-u_{B_*}|
+ \le2^n\frac1{|B_*|}\int_{B_*}|u-u_{B_*}|
+ \le C_{n,p}r^\alpha\|\nabla u\|_p.
+\]
+把这四个差用三角不等式相加，得到
+$|u(x)-u(y)|\leq C_{n,p}r^\alpha\|\nabla u\|_p$，即
+\eqref{eq:4-3-morrey}；$x=y$ 时结论成立。
+\end{proof}
+
+\begin{proposition}[Sobolev 连续嵌入（选读）]\label{proposition:4-3-3-4}
+设 $\Omega$ 为有界 Lipschitz 域，$1\leq p<\infty$。
+\begin{enumerate}
+  \item 若 $p<n$，令 $p^*=np/(n-p)$，则
+  $W^{1,p}(\Omega)\hookrightarrow L^q(\Omega)$ 对每个 $1\leq q\leq p^*$ 连续。
+  \item 若 $p=n\geq2$，则 $W^{1,n}(\Omega)\hookrightarrow L^q(\Omega)$ 对每个有限
+  $q$ 连续，但一般不嵌入 $L^\infty$。一维的 $W^{1,1}(a,b)$ 则嵌入 $L^\infty$。
+  \item 若 $p>n$，则每个 Sobolev 元素有唯一的
+  $C^{0,1-n/p}(\overline\Omega)$ 代表，并且相应嵌入连续。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+令 $E$ 为引理~\ref{lemma:4-3-3-lipschitz-extension} 的延拓算子。若 $1<p<n$，以
+Meyers--Serrin 逼近 $Eu$，再用 \eqref{eq:4-3-sobolev-p} 及
+\eqref{eq:4-3-extension-bound} 取极限，得到
+$\|u\|_{p^*}\leq C\|u\|_{W^{1,p}}$。若 $p=1<n$，因 $Eu$ 有固定紧支撑，用 mollifier 对
+$Eu$ 及其弱导数同时近似，得到 $C_c^\infty(\R^n)$ 中的 $W^{1,1}$ 逼近列。在每一项上应用
+\eqref{eq:4-3-sobolev-l1}，再由 $W^{1,1}$ 收敛和 Fatou 引理得到
+$\|u\|_{n/(n-1)}\le C\|u\|_{W^{1,1}}$。对 $1\leq q<p^*$，有限测度 \Holder{} 不等式给
+$\|u\|_q\leq|\Omega|^{1/q-1/p^*}\|u\|_{p^*}$。
+
+若 $p=n\geq2$ 且给定有限 $q$，取 $1\leq p_0<n$ 使 $q\leq p_0^*$。由于 $Eu$ 支撑在固定
+有限测度球中，\Holder{} 不等式给
+$\|Eu\|_{W^{1,p_0}}\leq C\|Eu\|_{W^{1,n}}$；应用刚证的 $p_0$ 情形即可。一维中，
+绝对连续代表满足
+\[
+ |\widetilde u(x)|
+ \leq |u_I|+\int_I|u'|
+ \leq |I|^{-1}\|u\|_1+\|u'\|_1,
+\]
+故嵌入 $L^\infty$。
+
+若 $p>n$，因 $Eu$ 有紧支撑，以 mollifier 卷积可取
+$v_k\in C_c^\infty(\R^n)$ 使 $v_k\to Eu$ 于 $W^{1,p}$。对 $v_k$ 应用
+\eqref{eq:4-3-morrey}，右端由 $\|u\|_{W^{1,p}}$ 一致控制。取包含所有支撑的固定球 $B$。对
+$w=v_k-v_\ell$ 与每个 $x\in B$，\eqref{eq:4-3-morrey} 给出
+\[
+ \begin{aligned}
+ |w(x)|
+ &\leq |w_B|+\frac1{|B|}\int_B|w(x)-w(y)|\dd y\\
+ &\leq |B|^{-1/p}\|w\|_{L^p(B)}
+   +C_{n,p}(\diam B)^\alpha\|\nabla w\|_{L^p(\R^n)}.
+ \end{aligned}
+\]
+故 $(v_k)$ 在一致范数中 Cauchy，设其一致极限为 $v$；$L^p$ 极限的唯一性说明
+$v=Eu$ a.e.。再令 $k\to\infty$ 于
+\[
+ |v_k(x)-v_k(y)|\leq C_{n,p}|x-y|^\alpha\|\nabla v_k\|_p
+\]
+并使用 \eqref{eq:4-3-extension-bound}，得到
+$[v]_{C^{0,\alpha}}\leq C\|u\|_{W^{1,p}(\Omega)}$。同时对 $w=v_k$ 的上一估计给出
+$\|v\|_\infty\leq C_{\Omega,p}\|u\|_{W^{1,p}(\Omega)}$。限制到
+$\overline\Omega$ 即得完整的 $C^{0,1-n/p}$ 范数估计。若两个连续代表在 $\Omega$ 中 a.e. 相等而
+某个内点处之差非零，连续性会给出一个差仍非零的开球，与 a.e. 相等矛盾；故二者先在 $\Omega$
+处处相等，再由 $\Omega$ 在 $\overline\Omega$ 中稠密而在边界上也相等。因此代表唯一。
+\end{proof}
+
+$p=n$ 的 $L^\infty$ 端点确实错误。设 $n\geq2$，在 $B(0,e^{-2})$ 上令
+\[
+ u(x)=\log\log\frac e{|x|},
+\]
+并在外侧作光滑截断。它在零点附近无界，而
+\[
+ |\nabla u(x)|=\frac1{|x|\log(e/|x|)},
+\qquad
+ \int_{|x|<e^{-2}}|\nabla u|^n\dd x
+ =|S^{n-1}|\int_0^{e^{-2}}\frac{\dd r}{r\log^n(e/r)}<\infty.
+\]
+$u$ 本身也属于 $L^n$：令 $s=\log(e/r)$，则 $r=e^{1-s}$，从而
+\[
+ \int_{|x|<e^{-2}}|u(x)|^n\dd x
+ =|S^{n-1}|e^n\int_3^\infty(\log s)^n e^{-ns}\dd s<\infty.
+\]
+为验证原点没有产生额外分布项，令
+$u_M=\min\{u,M\}$，其中外侧截断预先取成非负径向光滑函数。对充分大的 $M$，集合
+$\{u\geq M\}$ 是以原点为心的小球；$u_M$ 在该球内恒为 $M$，在球外分片 $C^1$，并在界面两侧
+取同一个值。对测试函数分别在内球与外环作经典分部积分，界面上的两个法向边界项因迹相同而抵消，
+故
+\[
+ \nabla u_M=\1_{\{u<M\}}\nabla u\qquad\text{a.e.}
+\]
+确为其弱梯度。又由支配收敛定理，
+$u_M\to u$、$\nabla u_M\to\nabla u$ 于 $L^n$。弱导数闭性遂说明
+$u\in W^{1,n}$，但它没有有界代表。
+
+连续嵌入只给统一界；从有界列中抽出强收敛子列还需要排除振荡与质量逃逸。所需的整空间紧性准则
+可以用小立方体平均直接证明。
+
+\begin{lemma}[Kolmogorov--Riesz 的本章特例]\label{lemma:4-3-3-kolmogorov-riesz}
+设 $1\leq p<\infty$，$\mathcal F\subset L^p(\R^n)$ 满足
+\begin{align*}
+ &\sup_{f\in\mathcal F}\|f\|_p<\infty,\tag{4.3.22}\label{eq:4-3-kr-bound}\\
+ &\lim_{h\to0}\sup_{f\in\mathcal F}\|\tau_hf-f\|_p=0,\tag{4.3.23}\label{eq:4-3-kr-translation}\\
+ &\lim_{R\to\infty}\sup_{f\in\mathcal F}
+   \|f\1_{\{|x|>R\}}\|_p=0.\tag{4.3.24}\label{eq:4-3-kr-tail}
+\end{align*}
+则 $\mathcal F$ 在 $L^p(\R^n)$ 中相对紧。
+\end{lemma}
+
+\begin{proof}
+我们证明 $\mathcal F$ 全有界；$L^p$ 完备性随后给出相对紧性。给定 $\varepsilon>0$，先由
+\eqref{eq:4-3-kr-tail} 选 $R$，使所有函数在立方体
+$Q=[-R,R]^n$ 外的 $L^p$ 范数小于 $\varepsilon$。再选充分大的整数 $M$，令
+$\ell=2R/M$ 足够小，并把 $Q$ 精确分成 $M^n$ 个边长为 $\ell$ 的半开小立方体
+$Q_1,\ldots,Q_N$。定义（在 $Q$ 外取零）
+\[
+ P_\ell f=\sum_{j=1}^N f_{Q_j}\1_{Q_j},\qquad
+ f_{Q_j}=\frac1{|Q_j|}\int_{Q_j}f.
+\]
+Jensen 不等式给
+\begin{align*}
+ \|f-P_\ell f\|_{L^p(Q)}^p
+ &\leq\sum_j\frac1{|Q_j|}
+   \int_{Q_j}\int_{Q_j}|f(x)-f(y)|^p\dd y\dd x\\
+ &=\ell^{-n}\int_{[-\ell,\ell]^n}
+   \sum_j\int_{Q_j\cap(Q_j+h)}
+   |f(x)-f(x-h)|^p\dd x\dd h\\
+ &\leq\ell^{-n}\int_{[-\ell,\ell]^n}
+   \|\tau_hf-f\|_{L^p(\R^n)}^p\dd h\\
+ &\leq2^n\sup_{|h|\leq\sqrt n\ell}
+   \|\tau_hf-f\|_{L^p(\R^n)}^p.
+ \tag{4.3.25}\label{eq:4-3-cube-average-approx}
+\end{align*}
+第二行使用 $h=x-y$；对固定 $h$，各集合 $Q_j\cap(Q_j+h)$ 两两不交，因而第三行可把积分域扩大到
+$\R^n$。由 \eqref{eq:4-3-kr-translation} 取 $M$ 足够大，使最后一行小于
+$\varepsilon^p$。
+
+$P_\ell\mathcal F$ 位于由 $\1_{Q_1},\ldots,\1_{Q_N}$ 张成的有限维空间。再次用 Jensen
+不等式，
+\[
+ \|P_\ell f\|_p^p
+ =\sum_{j=1}^N |Q_j|\,|f_{Q_j}|^p
+ \leq\sum_{j=1}^N\int_{Q_j}|f|^p
+ \leq\|f\|_p^p,
+\]
+所以它由 \eqref{eq:4-3-kr-bound} 一致有界；有限维有界集全有界。因此存在有限个 $L^p$ 球覆盖
+$P_\ell\mathcal F$。每个 $f$ 到 $P_\ell f$ 的距离至多为内部误差加尾误差，小于
+$2\varepsilon$。放大有限个球半径便覆盖 $\mathcal F$，所以 $\mathcal F$ 全有界。
+\end{proof}
+
+\begin{theorem}[Rellich--Kondrachov（选读）]\label{theorem:4-3-3-4}
+设 $\Omega\subset\R^n$ 为有界 Lipschitz 域。
+\begin{enumerate}
+  \item 若 $1\leq p<n$，则嵌入
+  $W^{1,p}(\Omega)\hookrightarrow L^q(\Omega)$ 对每个
+  $1\leq q<p^*=np/(n-p)$ 都是紧的；临界 $q=p^*$ 一般不紧。
+  \item 若 $p=n$，则对每个有限 $q$，嵌入
+  $W^{1,n}(\Omega)\hookrightarrow L^q(\Omega)$ 是紧的。
+  \item 若 $p>n$，则对每个 $0\leq\beta<1-n/p$，嵌入
+  $W^{1,p}(\Omega)\hookrightarrow C^{0,\beta}(\overline\Omega)$ 是紧的；
+  $\beta=0$ 表示 $C^0$。因此它也紧嵌入每个 $L^q$，$1\leq q\leq\infty$。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+设 $(u_k)$ 在 $W^{1,p}(\Omega)$ 中有界，并令 $v_k=Eu_k$，其中 $E$ 来自引理
+\ref{lemma:4-3-3-lipschitz-extension}。于是 $(v_k)$ 在 $W^{1,p}(\R^n)$ 中有界，并且支撑都包含在
+同一个球内。命题~\ref{proposition:4-3-3-3} 给出统一平移模
+\[
+ \sup_k\|\tau_hv_k-v_k\|_p
+ \leq |h|\sup_k\|\nabla v_k\|_p\longrightarrow0.
+\]
+固定支撑使尾条件 \eqref{eq:4-3-kr-tail} 自动成立。引理
+\ref{lemma:4-3-3-kolmogorov-riesz} 因而给出一个在 $L^p(\R^n)$ 中收敛的子列，限制回
+$\Omega$ 后仍在 $L^p(\Omega)$ 中收敛。
+
+若 $p<n$，命题~\ref{proposition:4-3-3-4} 给出 $(u_k)$ 在 $L^{p^*}$ 中一致有界。对
+$p<q<p^*$，取 $0<\theta<1$ 使
+$1/q=\theta/p+(1-\theta)/p^*$。\Holder{} 不等式给
+\[
+ \|u_k-u_\ell\|_q
+ \leq\|u_k-u_\ell\|_p^\theta
+       \|u_k-u_\ell\|_{p^*}^{1-\theta},
+\]
+所以该子列在 $L^q$ 中 Cauchy。若 $q\leq p$，有限测度 \Holder{} 不等式直接把 $L^p$ 收敛降到
+$L^q$。这证明所有 $q<p^*$ 的紧性。
+
+若 $p=n\geq2$ 且给定有限 $q$，选 $p_0<n$ 使 $q<p_0^*$。有界域上的 \Holder{} 不等式说明
+$W^{1,n}$ 有界列也是 $W^{1,p_0}$ 有界列，应用第一部分即可。若 $n=p=1$，一维估计说明该列在
+$L^\infty$ 中一致有界；上文已经从 Kolmogorov--Riesz 得到 $L^1$ 收敛子列。对每个有限
+$q>1$，
+\[
+ \|u_k-u_\ell\|_q^q
+ \leq\|u_k-u_\ell\|_\infty^{q-1}\|u_k-u_\ell\|_1,
+\]
+故同一子列在 $L^q$ 中收敛；$q=1$ 已经得到。
+
+最后设 $p>n$，$\alpha=1-n/p$。命题~\ref{proposition:4-3-3-4} 说明选定的连续代表一致有界且
+具有统一的 $\alpha$-\Holder{} 模。$\overline\Omega$ 紧，\ArzelaAscoli{} 定理给出一致收敛子列。
+若 $0<\beta<\alpha$，对任意连续函数 $w$ 有插值估计
+\[
+ [w]_{C^{0,\beta}}
+ \leq 2^{1-\beta/\alpha}
+      \|w\|_\infty^{1-\beta/\alpha}
+      [w]_{C^{0,\alpha}}^{\beta/\alpha}.
+ \tag{4.3.26}\label{eq:4-3-holder-interpolation}
+\]
+事实上，对 $r=|x-y|$，分别使用
+$|w(x)-w(y)|\leq2\|w\|_\infty$ 与
+$|w(x)-w(y)|\leq[w]_\alpha r^\alpha$，再取两上界的加权几何平均即可。把
+\eqref{eq:4-3-holder-interpolation} 用于子列两项之差，一致收敛与统一 $C^{0,\alpha}$ 界给出
+$C^{0,\beta}$ 收敛。$\beta=0$ 已由 \ArzelaAscoli{} 得到。最后
+$\|w\|_{L^q}\leq|\Omega|^{1/q}\|w\|_\infty$ 给出所有 $L^q$ 结论，包括 $q=\infty$。
+\end{proof}
+
+临界指数为何不紧，可以直接缩放验算。取 $x_0\in\Omega$ 和非零
+$\eta\in C_c^\infty(B(0,1))$，并令
+\[
+ u_k(x)=k^{(n-p)/p}\eta(k(x-x_0))
+\]
+（$k$ 充分大时 $\supp u_k\Subset\Omega$）。换元给出
+\[
+ \|u_k\|_{p^*}=\|\eta\|_{p^*},\qquad
+ \|\nabla u_k\|_p=\|\nabla\eta\|_p,\qquad
+ \|u_k\|_p=k^{-1}\|\eta\|_p.
+\]
+所以 $(u_k)$ 在 $W^{1,p}$ 中有界，并且对 $x\ne x_0$ 最终恒为零。若某子列在
+$L^{p^*}$ 中强收敛，则可再抽取 a.e. 收敛子列，其极限只能为零；强收敛却会迫使
+$\|u_k\|_{p^*}\to0$，与上式矛盾。
+
+尾条件同样不是多余的。在 $\R^n$ 上取非零
+$\eta\in C_c^\infty$ 并令 $w_k(x)=\eta(x-ke_1)$。其 $W^{1,p}$ 范数与平移模完全相同，但支撑
+彼此向无穷远移动。取间距足够大的子列可使支撑两两不交，于是
+$\|w_k-w_\ell\|_p^p=2\|\eta\|_p^p$；它没有 $L^p$ Cauchy 子列。有界域延拓后的固定支撑
+正是用来排除这种整体逃逸。
+
+Sobolev 嵌入与 Rellich--Kondrachov 紧性都依赖于区域边界、指数范围和尾部控制；定理中的这些条件
+不可省略。在 PDE 中，$W_0^{1,p}$ 表达齐次边界条件，\Poincare{} 不等式把梯度估计提升为函数范数
+估计，而 Rellich 紧性在次临界范围内把能量有界列转化为强收敛列。平移估计
+\eqref{eq:4-3-translation-estimate} 还将用于下一节的热核正则化。
+
+\begin{exercise}
+证明若 $u\in W^{1,p}(\Omega)$ 且 $a\in C^1(\Omega)$、$a$ 与 $\nabla a$ 有界，则
+$au\in W^{1,p}(\Omega)$，并求其弱导数。说明有界性假设在 $a$ 具有紧支撑时如何局部化。
+\end{exercise}
+
+\begin{exercise}
+在区间 $(a,b)$ 上，用绝对连续代表证明
+$\|u-u_{(a,b)}\|_p\leq(b-a)\|u'\|_p$。构造一列函数说明常数必须随区间长度按一次尺度变化。
+\end{exercise}
+
+\begin{exercise}
+完成 \eqref{eq:4-3-coordinate-holder} 的归纳证明，并据此从
+\eqref{eq:4-3-sobolev-l1} 逐行推出 \eqref{eq:4-3-sobolev-p}。
+\end{exercise}
+
+\begin{exercise}
+在引理~\ref{lemma:4-3-3-kolmogorov-riesz} 的证明中，详细写出从双积分到
+\eqref{eq:4-3-cube-average-approx} 的 $h=x-y$ 换元，并说明为何选取
+$\ell=2R/M$ 可以避免边缘立方体。
+\end{exercise}
+
+\begin{exercise}
+从 $L^p$ 的完备性和弱导数闭性出发，独立证明 $W^{1,p}(\Omega)$ 完备；证明中须写出测试函数配对的
+取极限步骤。
+\end{exercise}
+
+\begin{exercise}
+验证 $u(x)=|x|$ 属于 $W^{1,p}(-1,1)$，$1\leq p<\infty$，并说明它为什么没有处处经典导数。
+\end{exercise}
+
+\begin{exercise}
+先对 $C_c^\infty(\R^n)$ 沿线段积分，再用 Meyers--Serrin 逼近，完整证明平移估计
+\eqref{eq:4-3-translation-estimate}。
+\end{exercise}
+
+卷积在这里首先是平滑工具；平移估计又揭示它是由平移平均出来的算子。下一节把卷积、近似恒等、
+热核以及强连续半群放进同一套运算结构中。

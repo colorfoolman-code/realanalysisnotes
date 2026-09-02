@@ -1,0 +1,1245 @@
+\section{复分析工具：全纯极限与参数积分}\label{sec:07-01}
+
+\subsection{全纯性、幂级数与局部一致极限}\label{subsec:7-1-1}
+\index{复可微}
+\index{全纯函数}
+\index{局部一致收敛}
+\index{正规族}
+
+实变量函数在一点可微，只说明它在该点附近可由一条直线作一阶逼近；复变量函数的差商却必须对
+平面中的所有趋近方向给出同一极限。这个额外约束会逐步产生任意阶导数、幂级数展开和唯一性。
+不过，逐点收敛本身不足以保留这种刚性。序列 $p_n(z)=z^n$ 已经提示：每个固定点上的信息既不
+包含紧集上的统一误差控制，也不足以保证极限与求导可以交换。
+
+Euler 时代的形式幂级数提供了大量可计算公式；Cauchy 的积分方法解释了这些公式为何适用于所有
+全纯函数；Weierstrass 随后把一致收敛放到理论中心。这里先从幂级数这个无需积分公式的模型出发，
+再引入紧集上一致收敛。Cauchy 理论将在下一小节说明，这个拓扑为何恰好能保留全纯性和全部导数。
+
+\begin{definition}[复可微与全纯]\label{def:7-1-1-1}
+设 $\Omega\subset\C$ 为开集，$f:\Omega\to\C$。若极限
+\[
+  f'(z_0)=\lim_{h\to0}\frac{f(z_0+h)-f(z_0)}{h}
+\]
+存在，其中 $h\in\C\setminus\{0\}$ 可沿任意方向趋于 $0$，则称 $f$ 在 $z_0$ \emph{复可微}。
+若 $f$ 在 $\Omega$ 的每一点复可微，则称 $f$ 在 $\Omega$ 上\emph{全纯}，并写作
+$f\in\mathcal O(\Omega)$。若 $f$ 在每一点附近都可表示为收敛幂级数，则称 $f$ \emph{解析}。
+\end{definition}
+
+把 $h$ 限制在实轴和虚轴，便得到 Cauchy--Riemann 方程；反过来，只有实偏导存在还不够，通常还需
+连续性等条件才能恢复复可微。以下不沿偏微分方程路线展开，而是直接从差商和积分建立所需结论。
+
+\begin{definition}[局部一致收敛]\label{def:7-1-1-2}
+函数列 $f_n:\Omega\to\C$ \emph{局部一致收敛}到 $f$，是指对每个紧集
+$K\Subset\Omega$，
+\[
+  \sup_{z\in K}|f_n(z)-f(z)|\longrightarrow0.
+\]
+这正是 $\mathcal C(\Omega)$ 上紧开拓扑（compact--open topology）的序列收敛。
+\end{definition}
+
+局部一致中的“局部”不能理解为：对每个点临时选一个可随 $n$ 改变的邻域。量词顺序是先固定任意
+紧集 $K$，再让同一个上确界误差趋于零。
+
+\begin{definition}[正规族]\label{def:7-1-1-3}
+本章采用有限值版本。若全纯函数族
+$\mathcal F\subset\mathcal O(\Omega)$ 的每个序列都含有一个在 $\Omega$ 上局部一致收敛、且极限
+仍属于 $\mathcal O(\Omega)$ 的子列，则称 $\mathcal F$ 为\emph{正规族}，或称它在
+$\mathcal O(\Omega)$ 中相对紧。
+\end{definition}
+
+有些复分析教材使用 Riemann 球面度量，并允许子列趋于常值 $\infty$。那是另一种正规族定义；这里
+始终只允许有限全纯极限，因而不能把两种版本混用。
+
+\begin{example}[几何级数与预解式原型]\label{ex:7-1-1-1}
+若 $|z|<1$，则有限几何和满足
+\[
+  \sum_{n=0}^{N}z^n=\frac{1-z^{N+1}}{1-z},
+  \qquad
+  \frac1{1-z}-\sum_{n=0}^{N}z^n=\frac{z^{N+1}}{1-z}.
+\]
+因此
+\[
+  \frac1{1-z}=\sum_{n=0}^{\infty}z^n,
+  \qquad
+  \left(\frac1{1-z}\right)'=\frac1{(1-z)^2}
+  =\sum_{n=1}^{\infty}nz^{n-1}.
+\]
+后一等式也可直接核对，因为
+$\sum_{n=1}^{N}nz^{n-1}=(1-(N+1)z^N+Nz^{N+1})/(1-z)^2$，余下两项在
+$|z|<1$ 时趋于零。第三小节把标量 $z$ 换成有界算子 $T/z$；同一个几何级数将给出
+$(zI-T)^{-1}$。
+\end{example}
+
+\begin{example}[局部一致但非全局一致]\label{ex:7-1-1-2}
+固定 $0<r<1$。在闭圆盘 $|z|\le r$ 上，几何级数的尾项满足
+\[
+ \sup_{|z|\le r}\left|\sum_{n=N+1}^{\infty}z^n\right|
+ \le\frac{r^{N+1}}{1-r}\longrightarrow0.
+\]
+所以它在单位圆盘上局部一致收敛。它却不在整个开圆盘上一致收敛：一致收敛的必要条件是
+$z^n\to0$ 一致成立，而
+\[
+  \sup_{|z|<1}|z^n|=1
+\]
+对每个 $n$ 都成立。复分析中的自然控制因此是“在每个紧子集上”，而不是对整个非紧开域取一次
+上确界。
+\end{example}
+
+\begin{example}[边界点态观测不足]\label{ex:7-1-1-3}
+令 $p_n(z)=z^n$。对任意 $r<1$，
+\[
+  \sup_{|z|\le r}|p_n(z)|=r^n\longrightarrow0,
+  \qquad
+  \sup_{|z|\le r}|p_n'(z)|=nr^{n-1}\longrightarrow0.
+\]
+但在闭单位圆盘的边界上，$p_n(1)=1$，而 $p_n(-1)=(-1)^n$ 甚至不收敛；限制到 $[0,1]$ 时，
+点态极限为
+\[
+  p(x)=\begin{cases}0,&0\le x<1,\\1,&x=1,
+  \end{cases}
+\]
+它在 $1$ 处不连续。这个计算不是开域上“点态极限非全纯”的反例；它准确指出的是，逐点记录本身
+不提供紧集上的共同误差，因而不能单独支持连续性或导数交换。
+\end{example}
+
+\begin{theorem}[幂级数逐项微分]\label{theorem:7-1-1-1}
+设幂级数
+\[
+  \sum_{n=0}^{\infty}a_n(z-z_0)^n
+\]
+的收敛半径为 $R\in[0,\infty]$。它在 $D(z_0,R)$ 内定义一个全纯函数 $f$，并且
+\[
+  f'(z)=\sum_{n=1}^{\infty}na_n(z-z_0)^{n-1}.
+  \tag{7.1.1}\label{eq:7-1-1-power-derivative}
+\]
+导数级数的收敛半径仍为 $R$；因而幂级数可在每个闭小圆盘上任意次逐项微分。
+\end{theorem}
+
+\begin{proof}
+先设 $0<\rho<R$，并取 $s$ 满足 $\rho<s<R$。级数在 $z_0+s$ 处收敛，所以数列
+$|a_n|s^n$ 有界；记其上界为 $M$。于是对 $|z-z_0|\le\rho$，
+\[
+ |a_n(z-z_0)^n|\le M(\rho/s)^n,
+\]
+从而原级数由一致收敛的 $M$ 判别法收敛。又有
+\[
+ n|a_n||z-z_0|^{n-1}
+ \le \frac{M}{\rho}\,n(\rho/s)^n
+\]
+（$z=z_0$ 时单独读取各项），而 $\sum n(\rho/s)^n<\infty$，故形式导数级数也在闭
+$\rho$ 圆盘上一致收敛到某个连续函数 $g$。
+
+记部分和为 $S_N$。若 $z,z+h$ 都位于闭 $\rho$ 圆盘内部，则一元实变量微积分给出
+\[
+ S_N(z+h)-S_N(z)
+ =h\int_0^1S_N'(z+th)\dd t.
+\]
+这里把 $t\mapsto S_N(z+th)$ 看成 $[0,1]$ 上的复值 $C^1$ 函数；逐项使用实变量链式法则有
+\[
+ \frac{\dd}{\dd t}S_N(z+th)=hS_N'(z+th),
+\]
+再分别对实部、虚部应用微积分基本定理，便得到上一式。因此这一步没有预先使用尚待证明的
+“全纯函数可沿路径积分”结论。
+让 $N\to\infty$；$S_N$ 与 $S_N'$ 在包含线段的闭小圆盘上一致收敛，故
+\[
+ f(z+h)-f(z)=h\int_0^1g(z+th)\dd t.
+\]
+除以 $h$ 并令 $h\to0$，由 $g$ 的连续性得到 $f'(z)=g(z)$，即
+\eqref{eq:7-1-1-power-derivative}。
+
+先设 $R<\infty$。若 $|w-z_0|>R$ 而 $a_n(w-z_0)^n\to0$，则这个项列有界。任取
+$R<s<|w-z_0|$，便有
+\[
+ |a_n|s^n
+ =|a_n(w-z_0)^n|\left(\frac{s}{|w-z_0|}\right)^n.
+\]
+右端由一个收敛几何级数逐项支配，因而原幂级数在 $|z-z_0|=s$ 上绝对收敛，与其收敛半径为
+$R$ 矛盾。故每个 $|w-z_0|>R$ 都使 $a_n(w-z_0)^n$ 不趋于零。若导数级数在 $w$ 处收敛，则
+$na_n(w-z_0)^{n-1}\to0$，进而
+$a_n(w-z_0)^n=(w-z_0)na_n(w-z_0)^{n-1}/n\to0$，矛盾。因此导数级数在每个
+$|w-z_0|>R$ 处发散；结合前一段，它的半径正是 $R$。对导数级数重复同一论证即可任意次逐项
+微分。$R=0$ 时关于开圆盘的断言为空；$R=\infty$ 时上述论证对任意有限 $\rho$ 成立。
+\end{proof}
+
+幂级数情形提示了下面三条一般结论。先予陈述；它们将在下一小节分别由 Morera 定理、
+Cauchy 估计和恒等定理证明。
+
+\begin{theorem}[Weierstrass 极限定理]\label{theorem:7-1-1-2}
+若 $f_n\in\mathcal O(\Omega)$ 且 $f_n$ 在 $\Omega$ 上局部一致收敛到 $f$，则
+$f\in\mathcal O(\Omega)$。此外，对每个 $k\ge1$，
+\[
+  f_n^{(k)}\longrightarrow f^{(k)}
+\]
+也在 $\Omega$ 上局部一致成立。
+\end{theorem}
+
+\begin{theorem}[Montel 定理]\label{theorem:7-1-1-3}
+设 $\mathcal F\subset\mathcal O(\Omega)$。若对每个紧集 $K\Subset\Omega$ 都有
+\[
+  \sup_{f\in\mathcal F}\sup_{z\in K}|f(z)|<\infty,
+  \tag{7.1.2}\label{eq:7-1-1-locally-bounded-family}
+\]
+则 $\mathcal F$ 是正规族。
+\end{theorem}
+
+这里要求的是整个函数族在每个紧集上有同一个界；“每个 $f$ 各自在局部有界”只是连续函数的普通
+性质，完全不足以推出函数族紧性。
+
+\begin{proposition}[Vitali 收敛定理（选读）]\label{proposition:7-1-1-4}
+设 $\Omega$ 连通，$(f_n)\subset\mathcal O(\Omega)$ 满足局部一致有界条件
+\eqref{eq:7-1-1-locally-bounded-family}。若存在集合 $E\subset\Omega$，它在 $\Omega$ 内有聚点，
+并且对每个 $z\in E$ 数列 $f_n(z)$ 收敛，则 $(f_n)$ 在 $\Omega$ 上局部一致收敛到某个全纯函数。
+\end{proposition}
+
+三条结论之间的几何关系可由图~\ref{fig:7-1-1-exhaustion-and-power-series} 读取。紧耗尽把一个非紧开域
+拆成可使用 \ArzelaAscoli{} 定理的紧层；在第 $m$ 层抽取的子列又作为第 $m+1$ 层的起点。对角项
+最终在每个固定层上都落入相应子列的尾部。右侧的收敛圆则说明，幂级数的控制也总是先固定
+$r<R$，再在闭小圆上作一致估计。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.92]
+  \begin{scope}[xshift=0cm]
+    \draw[book region] (0,0) ellipse (2.05 and 1.55);
+    \draw[BookAccent!75,semithick] (0,0) ellipse (1.48 and 1.05);
+    \draw[BookWarm,semithick] (0,0) ellipse (0.88 and 0.58);
+    \node[book label] at (0,1.28) {$\Omega$};
+    \node[book label] at (1.10,0.74) {$K_3$};
+    \node[book label] at (0.73,0.34) {$K_2$};
+    \node[book label] at (0,0) {$K_1$};
+    \node[book label] at (0,-1.92) {$K_1\Subset K_2\Subset K_3\Subset\cdots$};
+  \end{scope}
+  \begin{scope}[xshift=4.25cm,yshift=0.82cm,node distance=7mm]
+    \node[book node] (s0) {$(f_n)$};
+    \node[book node,below=of s0] (s1) {$(f_n^{[1]})$：在 $K_1$ 收敛};
+    \node[book node,below=of s1] (s2) {$(f_n^{[2]})$：在 $K_2$ 收敛};
+    \node[book node,below=of s2] (s3) {$(f_n^{[3]})$：在 $K_3$ 收敛};
+    \draw[book arrow] (s0)--(s1);
+    \draw[book arrow] (s1)--(s2);
+    \draw[book arrow] (s2)--(s3);
+    \node[book warm node,right=9mm of s2] (diag) {对角列\\$f_n^{[n]}$};
+    \draw[book accent arrow] (s1.east) to[bend left=18] (diag.north);
+    \draw[book accent arrow] (s2.east)--(diag.west);
+    \draw[book accent arrow] (s3.east) to[bend right=18] (diag.south);
+  \end{scope}
+  \begin{scope}[xshift=10.1cm]
+    \draw[BookAccent,semithick,fill=BookAccent!5] (0,0) circle (1.48);
+    \draw[BookWarm,semithick,dashed] (0,0) circle (0.88);
+    \fill[BookInk] (0,0) circle (1.4pt);
+    \draw[book arrow] (0,0)--node[above,book label]{$r$}(0.88,0);
+    \draw[book arrow] (0,0)--node[below,book label]{$R$}(1.48,0);
+    \node[book label] at (0,-1.83) {先固定 $r<R$};
+    \node[book label] at (-0.28,0.22) {$z_0$};
+  \end{scope}
+\end{tikzpicture}
+\caption{紧耗尽上的逐层抽取与幂级数闭小圆控制。两者都把非紧或临界边界问题化为固定紧集上的
+一致估计。}
+\label{fig:7-1-1-exhaustion-and-power-series}
+\end{figure}
+
+这些结论将在不同方向反复出现：预解式级数和 Stieltjes 变换需要局部一致极限保持全纯；有理
+逼近需要从局部有界函数族中提取子列；而 Montel 的证明把第一章的 \ArzelaAscoli{} 定理与复分析
+的导数估计接到了一起。三者共同表达同一个原则：有限点值观测必须先升级为紧集一致控制，复解析刚性
+才能开始工作。
+
+\begin{exercise}
+\begin{enumerate}
+  \item 对 $|z-z_0|\le r<s<R$，从 $|a_n|s^n$ 有界出发，分别写出原级数及前两阶导数级数的
+        $M$ 判别控制数列。
+  \item 在单位圆盘上令 $f_n(z)=nz$。验证 $f_n(0)$ 收敛，但函数族在紧圆盘
+        $|z|\le1/2$ 上不一致有界；说明只在一个没有域内聚点的集合上观察收敛，为何不足以应用
+        Vitali 定理。
+  \item 设 $f_n(z)=z^n$。计算它在 $|z|\le r<1$ 上第 $k$ 阶导数的上确界，并证明该上确界趋于
+        $0$。
+  \item 使用 Cauchy 估计~\eqref{eq:7-1-2-cauchy-estimate}，推出满足
+        \eqref{eq:7-1-1-locally-bounded-family} 的函数族在每个紧子集上等度连续。
+\end{enumerate}
+\end{exercise}
+
+曲线积分将把边界上的一致信息传回内部。下一步先从 Goursat 的三角形细分出发建立 Cauchy 公式，
+再回来完成上述三条极限与紧性结论的证明。
+
+
+\subsection{曲线积分、Cauchy 公式、Morera 与唯一性}\label{subsec:7-1-2}
+\index{复曲线积分}
+\index{Cauchy--Goursat 定理}
+\index{Cauchy 积分公式}
+\index{Morera 定理}
+\index{恒等定理}
+\index{最大模原理}
+
+复导数由一点附近的差商定义，Cauchy 公式却能从一条圆周上的函数值恢复圆内一点的全部导数。这种
+由边界决定内部的现象，是全纯函数远比一般光滑函数刚性的根源。反方向上，Morera 定理又把闭路积分
+为零变成全纯性的判据；以后遇到含参数积分时，这往往比直接控制复差商更方便。
+
+\begin{definition}[复曲线积分]\label{def:7-1-2-1}
+设 $\gamma:[a,b]\to\Omega$ 为分段 $C^1$ 曲线，$f:\Omega\to\C$ 在 $\gamma$ 的像上连续。
+定义
+\[
+  \int_\gamma f(z)\dd z
+  =\int_a^b f(\gamma(t))\gamma'(t)\dd t,
+  \tag{7.1.3}\label{eq:7-1-2-curve-integral}
+\]
+其中右侧按实参数逐段积分。若 $\gamma^{-}(t)=\gamma(a+b-t)$ 表示反向参数化，则
+$\int_{\gamma^-}f\dd z=-\int_\gamma f\dd z$；首尾相接曲线的拼接积分等于各段积分之和。
+\end{definition}
+
+若 $\gamma$ 为闭曲线，仅凭 $f$ 在曲线附近有复导数，并不能在任意开域上断言积分为零；域中的孔洞
+可能被积分检测到。原函数恰好把这个全局障碍编码出来。
+
+\begin{definition}[原函数]\label{def:7-1-2-2}
+若 $F\in\mathcal O(\Omega)$ 且 $F'=f$，则称 $F$ 是 $f$ 在 $\Omega$ 上的\emph{原函数}。
+\end{definition}
+
+\begin{proposition}[原函数与路径无关]\label{proposition:7-1-2-primitive-criterion}
+设 $f:\Omega\to\C$ 连续。则 $f$ 在 $\Omega$ 的每个连通分支上有原函数，当且仅当它沿该分支内
+每条分段 $C^1$ 闭曲线的积分都为零。特别地，若 $\Omega$ 关于 $z_*$ 星形，且每个内含三角形的
+边界积分为零，则
+\[
+  F(z)=\int_{[z_*,z]}f(\zeta)\dd\zeta
+  \tag{7.1.4}\label{eq:7-1-2-radial-primitive}
+\]
+是 $f$ 的原函数。
+\end{proposition}
+
+\begin{proof}
+若 $F'=f$，则在每个 $C^1$ 曲线段上，实变量链式法则给
+\[
+ \frac{\dd}{\dd t}F(\gamma(t))=f(\gamma(t))\gamma'(t).
+\]
+逐段积分可得 $\int_\gamma f\dd z=F(\gamma(b))-F(\gamma(a))$，所以闭曲线积分为零。
+
+反过来，复平面中开连通集是折线路径连通的。在一个连通分支中固定 $z_*$；对任意 $z$ 选一条从
+$z_*$ 到 $z$ 的分段 $C^1$ 路径 $\gamma_z$，令 $F(z)=\int_{\gamma_z}f\dd z$。两条这样的路径
+首尾拼接成闭曲线，故题设保证 $F$ 与路径选择无关。取 $r>0$ 使 $D(z,r)\subset\Omega$。当
+$|h|<r$ 时，可把 $\gamma_z$ 与线段 $[z,z+h]$ 拼接为 $\gamma_{z+h}$，于是
+\[
+ \frac{F(z+h)-F(z)}h
+ =\int_0^1 f(z+th)\dd t\longrightarrow f(z),
+\]
+最后一步来自 $f$ 在 $z$ 连续。因此 $F'=f$。
+
+若 $\Omega$ 关于 $z_*$ 星形，式~\eqref{eq:7-1-2-radial-primitive} 中的线段都在 $\Omega$ 内。
+对充分小的 $h$，三条线段 $[z_*,z]$、$[z,z+h]$、$[z+h,z_*]$ 围成的三角形位于 $\Omega$：
+边 $[z,z+h]$ 位于一个小圆盘内，而从 $z_*$ 到这条边上每一点的线段由星形性包含于 $\Omega$。
+三角形边界积分为零，因而仍有
+$F(z+h)-F(z)=\int_{[z,z+h]}f\dd z$；上面的差商计算完成证明。
+\end{proof}
+
+\begin{theorem}[Cauchy--Goursat]\label{theorem:7-1-2-1}
+若 $f$ 在包含闭三角形 $T$ 的开集上全纯，则
+\[
+  \int_{\partial T}f(z)\dd z=0,
+  \tag{7.1.5}\label{eq:7-1-2-goursat-triangle}
+\]
+其中 $\partial T$ 取正向。因而，全纯函数在星形域中有原函数，并沿域内每条分段 $C^1$ 闭曲线
+积分为零。
+\end{theorem}
+
+\begin{proof}
+记 $I(T)=\int_{\partial T}f(z)\dd z$。连接三边中点，把 $T=T_0$ 分成四个相似小三角形；给各
+边界正向后，内部边的积分两两抵消，所以四个小三角形的边界积分之和等于 $I(T_0)$。其中至少一个
+小三角形 $T_1$ 满足
+\[
+  |I(T_1)|\ge\frac14|I(T_0)|.
+\]
+重复选择，得到嵌套闭三角形 $T_n$，并且
+\[
+ |I(T_n)|\ge4^{-n}|I(T_0)|,
+ \qquad
+ \operatorname{per}(T_n)=2^{-n}\operatorname{per}(T_0).
+ \tag{7.1.6}\label{eq:7-1-2-goursat-scale}
+\]
+它们的直径趋于零，故嵌套紧集定理给出唯一点
+$z_*\in\bigcap_nT_n$。
+
+由 $f$ 在 $z_*$ 复可微，可写成
+\[
+ f(z)=f(z_*)+f'(z_*)(z-z_*)+r(z),
+ \qquad
+ \frac{|r(z)|}{|z-z_*|}\longrightarrow0\quad(z\to z_*).
+ \tag{7.1.7}\label{eq:7-1-2-goursat-remainder}
+\]
+常数项沿闭折线的积分为零；线性项也满足
+\[
+ \int_{\partial T_n}(z-z_*)\dd z
+ =\frac12\int_{\partial T_n}\dd (z-z_*)^2=0.
+\]
+把函数
+\[
+ \eta(z)=\frac{|r(z)|}{|z-z_*|}\quad(z\ne z_*),
+ \qquad \eta(z_*)=0
+\]
+连续延拓到 $z_*$，并令 $\varepsilon_n=\max_{z\in T_n}\eta(z)$。由
+式~\eqref{eq:7-1-2-goursat-remainder}，对任意 $\varepsilon>0$ 可取 $\delta_\varepsilon>0$，使
+$|z-z_*|<\delta_\varepsilon$ 时 $\eta(z)<\varepsilon$。再由 $z_*\in T_n$ 和
+$\diam(T_n)\to0$，充分大的 $n$ 满足 $T_n\subset D(z_*,\delta_\varepsilon)$，从而
+$\varepsilon_n\leq\varepsilon$；故 $\varepsilon_n\to0$。于是
+\[
+ |I(T_n)|
+ \le \sup_{\partial T_n}|r(z)|\operatorname{per}(T_n)
+ \le \varepsilon_n\diam(T_n)\operatorname{per}(T_n)
+ \le \varepsilon_n\operatorname{per}(T_n)^2.
+ \tag{7.1.8}\label{eq:7-1-2-goursat-upper}
+\]
+另一方面，式~\eqref{eq:7-1-2-goursat-scale} 给出
+\[
+ \frac{|I(T_n)|}{\operatorname{per}(T_n)^2}
+ \ge\frac{|I(T_0)|}{\operatorname{per}(T_0)^2}.
+\]
+与式~\eqref{eq:7-1-2-goursat-upper} 合并并令 $n\to\infty$，得到 $I(T_0)=0$。
+这里必须比较周长的平方：余项是
+$o(\diam T_n)\operatorname{per}(T_n)=o(\operatorname{per}(T_n)^2)$；若误写成除以一次周长，
+缩放量纲便不相容。
+
+现在设 $\Omega$ 关于 $z_*$ 星形。刚证的三角形积分为零，命题
+\ref{proposition:7-1-2-primitive-criterion} 给出原函数。对任意分段 $C^1$ 闭曲线应用原函数的
+链式法则，积分即为零。
+\end{proof}
+
+\begin{theorem}[Cauchy 积分公式]\label{theorem:7-1-2-2}
+设 $f\in\mathcal O(\Omega)$ 且 $\overline{D(a,r)}\subset\Omega$。若 $|w-a|<r$，则
+\[
+ f(w)=\frac1{2\pi i}\int_{|z-a|=r}\frac{f(z)}{z-w}\dd z.
+ \tag{7.1.9}\label{eq:7-1-2-cauchy-value}
+\]
+函数 $f$ 在圆内无限次复可微，并且对每个 $n\ge0$，
+\[
+ f^{(n)}(w)=\frac{n!}{2\pi i}
+ \int_{|z-a|=r}\frac{f(z)}{(z-w)^{n+1}}\dd z.
+ \tag{7.1.10}\label{eq:7-1-2-cauchy-derivative}
+\]
+特别地，在 $w=a$ 便得到以圆心为中心的公式。每个全纯函数都是解析函数。
+\end{theorem}
+
+\begin{proof}
+先记录 Goursat 证明的一个可去点版本：若 $h$ 在闭三角形 $T$ 上连续，并在 $T$ 附近除至多一点
+$w$ 外全纯，则 $\int_{\partial T}h\dd z=0$。令 $M=\max_T|h|$，并对 $T$ 作 $m$ 次中点四分。
+每个第 $m$ 层小三角形的周长都是 $2^{-m}\operatorname{per}(T)$；由三角网格的局部组合结构，包含
+$w$ 的小三角形至多有六个。不接触 $w$ 的小三角形在一个避开 $w$ 的开邻域内全纯，故由
+定理~\ref{theorem:7-1-2-1} 得零积分。把全部小三角形的正向边界积分相加，内部边两两抵消，于是
+\[
+ \left|\int_{\partial T}h(z)\dd z\right|
+ \leq 6M\,2^{-m}\operatorname{per}(T)\longrightarrow0.
+\]
+这就证明可去点版本，而没有预先假设 $h$ 在 $w$ 复可微。
+
+由 $\overline{D(a,r)}$ 紧含于 $\Omega$，可取 $r_1>r$ 使
+$\overline{D(a,r_1)}\subset\Omega$。固定 $w\in D(a,r)$，定义
+\[
+ h_w(z)=
+ \begin{cases}
+ \dfrac{f(z)-f(w)}{z-w},&z\ne w,\\[6pt]
+ f'(w),&z=w.
+ \end{cases}
+\]
+复可微的定义说明 $h_w$ 在 $w$ 连续；它在 $w$ 外全纯。上一段说明它在 $D(a,r_1)$ 内每个三角形上的
+边界积分为零。这个圆盘是星形域，所以命题~\ref{proposition:7-1-2-primitive-criterion} 的构造给出
+$h_w$ 的原函数，进而
+\[
+ \int_{|z-a|=r}h_w(z)\dd z=0.
+ \tag{7.1.11}\label{eq:7-1-2-divided-difference-zero}
+\]
+
+直接计算 Cauchy 核的积分。令 $q=(w-a)/r$，则 $|q|<1$，沿
+$z=a+re^{it}$ 有
+\begin{align*}
+ \int_{|z-a|=r}\frac{\dd z}{z-w}
+ &=i\int_0^{2\pi}\frac{1}{1-qe^{-it}}\dd t\\
+ &=i\sum_{k=0}^{\infty}q^k\int_0^{2\pi}e^{-ikt}\dd t
+ =2\pi i.
+\end{align*}
+这里几何级数因 $|q|<1$ 在 $t\in[0,2\pi]$ 上一致收敛，故可逐项积分。将
+\eqref{eq:7-1-2-divided-difference-zero} 展开，就得到
+\eqref{eq:7-1-2-cauchy-value}。
+
+现在把积分圆周固定，只让 $w$ 在其内部变化。对任意 $\rho<r$，当 $|w-a|\le\rho$ 时，
+$|z-w|\ge r-\rho$。若 $m\ge1$ 且 $|h|<(r-\rho)/2$，则在圆周上一致地有
+\[
+ \frac{(z-w-h)^{-m}-(z-w)^{-m}}h
+ =m\int_0^1(z-w-th)^{-m-1}\dd t,
+\]
+其绝对值不超过 $m((r-\rho)/2)^{-m-1}$，并在 $h\to0$ 时一致趋于
+$m(z-w)^{-m-1}$。因此曲线参数积分的差商可在一致极限下通过积分号，而且
+\[
+ \frac{\partial}{\partial w}(z-w)^{-m}
+ =m(z-w)^{-m-1}.
+\]
+从 \eqref{eq:7-1-2-cauchy-value} 开始归纳，得到
+\eqref{eq:7-1-2-cauchy-derivative}。
+
+最后，若 $|w-a|\le\rho<r$，则圆周上一致地有
+\[
+ \frac1{z-w}
+ =\frac1{z-a}\sum_{n=0}^{\infty}\left(\frac{w-a}{z-a}\right)^n.
+\]
+代入式~\eqref{eq:7-1-2-cauchy-value} 并逐项积分，得到
+\[
+ f(w)=\sum_{n=0}^{\infty}c_n(w-a)^n,
+ \qquad
+ c_n=\frac1{2\pi i}\int_{|z-a|=r}
+       \frac{f(z)}{(z-a)^{n+1}}\dd z
+     =\frac{f^{(n)}(a)}{n!}.
+\]
+所以 $f$ 在每一点附近等于其 Taylor 级数，即 $f$ 解析。
+\end{proof}
+
+\begin{theorem}[Morera 定理]\label{theorem:7-1-2-3}
+设 $f:\Omega\to\C$ 连续。若对每个满足 $\overline T\subset\Omega$ 的三角形 $T$ 都有
+\[
+  \int_{\partial T}f(z)\dd z=0,
+\]
+则 $f\in\mathcal O(\Omega)$。
+\end{theorem}
+
+\begin{proof}
+固定 $a\in\Omega$，取 $r>0$ 使 $D(a,r)\subset\Omega$。圆盘是星形域；由题设及
+命题~\ref{proposition:7-1-2-primitive-criterion}，
+\[
+ F(z)=\int_{[a,z]}f(\zeta)\dd\zeta
+\]
+在 $D(a,r)$ 上满足 $F'=f$。于是 $F$ 全纯。定理~\ref{theorem:7-1-2-2} 已说明全纯函数无限次
+复可微，故 $f=F'$ 也全纯。点 $a$ 任意，所以 $f\in\mathcal O(\Omega)$。
+\end{proof}
+
+\begin{corollary}[刚性推论]\label{corollary:7-1-2-4}
+设 $f\in\mathcal O(\Omega)$。
+\begin{enumerate}
+  \item 若 $\overline{D(a,r)}\subset\Omega$，并记
+        $M_r=\max_{|z-a|=r}|f(z)|$，则对每个 $n\ge0$，
+        \[
+          |f^{(n)}(a)|\le\frac{n!}{r^n}M_r.
+          \tag{7.1.12}\label{eq:7-1-2-cauchy-estimate}
+        \]
+  \item 每个有界整函数都是常数（Liouville 定理）；每个非常数复系数多项式都在 $\C$ 中有零点
+        （基本代数定理）。
+  \item 若 $\Omega$ 连通且 $|f|$ 在域内一点取得局部最大值，则 $f$ 为常数（最大模原理）。
+  \item 若 $\Omega$ 连通，$f,g\in\mathcal O(\Omega)$，且集合
+        $\{z\in\Omega:f(z)=g(z)\}$ 在 $\Omega$ 内有聚点，则 $f\equiv g$（恒等定理）。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+由 Cauchy 导数公式和曲线积分估计，
+\[
+ |f^{(n)}(a)|
+ \le\frac{n!}{2\pi}\,(2\pi r)\frac{M_r}{r^{n+1}}
+ =\frac{n!}{r^n}M_r,
+\]
+这就是式~\eqref{eq:7-1-2-cauchy-estimate}。
+
+若 $f$ 是满足 $|f|\le M$ 的整函数，则对任意 $a\in\C$、$R>0$，Cauchy 估计给
+$|f'(a)|\le M/R$。令 $R\to\infty$ 得 $f'(a)=0$；沿任意线段积分可知 $f$ 为常数。
+
+设非常数多项式 $p(z)=a_mz^m+\cdots+a_0$ 没有零点。则 $1/p$ 是整函数。取 $R$ 充分大，使当
+$|z|\ge R$ 时
+\[
+ |a_{m-1}z^{m-1}+\cdots+a_0|
+ \le\frac{|a_m|}{2}|z|^m;
+\]
+于是 $|p(z)|\ge |a_m||z|^m/2$，所以 $1/p$ 在圆盘外有界。它在紧圆盘 $|z|\le R$ 上也因连续
+且分母不为零而有界。Liouville 定理迫使 $1/p$、从而 $p$ 为常数，矛盾。这证明基本代数定理。
+
+先证明恒等定理。令 $h=f-g$，设它的零点列 $z_j\ne a$ 趋于域内点 $a$。若 $h$ 在 $a$ 的 Taylor
+级数有首个非零系数 $c_m$，则
+\[
+ h(z)=(z-a)^m\bigl(c_m+(z-a)c_{m+1}+\cdots\bigr).
+\]
+括号中的全纯函数在 $a$ 取非零值，因连续性在 $a$ 的某邻域内不为零；这与 $z_j\to a$ 且
+$h(z_j)=0$ 矛盾。因此 $h$ 的全部 Taylor 系数为零，$h$ 在 $a$ 的某邻域恒为零。
+
+令
+\[
+ A=\{z\in\Omega:h\text{ 在 }z\text{ 的某邻域恒为零}\}.
+\]
+$A$ 非空且开。若 $z_j\in A$ 且 $z_j\to z\in\Omega$，则对每个 $k\ge0$，
+$h^{(k)}(z_j)=0$。Cauchy 公式保证各阶导数连续，所以 $h^{(k)}(z)=0$；$h$ 在 $z$ 的 Taylor 级数
+恒为零，故 $z\in A$。于是 $A$ 在 $\Omega$ 中也闭。连通性给 $A=\Omega$，即 $f\equiv g$。
+
+最后证明最大模原理。设 $|f(z)|\le|f(a)|$ 在某个圆盘 $D(a,r)$ 内成立。若 $f(a)=0$，则 $f$ 在
+该圆盘恒为零，恒等定理给出全域结论。以下设 $f(a)\ne0$，取单位复数 $\eta$ 使
+$\eta f(a)=|f(a)|$。对每个 $0<s<r$，Cauchy 公式给出平均值等式
+\[
+ |f(a)|=\eta f(a)
+ =\frac1{2\pi}\int_0^{2\pi}\eta f(a+se^{it})\dd t.
+\]
+连续函数
+\[
+ u_s(t)=|f(a)|-\operatorname{Re}\bigl(\eta f(a+se^{it})\bigr)
+\]
+非负且积分为零，故处处为零。再结合
+$|f(a+se^{it})|\le|f(a)|$，得到
+$\eta f(a+se^{it})=|f(a)|$。任意 $z\in D(a,r)\setminus\{a\}$ 都在某条这样的圆周上，故
+$f=f(a)$ 于整个圆盘；恒等定理把等式推广到连通域 $\Omega$。
+\end{proof}
+
+\begin{definition}[零点阶数]\label{def:7-1-2-3}
+设 $z_0\in\Omega$，$f\in\mathcal O(\Omega)$，并且 $f$ 在 $z_0$ 所在的连通分支上不恒为零。若
+$f(z_0)=0$，则恒等定理保证下列 Taylor 展开不可能所有系数都为零。写
+\[
+ f(z)=\sum_{n=0}^{\infty}a_n(z-z_0)^n
+\]
+在 $z_0$ 附近成立，并令 $m\ge1$ 为满足 $a_m\ne0$ 的最小指标；称 $m$ 为 $f$ 在 $z_0$ 的
+\emph{零点阶数}。若 $f(z_0)\ne0$，则约定其消失阶数为 $0$，但不称 $z_0$ 为零点。
+\end{definition}
+
+在零点情形，把 Taylor 级数的前 $m$ 项提出，便有
+\[
+ f(z)=(z-z_0)^m g(z),
+ \qquad g\in\mathcal O(\Omega_0),\quad g(z_0)=a_m\ne0
+\]
+在 $z_0$ 的某邻域 $\Omega_0$ 内成立。由 $g$ 的连续性，缩小 $\Omega_0$ 后可使 $g$ 处处非零，
+所以 $z_0$ 是孤立零点。于是，一个在连通域上不恒为零的全纯函数，其零点只能是孤立的；若零点在
+域内有聚点，恒等定理便迫使函数恒为零。
+
+Morera 定理识别局部一致极限，Cauchy 估计提供函数族的紧性，恒等定理则识别
+所得子列极限。下面依次完成三项证明。
+
+\begin{proof}[定理~\ref{theorem:7-1-1-2} 的证明]
+局部一致极限 $f$ 连续。事实上，每一点都有闭小圆盘紧含于 $\Omega$，而连续函数在该紧集上的一致
+极限连续。若 $\overline T\subset\Omega$ 为三角形，则
+\[
+ \left|\int_{\partial T}(f_n-f)(z)\dd z\right|
+ \le \operatorname{per}(T)\sup_{z\in\partial T}|f_n(z)-f(z)|\longrightarrow0.
+\]
+由 Cauchy--Goursat 定理，$\int_{\partial T}f_n\dd z=0$；故
+$\int_{\partial T}f\dd z=0$。Morera 定理给出 $f\in\mathcal O(\Omega)$。
+
+固定紧集 $K\Subset\Omega$ 和 $k\ge1$。可取 $\delta>0$，使闭 $2\delta$ 邻域
+\[
+ L=\{z\in\C:\dist(z,K)\le2\delta\}
+\]
+紧含于 $\Omega$；当 $\Omega=\C$ 时任取充分小的 $\delta$ 即可。对每个 $a\in K$，在圆周
+$|z-a|=\delta$ 上应用 Cauchy 导数公式，得到
+\[
+ |f_n^{(k)}(a)-f^{(k)}(a)|
+ \le\frac{k!}{\delta^k}\sup_{z\in L}|f_n(z)-f(z)|.
+\]
+右侧与 $a$ 无关并趋于零，所以 $f_n^{(k)}\to f^{(k)}$ 在 $K$ 上一致。$K$ 与 $k$ 任意，定理得证。
+\end{proof}
+
+\begin{proof}[定理~\ref{theorem:7-1-1-3} 的证明]
+由命题~\ref{proposition:1-4-2-2}，平面开集 $\Omega$ 有紧耗尽
+\[
+ K_1\subset\operatorname{int}K_2\subset K_2
+ \subset\operatorname{int}K_3\subset\cdots,
+ \qquad \bigcup_{m\ge1}K_m=\Omega.
+ \tag{7.1.13}\label{eq:7-1-2-compact-exhaustion}
+\]
+而且每个紧子集都包含在某个 $K_m$ 中。
+
+固定 $m$。取 $\delta>0$，使 $K_m$ 的闭 $2\delta$ 邻域 $L_m$ 紧含于 $\Omega$。由局部一致
+有界性，存在 $M_m$ 使 $|f|\le M_m$ 对所有 $f\in\mathcal F$、$z\in L_m$ 成立。当
+$\dist(\zeta,K_m)\le\delta$ 时，圆 $|z-\zeta|=\delta$ 位于 $L_m$；Cauchy 估计给
+\[
+ |f'(\zeta)|\le\frac{M_m}{\delta}.
+\]
+若 $z,w\in K_m$ 且 $|z-w|<\delta$，连接它们的线段位于 $K_m$ 的闭 $\delta$ 邻域，因此
+\[
+ |f(z)-f(w)|
+ \le\frac{M_m}{\delta}|z-w|
+ \qquad(f\in\mathcal F).
+ \tag{7.1.14}\label{eq:7-1-2-montel-equicontinuity}
+\]
+故 $\mathcal F|_{K_m}$ 等度连续且逐点有界。\ArzelaAscoli{} 定理
+\ref{theorem:1-3-2-2} 说明它在 $C(K_m)$ 中相对紧。
+
+任取序列 $(f_n)\subset\mathcal F$。先抽取在 $K_1$ 上一致收敛的子列，再从中抽取在 $K_2$ 上
+一致收敛的子列，如此继续。取第 $m$ 层子列的第 $m$ 项组成对角列 $(g_m)$。对每个固定 $j$，
+$(g_m)_{m\ge j}$ 是第 $j$ 层子列的子列，故在 $K_j$ 上一致收敛；各层极限在交叠处相同，因而
+定义出 $g:\Omega\to\C$。式~\eqref{eq:7-1-2-compact-exhaustion} 保证收敛在每个紧子集上一致。
+刚证的 Weierstrass 极限定理给 $g\in\mathcal O(\Omega)$。所以 $\mathcal F$ 是正规族。
+\end{proof}
+
+\begin{proof}[命题~\ref{proposition:7-1-1-4} 的证明]
+由 Montel 定理，$(f_n)$ 有局部一致收敛子列；记其极限为 $g\in\mathcal O(\Omega)$。若另一子列
+局部一致收敛到 $h$，则对每个 $z\in E$，原数列 $f_n(z)$ 的收敛性给出
+\[
+ g(z)=\lim_nf_n(z)=h(z).
+\]
+$E$ 在域内有聚点，恒等定理遂给 $g\equiv h$。
+
+还需排除原序列不收敛到 $g$ 的可能。若局部一致收敛失败，则存在紧集 $K\Subset\Omega$、
+$\varepsilon>0$ 和子列 $(f_{n_j})$，使
+\[
+ \sup_K|f_{n_j}-g|\ge\varepsilon\qquad(j\ge1).
+\]
+Montel 定理又从这条子列抽出局部一致收敛的子列，其极限必须等于 $g$，与上式矛盾。因此整个序列
+局部一致收敛到 $g$。
+\end{proof}
+
+\begin{theorem}[Osgood 定理（选读）]\label{theorem:7-1-2-osgood}
+若 $f_n\in\mathcal O(\Omega)$ 只逐点收敛到函数 $f$，则不能断言 $f$ 在整个 $\Omega$ 上全纯；不过
+$f$ 必在某个稠密开子集上全纯。
+\end{theorem}
+
+因此，逐点收敛仍保留一个稠密的局部解析区域，却不提供该区域之外的共同局部控制。
+
+\begin{proof}
+任取非空开集 $U\subset\Omega$，并在其中取一个正半径的闭圆盘 $K\Subset U$。逐点收敛说明
+$(f_n(z))_n$ 对每个 $z\in K$ 有界。令
+\[
+ E_m=\{z\in K:|f_n(z)|\le m\text{ 对所有 }n\},\qquad m\ge1.
+\]
+每个 $E_m$ 都闭，且 $K=\bigcup_mE_m$。紧度量空间 $K$ 完备；Baire 定理
+\ref{theorem:1-4-1-1} 给出某个 $E_m$ 在 $K$
+中有非空相对内点；该相对开集与 $\operatorname{int}K$ 相交，因而可取开圆盘
+$D\Subset\operatorname{int}K$，使 $|f_n|\le m$ 在 $D$ 上对所有 $n$ 成立。
+于是 $(f_n)$ 在 $D$ 上局部一致有界，而它在那里处处收敛。命题~\ref{proposition:7-1-1-4} 给出
+$f_n\to f$ 在 $D$ 上局部一致，故 $f|_D$ 全纯。
+
+令 $V$ 为 $f$ 在某邻域全纯的所有点之集。按定义 $V$ 开；刚才对任意非空 $U$ 都找到了
+$D\subset U\cap V$，所以 $V$ 稠密。
+\end{proof}
+
+\begin{example}[绕原点积分]\label{ex:7-1-2-1}
+令 $\gamma(t)=re^{it}$，$0\le t\le2\pi$，其中 $r>0$。由定义直接得到
+\[
+ \int_{|z|=r}\frac{\dd z}{z}
+ =\int_0^{2\pi}\frac{ire^{it}}{re^{it}}\dd t
+ =2\pi i.
+\]
+因此 $1/z$ 不可能在 $\C\setminus\{0\}$ 上有全局原函数，否则闭曲线积分必须为零。另一方面，
+$1/z$ 在任何不绕过原点的小圆盘内都有局部原函数。这个计算区分了局部全纯与有孔域上的全局
+路径无关。
+\end{example}
+
+\begin{example}[Cauchy 核]\label{ex:7-1-2-2}
+若 $\overline{D(a,r)}\subset\Omega$，则
+\[
+ f(a)=\frac1{2\pi i}\int_{|z-a|=r}\frac{f(z)}{z-a}\dd z,
+ \qquad
+ f^{(n)}(a)=\frac{n!}{2\pi i}\int_{|z-a|=r}
+                  \frac{f(z)}{(z-a)^{n+1}}\dd z.
+\]
+例如取 $f(z)=e^z$、$a=0$，便得到
+\[
+ \int_{|z|=r}\frac{e^z}{z^{n+1}}\dd z
+ =\frac{2\pi i}{n!}f^{(n)}(0)=\frac{2\pi i}{n!}.
+\]
+圆周数据由同一个核恢复中心值及全部导数。若把圆周换成一般闭曲线，则公式还需绕数和适当的域条件；
+仅说“点在曲线里面”并不是严格假设。
+\end{example}
+
+\begin{example}[Morera 参数积分]\label{ex:7-1-2-3}
+设 $\mu$ 为有限复测度，$x\mapsto q(z,x)$ 对每个 $z\in\Omega$ 可测，而对 $|\mu|$-几乎每个
+$x$，函数 $z\mapsto q(z,x)$ 全纯。再假设对每个紧集 $K\Subset\Omega$，存在
+$g_K\in L^1(|\mu|)$ 使
+\[
+ |q(z,x)|\le g_K(x)\qquad(z\in K)
+\]
+在一个共同零集外成立。令 $Q(z)=\int q(z,x)\mu(\dd x)$。若 $z_n\to z$，可把 $z$ 与充分靠后的
+$z_n$ 放进同一紧小圆盘；支配收敛给 $Q(z_n)\to Q(z)$，故 $Q$ 连续。
+
+对任意 $\overline T\subset\Omega$，取包含 $\partial T$ 的紧集 $K$。曲线长度测度与 $|\mu|$ 的
+乘积下，
+\[
+ \int_{\partial T}\int |q(z,x)|\,|\mu|(\dd x)|\dd z|
+ \le \operatorname{per}(T)\int g_K\dd|\mu|<\infty.
+\]
+在全纯性成立的共同满测集之外把 $q$ 改定义为零。对 $\partial T$ 的每个 $C^1$ 参数段
+$\gamma$，函数 $(t,x)\mapsto q(\gamma(t),x)$ 对 $t$ 连续、对 $x$ 可测；用有限网格的左端点
+阶梯函数逼近 $t$，可知它关于乘积 $\sigma$-代数可测。因此 Fubini
+定理~\ref{theorem:3-2-1-2} 确实适用，并给出
+\[
+ \int_{\partial T}Q(z)\dd z
+ =\int\left(\int_{\partial T}q(z,x)\dd z\right)\mu(\dd x)=0.
+\]
+Morera 定理推出 $Q$ 全纯。第三小节将把这一计算整理成参数积分定理。
+\end{example}
+
+Goursat 证明与 Cauchy 公式使用两种互补的几何压缩。图
+\ref{fig:7-1-2-goursat-and-cauchy} 左侧不断缩小三角形，比较的是边界积分与周长平方；右侧则把固定
+圆周上的信息经 Cauchy 核送到任意内点。一个从局部差商出发消灭闭路积分，另一个从闭路积分恢复
+局部导数。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.96]
+  \begin{scope}[xshift=0cm]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3.4,0);
+    \coordinate (C) at (0.7,2.6);
+    \coordinate (AB) at (1.7,0);
+    \coordinate (AC) at (0.35,1.3);
+    \coordinate (BC) at (2.05,1.3);
+    \fill[BookAccent!5] (A)--(B)--(C)--cycle;
+    \draw[book line] (A)--(B)--(C)--cycle;
+    \draw[BookAccent,semithick] (AB)--(AC)--(BC)--cycle;
+    \draw[BookAccent,semithick] (AB)--(BC);
+    \draw[BookAccent,semithick] (AC)--(BC);
+    \coordinate (AAB) at (0.85,0);
+    \coordinate (AAC) at (0.175,0.65);
+    \coordinate (AACAB) at (1.025,0.65);
+    \fill[BookWarm!18] (A)--(AAB)--(AAC)--cycle;
+    \draw[BookWarm,semithick] (AAB)--(AAC)--(AACAB)--cycle;
+    \fill[BookInk] (0.22,0.28) circle (1.4pt);
+    \node[book label] at (0.48,0.28) {$z_*$};
+    \node[book label] at (1.7,-0.38) {$T_0\supset T_1\supset T_2\supset\cdots$};
+    \node[book label] at (1.7,-0.78) {$\operatorname{per}(T_n)=2^{-n}\operatorname{per}(T_0)$};
+  \end{scope}
+  \begin{scope}[xshift=7.0cm,yshift=0.15cm]
+    \draw[BookAccent,semithick,fill=BookAccent!5] (0,1.05) circle (1.55);
+    \fill[BookInk] (0,1.05) circle (1.5pt);
+    \node[book label,below left=1mm and 1mm] at (0,1.05) {$a$};
+    \fill[BookWarm] (0.55,1.45) circle (1.7pt);
+    \node[book label,above right=0mm and 1mm] at (0.55,1.45) {$w$};
+    \draw[book accent arrow] (-1.35,1.82) to[bend right=15]
+      node[above,book label]{$\dfrac{f(z)}{z-w}\dd z$} (0.45,1.48);
+    \draw[book arrow] (1.35,0.28) to[bend left=15]
+      node[below,book label]{$f^{(n)}(w)$} (0.58,1.38);
+    \node[book label] at (0,-0.88) {圆周观测 $\longrightarrow$ 内部全部导数};
+  \end{scope}
+\end{tikzpicture}
+\caption{Goursat 的三角形细分与 Cauchy 核的边界恢复。左图中的积分尺度与周长平方同阶，而不是
+与周长一次方同阶。}
+\label{fig:7-1-2-goursat-and-cauchy}
+\end{figure}
+
+\begin{remark}[三项不能省略的边界]
+闭曲线积分为零需要原函数或适当域条件；$1/z$ 说明有孔域上局部原函数不等于全局原函数。Morera
+定理把连续性列为假设，若只给几乎处处可积性，则需另行证明一个弱版本。恒等定理中的聚点必须位于
+连通域内部；零点只在边界聚集并不迫使函数恒为零，例如单位圆盘中的 $f(z)=\sin(1/(1-z))$ 在
+$z=1$ 附近有无穷多个域内零点，但这些零点在域内没有聚点。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 对整数 $m$ 计算 $\int_{|z|=r}z^m\dd z$，分别处理 $m=-1$ 与 $m\ne-1$。
+  \item 从 Cauchy 导数公式重新推导式~\eqref{eq:7-1-2-cauchy-estimate}，并证明若 $d\ge0$ 且整函数满足
+        $|f(z)|\le C(1+|z|)^d$，则它是次数不超过 $\lfloor d\rfloor$ 的多项式。
+  \item 设 $f_n\in\mathcal O(\Omega)$ 局部一致收敛到 $f$。不用差商，逐步写出“连续性、三角形
+        积分、Morera、Cauchy 公式”四个环节，证明 $f_n'\to f'$ 局部一致。
+  \item 补全 Montel 证明的对角步骤：证明式~\eqref{eq:7-1-2-compact-exhaustion} 中每个紧集
+        $K\Subset\Omega$ 都包含在某个 $K_m$ 中，并验证各层一致极限在交叠处相同。
+\end{enumerate}
+\end{exercise}
+
+至此，局部一致极限、函数族紧性和唯一性都已获得完整证明。下面把这些工具用于含测度参数的核
+$(z-x)^{-1}$，并比较同一几何级数在测度变换与有界算子预解式中的两种形态。
+
+
+\subsection{参数全纯积分、Stieltjes 变换与预解式}\label{subsec:7-1-3}
+\index{参数全纯积分}
+\index{Cauchy--Stieltjes 变换}
+\index{Stieltjes 反演}
+\index{预解集}
+\index{预解式恒等式}
+
+核 $(z-x)^{-1}$ 同时出现在测度的 Cauchy--Stieltjes 变换与线性算子的预解式中。离开测度支集或
+算子谱以后，分母有统一下界，于是积分、级数和导数可以交换；在无穷远处展开几何级数，又会把变换
+的解析数据变成矩或算子幂。这个平行关系不需要谱定理，只需要有限复测度、Bochner 积分和有界算子
+的基本代数。
+
+Stieltjes 最初在连分数和矩问题中使用这类变换；Fredholm 的积分方程则把参数逆算子推向现代谱
+理论。Dirichlet 问题、Fredholm 方程和 Fourier 无穷矩阵在历史上共同推动了 Hilbert 空间语言的形成。
+这些联系在有限复测度、Bochner 积分和有界算子的层面即可建立；自伴算子与谱测度属于后续的算子理论。
+
+\begin{example}[Dirac 与有限原子]\label{ex:7-1-3-1}
+对 $a\in\R$，Dirac 测度满足
+\[
+  G_{\delta_a}(z)=\int_\R\frac1{z-x}\delta_a(\dd x)=\frac1{z-a}.
+\]
+更一般地，若 $a_1,\ldots,a_m$ 互异、$c_j\ne0$，且
+$\mu=\sum_{j=1}^mc_j\delta_{a_j}$，则
+\[
+  G_\mu(z)=\sum_{j=1}^m\frac{c_j}{z-a_j}.
+\]
+这是一个有理函数；$a_j$ 是极点，而
+\[
+ \lim_{z\to a_j}(z-a_j)G_\mu(z)=c_j.
+\]
+所以极点位置记录原子位置，留数记录复质量。离散谱产生有理预解式正是同一代数图景。
+\end{example}
+
+\begin{example}[无穷远矩展开]\label{ex:7-1-3-2}
+设 $R\ge0$，$\mu$ 为支撑包含于 $[-R,R]$ 的有限复测度，并记
+$m_n=\int x^n\mu(\dd x)$。当 $|z|>R$ 时，
+\[
+ \frac1{z-x}=\frac1z\sum_{n=0}^{\infty}\left(\frac{x}{z}\right)^n
+\]
+关于 $x\in[-R,R]$ 一致收敛。因此
+\[
+ G_\mu(z)=\sum_{n=0}^{\infty}\frac{m_n}{z^{n+1}}.
+ \tag{7.1.15}\label{eq:7-1-3-moment-expansion}
+\]
+截到第 $N$ 项的误差可直接估计为
+\[
+ \left|G_\mu(z)-\sum_{n=0}^{N}\frac{m_n}{z^{n+1}}\right|
+ \le \frac{\|\mu\|_{TV}R^{N+1}}
+ {|z|^{N+2}(1-R/|z|)}.
+ \tag{7.1.16}\label{eq:7-1-3-moment-remainder}
+\]
+若支集无界而高阶矩不存在，这个展开便没有意义；不能仅凭测度有限就把它写在无穷远处。
+\end{example}
+
+\begin{example}[Neumann 预解式]\label{ex:7-1-3-3}
+设 $T$ 是复 Banach 空间 $B$ 上的有界算子。若 $|z|>\|T\|$，则算子范数级数
+\[
+ S(z)=\frac1z\sum_{n=0}^{\infty}\left(\frac{T}{z}\right)^n
+\]
+绝对收敛。有限和满足
+\[
+ (zI-T)\frac1z\sum_{n=0}^{N}\left(\frac{T}{z}\right)^n
+ =I-\left(\frac{T}{z}\right)^{N+1},
+\]
+右乘也有同一等式。令 $N\to\infty$，得到
+\[
+ (zI-T)^{-1}=\frac1z\sum_{n=0}^{\infty}\frac{T^n}{z^n},
+ \qquad
+ \|(zI-T)^{-1}\|\le\frac1{|z|-\|T\|}.
+ \tag{7.1.17}\label{eq:7-1-3-neumann-resolvent}
+\]
+这与式~\eqref{eq:7-1-3-moment-expansion} 平行：标量矩 $m_n$ 被算子幂 $T^n$ 取代。
+\end{example}
+
+\begin{definition}[Cauchy--Stieltjes 变换]\label{def:7-1-3-1}
+设 $\mu$ 为 $\R$ 上的有限复 Borel 测度。定义
+\[
+ G_\mu(z)=\int_\R\frac1{z-x}\mu(\dd x),
+ \qquad z\in\C\setminus\supp|\mu|,
+ \tag{7.1.18}\label{eq:7-1-3-stieltjes-definition}
+\]
+称为 $\mu$ 的 \emph{Cauchy--Stieltjes 变换}，也简称 Stieltjes 变换。本章固定核
+$(z-x)^{-1}$；若采用 $(x-z)^{-1}$，所有涉及虚部的符号都要反向。
+\end{definition}
+
+\begin{definition}[预解集与预解式]\label{def:7-1-3-2}
+设 $T\in\mathcal L(B)$ 是复 Banach 空间上的有界算子。若 $zI-T$ 有有界双边逆，则称
+$z$ 属于 $T$ 的\emph{预解集} $\rho(T)$，并记
+\[
+  R(z,T)=(zI-T)^{-1},
+\]
+称其为 $T$ 在 $z$ 处的\emph{预解式}。补集 $\C\setminus\rho(T)$ 称为谱，但这里不使用任何
+谱分解定理。
+\end{definition}
+
+\begin{definition}[局部一致支配]\label{def:7-1-3-3}
+设 $\mu$ 是可测空间 $(X,\mathcal A)$ 上的有限复测度，并且对每个 $z\in\Omega$，截面
+$x\mapsto q(z,x)$ 可测。若对每个紧集 $K\Subset\Omega$，存在
+$g_K\in L^1(|\mu|)$，使得在一个可以随 $K$ 改变、但对所有 $z\in K$ 共同的 $|\mu|$-零集外，
+\[
+  |q(z,x)|\le g_K(x)\qquad(z\in K),
+\]
+则称参数族 $q$ \emph{局部一致受支配}。
+\end{definition}
+
+\begin{theorem}[参数积分全纯定理]\label{theorem:7-1-3-1}
+设 $\mu$ 为可测空间 $(X,\mathcal A)$ 上的有限复测度，$q:\Omega\times X\to\C$ 满足：
+\begin{enumerate}
+  \item 对每个 $z\in\Omega$，$x\mapsto q(z,x)$ 可测；
+  \item 存在 $N\in\mathcal A$、$|\mu|(N)=0$，使对每个 $x\in X\setminus N$，
+        $z\mapsto q(z,x)$ 在 $\Omega$ 上全纯；
+  \item $q$ 局部一致受支配。
+\end{enumerate}
+则
+\[
+  Q(z)=\int_Xq(z,x)\mu(\dd x)
+\]
+在 $\Omega$ 上全纯。若 $\partial_zq$ 也局部一致受某个 $L^1(|\mu|)$ 函数支配，则
+\[
+  Q'(z)=\int_X\partial_zq(z,x)\mu(\dd x).
+  \tag{7.1.19}\label{eq:7-1-3-differentiate-under-integral}
+\]
+\end{theorem}
+
+\begin{proof}
+先在共同零集 $N$ 上把 $q$ 改定义为零。若 $\gamma:[a,b]\to\Omega$ 连续，则
+$(t,x)\mapsto q(\gamma(t),x)$ 关于
+$\Borel([a,b])\otimes\mathcal A$ 联合可测。事实上，把 $[a,b]$ 分成 $2^m$ 个等长区间，并令
+$s_m(t)$ 为 $t$ 所在区间的左端点；函数
+$q(\gamma(s_m(t)),x)$ 是有限个可测 $x$-截面乘区间指标之和。由 $s_m(t)\to t$ 及每个
+$x$-截面的连续性，它们逐点趋于 $q(\gamma(t),x)$，故后者联合可测。这样，以下曲线积分与测度
+积分的交换不仅有绝对可积估计，也满足 Fubini 所需的乘积可测性。
+
+先证连续性。若 $z_n\to z$，可取紧圆盘 $K\Subset\Omega$ 包含 $z$ 及所有充分靠后的 $z_n$。
+对几乎每个 $x$，全纯性给 $q(z_n,x)\to q(z,x)$；而
+$|q(z_n,x)-q(z,x)|\le2g_K(x)$。对全变差测度应用支配收敛定理
+\ref{theorem:3-1-3-5}，得到 $Q(z_n)\to Q(z)$。复平面为度量空间，所以 $Q$ 连续。
+
+令 $\overline T\subset\Omega$ 为三角形，并取包含 $\partial T$ 的紧集 $K$。由支配条件，
+\[
+ \int_{\partial T}\int_X|q(z,x)|\,|\mu|(\dd x)|\dd z|
+ \le\operatorname{per}(T)\int_Xg_K\dd|\mu|<\infty.
+\]
+Fubini 定理因而允许交换曲线参数积分与测度积分。对几乎每个 $x$ 使用 Cauchy--Goursat 定理，得
+\[
+ \int_{\partial T}Q(z)\dd z
+ =\int_X\left(\int_{\partial T}q(z,x)\dd z\right)\mu(\dd x)=0.
+\]
+Morera 定理给出 $Q\in\mathcal O(\Omega)$。
+
+最后固定 $z$。先取正实数列 $h_m\downarrow0$，使 $z+h_m\in\Omega$。对共同满测集中的每个
+$x$，可测差商
+\[
+ x\longmapsto\frac{q(z+h_m,x)-q(z,x)}{h_m}
+\]
+逐点趋于 $\partial_zq(z,x)$；因此导数截面 $x\mapsto\partial_zq(z,x)$ 可测。再取闭小圆盘
+$K\Subset\Omega$，使它包含所有 $z+th$，其中 $0\le t\le1$ 且 $h$ 充分小。对几乎每个 $x$，
+沿复线段使用实变量微积分，
+\[
+ \frac{q(z+h,x)-q(z,x)}h
+ =\int_0^1\partial_zq(z+th,x)\dd t.
+\]
+若 $|\partial_zq(\zeta,x)|\le h_K(x)$ 于 $\zeta\in K$，则差商由 $h_K\in L^1(|\mu|)$ 支配。
+支配收敛把 $h\to0$ 送入积分号内，得到
+\eqref{eq:7-1-3-differentiate-under-integral}。这样，可测性是在应用支配收敛之前由差商极限得到的，
+没有把“导数可测”作为未写出的附加假设。
+\end{proof}
+
+\begin{proposition}[Stieltjes 变换的基本估计]\label{proposition:7-1-3-2}
+设 $\mu$ 为 $\R$ 上的有限复 Borel 测度。则 $G_\mu$ 在
+$\C\setminus\supp|\mu|$ 上全纯，并且
+\[
+ |G_\mu(z)|
+ \le\frac{\|\mu\|_{TV}}{\dist(z,\supp|\mu|)}.
+ \tag{7.1.20}\label{eq:7-1-3-stieltjes-bound}
+\]
+对每个 $n\ge0$，
+\[
+ G_\mu^{(n)}(z)
+ =(-1)^nn!\int_\R\frac1{(z-x)^{n+1}}\mu(\dd x).
+ \tag{7.1.21}\label{eq:7-1-3-stieltjes-derivatives}
+\]
+当 $\mu=0$ 时约定 $\supp|\mu|=\varnothing$，估计
+\eqref{eq:7-1-3-stieltjes-bound} 的右端按 $0$ 理解。
+\end{proposition}
+
+\begin{proof}
+若 $\mu=0$，结论直接成立。以下设 $\supp|\mu|\ne\varnothing$。固定紧集
+$K\Subset\C\setminus\supp|\mu|$，并令
+\[
+ d_K=\dist(K,\supp|\mu|)>0.
+\]
+由于 $|\mu|(\R\setminus\supp|\mu|)=0$，对 $z\in K$ 及几乎每个 $x$ 有
+\[
+ \left|\frac1{z-x}\right|\le d_K^{-1},
+ \qquad
+ \left|\frac{\partial^n}{\partial z^n}\frac1{z-x}\right|
+ \le n!d_K^{-n-1}.
+\]
+这些常数函数属于 $L^1(|\mu|)$。定理~\ref{theorem:7-1-3-1} 可反复应用，给出全纯性和
+式~\eqref{eq:7-1-3-stieltjes-derivatives}。在固定 $z$ 处直接对核取绝对值并积分，则得到
+式~\eqref{eq:7-1-3-stieltjes-bound}。
+\end{proof}
+
+\begin{theorem}[Stieltjes 唯一性基础]\label{theorem:7-1-3-3}
+记 $\C_+=\{z:\operatorname{Im}z>0\}$、
+$\C_-=\{z:\operatorname{Im}z<0\}$。
+\begin{enumerate}
+  \item 若 $\mu,\nu$ 是 $\R$ 上的有限实有符号 Borel 测度，且
+        $G_\mu=G_\nu$ 于 $\C_+$，则 $\mu=\nu$。
+  \item 若 $\mu,\nu$ 是有限复 Borel 测度，且
+        $G_\mu=G_\nu$ 同时在 $\C_+$ 与 $\C_-$ 成立，则 $\mu=\nu$。
+\end{enumerate}
+对有限实有符号测度和任意 $a<b$，还有边界反演式
+\[
+ -\frac1\pi\lim_{\varepsilon\downarrow0}
+ \int_a^b\operatorname{Im}G_\mu(t+i\varepsilon)\dd t
+ =\mu((a,b))+\frac12\mu(\{a\})+\frac12\mu(\{b\}).
+ \tag{7.1.22}\label{eq:7-1-3-stieltjes-inversion}
+\]
+特别地，若 $a,b$ 都不是原子，则左侧恢复 $\mu((a,b))$。
+\end{theorem}
+
+\begin{proof}
+令
+\[
+ P_\varepsilon(u)=\frac1\pi\frac{\varepsilon}{u^2+\varepsilon^2},
+ \qquad \varepsilon>0.
+\]
+它非负且积分为 $1$。若 $\sigma$ 是有限实有符号测度，则实线性允许把虚部送入积分，因而
+\[
+ -\frac1\pi\operatorname{Im}G_\sigma(t+i\varepsilon)
+ =\int_\R P_\varepsilon(t-x)\sigma(\dd x)
+ =:(P_\varepsilon*\sigma)(t).
+ \tag{7.1.23}\label{eq:7-1-3-poisson-boundary}
+\]
+若 $G_\sigma=0$ 于 $\C_+$，则 $P_\varepsilon*\sigma=0$ 对所有 $\varepsilon>0$ 成立。
+
+取 $\varphi\in C_c(\R)$。Fubini 定理给出
+\[
+ 0=\int_\R\varphi(t)(P_\varepsilon*\sigma)(t)\dd t
+  =\int_\R(P_\varepsilon*\varphi)(x)\sigma(\dd x),
+ \tag{7.1.24}\label{eq:7-1-3-poisson-test}
+\]
+其中利用了 $P_\varepsilon(-u)=P_\varepsilon(u)$。Poisson 核是近似恒等。为完整核验这一点，令
+$\omega_\varphi(\delta)=\sup_{|u-v|\le\delta}|\varphi(u)-\varphi(v)|$。则
+\begin{align*}
+ \sup_x|(P_\varepsilon*\varphi)(x)-\varphi(x)|
+ &\le \omega_\varphi(\delta)
+ +2\|\varphi\|_\infty
+   \int_{|u|>\delta}P_\varepsilon(u)\dd u.
+\end{align*}
+先固定小的 $\delta$，再令 $\varepsilon\downarrow0$；尾积分趋于零，而
+$\omega_\varphi(\delta)\to0$。所以 $P_\varepsilon*\varphi\to\varphi$ 一致。让
+$\varepsilon\downarrow0$ 于式~\eqref{eq:7-1-3-poisson-test}，得到
+$\int\varphi\dd\sigma=0$ 对每个 $\varphi\in C_c(\R)$ 成立。对 $\sigma$ 的 Jordan 正负部使用
+定理~\ref{theorem:3-1-1-4} 的 $C_c$ 测试恢复，便有 $\sigma=0$。取
+$\sigma=\mu-\nu$，即证明第一项。
+
+现在令 $\sigma$ 为有限复测度。直接作核的上下边界差，得到
+\begin{align*}
+ G_\sigma(t-i\varepsilon)-G_\sigma(t+i\varepsilon)
+ &=\int_\R\left(\frac1{t-i\varepsilon-x}
+                 -\frac1{t+i\varepsilon-x}\right)\sigma(\dd x)\\
+ &=2\pi i\,(P_\varepsilon*\sigma)(t).
+ \tag{7.1.25}\label{eq:7-1-3-two-sided-jump}
+\end{align*}
+若 $G_\sigma$ 在两个半平面都为零，则 $P_\varepsilon*\sigma=0$。仍用
+式~\eqref{eq:7-1-3-poisson-test} 和一致近似，得到
+$\int\varphi\dd\sigma=0$。分别取实部和虚部，归结为两个有限实有符号测度，故 $\sigma=0$。
+
+最后证明反演式。由式~\eqref{eq:7-1-3-poisson-boundary} 与 Fubini，
+\[
+ -\frac1\pi\int_a^b\operatorname{Im}G_\mu(t+i\varepsilon)\dd t
+ =\int_\R H_\varepsilon(x)\mu(\dd x),
+\]
+其中
+\[
+ H_\varepsilon(x)
+ =\int_a^bP_\varepsilon(t-x)\dd t
+ =\frac1\pi\left[
+   \arctan\frac{b-x}{\varepsilon}
+  -\arctan\frac{a-x}{\varepsilon}\right].
+\]
+有 $0\le H_\varepsilon\le1$，且当 $\varepsilon\downarrow0$ 时，它逐点趋于
+$\1_{(a,b)}+\tfrac12\1_{\{a\}}+\tfrac12\1_{\{b\}}$。对全变差测度使用支配收敛，便得到
+式~\eqref{eq:7-1-3-stieltjes-inversion}。
+\end{proof}
+
+\begin{remark}[复测度为何需要另一半边界数据]
+实有符号测度满足
+$G_\mu(\bar z)=\overline{G_\mu(z)}$，所以上半平面自动决定下半平面。复测度没有这个对称性，而且
+仅给上半平面数据确实可能丢失非零测度。令
+\[
+  \mu(\dd x)=\frac1{(x-i)^2}\dd x.
+\]
+因为 $|(x-i)^{-2}|=(x^2+1)^{-1}$，这是非零有限复测度。固定 $z\in\C_+$，并取
+$R>2\max\{|z|,1\}$。把
+\[
+ \zeta\longmapsto\frac1{(z-\zeta)(\zeta-i)^2}
+\]
+沿实线段 $[-R,R]$ 与从 $R$ 回到 $-R$ 的下半圆组成的闭曲线积分。令
+$\eta=\tfrac12\min\{\operatorname{Im}z,1\}$；凸开集
+\[
+ U_R=\{\zeta:|\zeta|<R+1,\ \operatorname{Im}\zeta<\eta\}
+\]
+包含该闭曲线而排除两个极点 $z,i$，所以被积函数在星形域 $U_R$ 全纯，Cauchy--Goursat 定理给
+闭路积分为零。在下半圆弧上，$|z-\zeta|\ge R/2$、$|\zeta-i|\ge R/2$，故被积函数绝对值不超过
+$8R^{-3}$；弧长为 $\pi R$，所以弧积分绝对值不超过 $8\pi R^{-2}$，随 $R\to\infty$ 趋于零。因此
+\[
+ G_\mu(z)=\int_\R\frac{1}{(z-x)(x-i)^2}\dd x=0
+ \qquad(z\in\C_+),
+\]
+尽管 $\mu\ne0$。这说明第二项中的双半平面假设不是实测度证明里可随意删除的装饰。
+\end{remark}
+
+\begin{proposition}[预解式恒等式]\label{proposition:7-1-3-4}
+设 $T\in\mathcal L(B)$。对任意 $z,w\in\rho(T)$，
+\[
+ R(z,T)-R(w,T)=(w-z)R(z,T)R(w,T).
+ \tag{7.1.26}\label{eq:7-1-3-resolvent-identity}
+\]
+预解集 $\rho(T)$ 是开集，$z\mapsto R(z,T)$ 在其上按算子范数全纯，并满足
+\[
+  \frac{\dd}{\dd z}R(z,T)=-R(z,T)^2.
+ \tag{7.1.27}\label{eq:7-1-3-resolvent-derivative}
+\]
+此外，$\{|z|>\|T\|\}\subset\rho(T)$，且该区域上的预解式由
+式~\eqref{eq:7-1-3-neumann-resolvent} 给出。
+\end{proposition}
+
+\begin{proof}
+一般可逆算子 $A,B$ 满足
+\[
+ A^{-1}-B^{-1}=A^{-1}(B-A)B^{-1},
+\]
+因为右侧展开为 $A^{-1}BB^{-1}-A^{-1}AB^{-1}$。取
+$A=zI-T$、$B=wI-T$，便得到
+式~\eqref{eq:7-1-3-resolvent-identity}。这也顺带说明不同参数的预解式彼此交换。
+
+固定 $z_0\in\rho(T)$，记 $R_0=R(z_0,T)$。因
+\[
+ zI-T=(z_0I-T)\bigl[I+(z-z_0)R_0\bigr],
+\]
+当 $|z-z_0|\|R_0\|<1$ 时，Neumann 级数给出
+\[
+ R(z,T)
+ =\bigl[I+(z-z_0)R_0\bigr]^{-1}R_0
+ =\sum_{n=0}^{\infty}(-1)^n(z-z_0)^nR_0^{n+1},
+ \tag{7.1.28}\label{eq:7-1-3-local-resolvent-series}
+\]
+并且级数按算子范数收敛。这同时证明 $\rho(T)$ 开及 $R(\,\cdot\,,T)$ 的算子范数全纯性。逐项微分
+式~\eqref{eq:7-1-3-local-resolvent-series}，或令 $w\to z$ 于
+式~\eqref{eq:7-1-3-resolvent-identity}，得到
+式~\eqref{eq:7-1-3-resolvent-derivative}。最后，$|z|>\|T\|$ 时的双边逆及范数收敛已在
+例~\ref{ex:7-1-3-3} 中逐项核验。
+\end{proof}
+
+图~\ref{fig:7-1-3-kernel-and-resolvent} 把两条计算链并排放置。对测度而言，距离支集的正下界产生
+积分支配，无穷远展开的系数是矩；对算子而言，$|z|>\|T\|$ 产生范数收敛，展开系数是 $T^n$。
+Stieltjes 边界值还可恢复测度，而预解式恒等式则控制参数改变时逆算子的变化。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=12mm and 15mm,scale=0.94,transform shape]
+  \begin{scope}[xshift=0cm]
+    \draw[book line,-{Stealth[length=2mm]}] (-2.0,0)--(2.2,0) node[right,book label]{$\R$};
+    \draw[BookWarm,very thick] (-1.25,0)--(1.15,0);
+    \foreach \x in {-1.05,-0.45,0.15,0.85}
+      \fill[BookWarm] (\x,0) circle (1.6pt);
+    \fill[BookAccent] (0.55,1.55) circle (2pt);
+    \node[book label,above right=0mm and 1mm] at (0.55,1.55) {$z$};
+    \draw[book accent arrow] (0.5,1.45)--node[left,book label]{$z-x$}(0.05,0.16);
+    \node[book label] at (0,-0.48) {$\supp|\mu|$};
+    \node[book warm node] at (0,-1.25) {$G_\mu(z)=\int(z-x)^{-1}\dd\mu(x)$};
+  \end{scope}
+  \node[book strong node] (mom) at (5.05,0.85)
+    {无穷远几何展开\\[1mm]$G_\mu(z)=\sum m_nz^{-n-1}$};
+  \node[book node] (bound) at (5.05,-0.7)
+    {边界逼近\\$P_\varepsilon*\mu\to\mu$};
+  \draw[book accent arrow] (2.25,0.9)--(mom.west);
+  \draw[book arrow] (2.25,-0.15)--(bound.west);
+  \node[book strong node] (T) at (9.2,0.85)
+    {有界算子 $T$\\[1mm]$R(z,T)=\sum T^nz^{-n-1}$};
+  \node[book node] (id) at (9.2,-0.7)
+    {参数变化\\$R(z)-R(w)=(w-z)R(z)R(w)$};
+  \draw[book accent arrow] (mom.east)--node[above,book label]{矩 $m_n\leftrightarrow T^n$}(T.west);
+  \draw[book arrow] (bound.east)--(id.west);
+\end{tikzpicture}
+\caption{同一核机制的测度版与算子版。离开支集或在算子范数意义下远离原点，都会产生可逐项运算的
+几何级数；边界恢复与预解式恒等式则分别编码唯一性和参数稳定性。}
+\label{fig:7-1-3-kernel-and-resolvent}
+\end{figure}
+
+这些公式也解释了前面若干对象之间的联系。半群的 Laplace--Bochner 积分在
+命题~\ref{proposition:4-4-3-4} 中已经给出生成元的预解式；这里的参数全纯定理可进一步控制复参数。
+概率分布的 Stieltjes 变换通过定理~\ref{theorem:7-1-3-3} 唯一识别其分布律，并可用 Poisson 核边界
+逼近连续测试积分。Fredholm 方程中的参数逆算子则服从
+式~\eqref{eq:7-1-3-resolvent-identity}，无需先有谱分解就能比较两个参数处的解。
+
+\begin{remark}[三项适用范围]
+核的符号约定决定式~\eqref{eq:7-1-3-poisson-boundary} 的正负号；改用 $(x-z)^{-1}$ 时必须整体
+改号。矩展开需要有界支集，或至少需要足够多矩并另证余项控制；有限测度本身不保证全部矩存在。
+预解式的定义要求 $zI-T$ 有有界双边逆；本小节只处理处处定义的有界算子，未把结论扩大到无界
+生成元的一般谱理论。
+\end{remark}
+
+\begin{exercise}
+\begin{enumerate}
+  \item 设 $\mu=2\delta_{-1}-(1+i)\delta_2$。计算 $G_\mu$、全部极点及其留数，并写出
+        $|z|>2$ 时式~\eqref{eq:7-1-3-moment-expansion} 的前三项。
+  \item 从有限几何和出发证明式~\eqref{eq:7-1-3-moment-remainder}，并指出当 $R=0$ 时公式如何
+        退化。
+  \item 对有限实有符号测度，逐项计算
+        $H_\varepsilon(x)=\int_a^bP_\varepsilon(t-x)\dd t$ 的极限，重新证明
+        式~\eqref{eq:7-1-3-stieltjes-inversion}；解释端点原子为何只贡献一半。
+  \item 由式~\eqref{eq:7-1-3-resolvent-identity} 证明
+        $R(z,T)R(w,T)=R(w,T)R(z,T)$，再由局部 Neumann 级数
+        \eqref{eq:7-1-3-local-resolvent-series} 计算前两阶导数。
+\end{enumerate}
+\end{exercise}
+
+下一节转向圆周与欧氏空间上的 Fourier 分析。复指数将把平移和卷积变成乘法，而三角矩问题会把
+这里的“变换识别测度”改写成一族离散频率观测能否确定整体分布的问题。
